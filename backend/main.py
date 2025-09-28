@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
 from app.models.base import engine, Base
 from app.config.settings import get_settings
 from app.routers import auth, staff, admin
@@ -37,10 +38,22 @@ try:
 except Exception as e:
     logger.error(f"Failed to create database tables: {e}")
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan manager"""
+    # Startup
+    start_background_tasks()
+    logger.info("Application started with background tasks")
+    yield
+    # Shutdown
+    stop_background_tasks()
+    logger.info("Application shutdown with background tasks stopped")
+
 app = FastAPI(
     title=settings.app_name,
     version=settings.version,
-    description="A comprehensive staff attendance and sales management system with fraud prevention, automated salary calculation, and performance tracking capabilities."
+    description="A comprehensive staff attendance and sales management system with fraud prevention, automated salary calculation, and performance tracking capabilities.",
+    lifespan=lifespan
 )
 
 # Add global exception handler
@@ -63,17 +76,6 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(staff.router, prefix="/api/staff", tags=["Staff Panel"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin Panel"])
 
-@app.on_event("startup")
-async def startup_event():
-    """Start background tasks on application startup"""
-    start_background_tasks()
-    logger.info("Application started with background tasks")
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    """Stop background tasks on application shutdown"""
-    stop_background_tasks()
-    logger.info("Application shutdown with background tasks stopped")
 
 @app.get("/")
 async def root():

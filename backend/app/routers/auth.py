@@ -142,9 +142,7 @@ async def register_staff(
         department=staff_data.department,
         joining_date=joining_date,
         is_active=True,
-        is_admin=False,
-        created_at=datetime.utcnow(),
-        updated_at=datetime.utcnow()
+        is_admin=False
     )
     
     db.add(new_staff)
@@ -194,7 +192,7 @@ async def login(
         )
     
     # Create access token
-    access_token_expires = timedelta(hours=8)
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(
         data={"sub": str(staff.id), "employee_code": staff.employee_code},
         expires_delta=access_token_expires
@@ -219,7 +217,7 @@ async def refresh_token(
     current_staff: Staff = Depends(get_current_staff)
 ):
     """Refresh access token"""
-    access_token_expires = timedelta(hours=8)
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(
         data={"sub": str(current_staff.id), "employee_code": current_staff.employee_code},
         expires_delta=access_token_expires

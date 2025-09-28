@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey, Enum
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .base import Base
 import enum
 
@@ -18,7 +19,7 @@ class Rankings(Base):
     period_date = Column(Date, nullable=False)
     total_sales = Column(Float, nullable=False)
     rank_position = Column(Integer, nullable=False)
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
     
     # Relationships
     staff = relationship("Staff", back_populates="rankings")

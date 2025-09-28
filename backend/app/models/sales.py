@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .base import Base
 
 class Sales(Base):
@@ -11,8 +12,8 @@ class Sales(Base):
     sale_amount = Column(Float, nullable=False)
     sale_date = Column(Date, nullable=False)
     units_sold = Column(Integer, nullable=False, default=1)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
     
     # Relationships
     staff = relationship("Staff", back_populates="sales_records")

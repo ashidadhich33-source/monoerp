@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .base import Base
 
 class Achievements(Base):
@@ -12,7 +13,7 @@ class Achievements(Base):
     achievement_percentage = Column(Float, nullable=False)
     incentive_earned = Column(Float, nullable=False)
     period = Column(String(20), nullable=False)  # e.g., "2024-01" for monthly
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
     
     # Relationships
     staff = relationship("Staff", back_populates="achievements")

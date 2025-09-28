@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime, Date, ForeignKey, Enum
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .base import Base
 import enum
 
@@ -21,7 +22,7 @@ class Attendance(Base):
     ip_address = Column(String(45), nullable=True)  # IPv6 compatible
     device_fingerprint = Column(String(255), nullable=True)
     status = Column(Enum(AttendanceStatus), default=AttendanceStatus.ABSENT)
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
     
     # Relationships
     staff = relationship("Staff", back_populates="attendance_records")

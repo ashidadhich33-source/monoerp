@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, Boolean, DateTime, Text
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .base import Base
 
 class Staff(Base):
@@ -17,8 +18,8 @@ class Staff(Base):
     joining_date = Column(Date, nullable=False)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
     
     # Relationships
     attendance_records = relationship("Attendance", back_populates="staff")
