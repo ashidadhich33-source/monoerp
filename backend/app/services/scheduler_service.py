@@ -8,6 +8,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# Global scheduler instance
+scheduler_service = None
+
+def start_background_tasks():
+    """Start background tasks"""
+    global scheduler_service
+    if scheduler_service is None:
+        scheduler_service = SchedulerService()
+    scheduler_service.start_scheduler()
+
+def stop_background_tasks():
+    """Stop background tasks"""
+    global scheduler_service
+    if scheduler_service:
+        scheduler_service.stop_scheduler()
+
 class SchedulerService:
     """Service for managing scheduled tasks"""
     

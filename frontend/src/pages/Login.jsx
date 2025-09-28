@@ -39,8 +39,7 @@ const Login = () => {
 
     try {
       await login(employeeCode, password, macAddress);
-      const { user: currentUser } = useAuth();
-      navigate(currentUser?.is_admin ? '/admin' : '/staff', { replace: true });
+      // Navigation will be handled by the useEffect when user state changes
     } catch (error) {
       setError(error.response?.data?.detail || 'Login failed');
     } finally {

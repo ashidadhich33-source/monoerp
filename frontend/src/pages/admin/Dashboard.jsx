@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiService } from '../../services/api';
 
-const AdminDashboard: React.FC = () => {
+const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const [stats, setStats] = useState({
     totalStaff: 0,
@@ -28,9 +28,9 @@ const AdminDashboard: React.FC = () => {
       
       setStats({
         totalStaff: staffList.length,
-        totalSales: salesReport.reduce((sum: number, sale: any) => sum + sale.sale_amount, 0),
+        totalSales: salesReport.reduce((sum, sale) => sum + sale.sale_amount, 0),
         pendingSalaries: 0, // Would need a dedicated endpoint
-        activeAdvances: advancesList.filter((advance: any) => advance.status === 'active').length
+        activeAdvances: advancesList.filter((advance) => advance.status === 'active').length
       });
     } catch (error) {
       console.error('Failed to fetch dashboard stats:', error);

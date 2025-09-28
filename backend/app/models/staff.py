@@ -9,7 +9,7 @@ class Staff(Base):
     employee_code = Column(String(50), unique=True, index=True, nullable=False)
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
-    password = Column(String(255), nullable=False)
+    password_hash = Column(String(255), nullable=False)
     phone = Column(String(20), nullable=True)
     basic_salary = Column(Float, nullable=False, default=0.0)
     incentive_percentage = Column(Float, nullable=False, default=0.0)

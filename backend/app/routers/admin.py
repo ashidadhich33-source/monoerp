@@ -14,9 +14,10 @@ from app.models.salary import Salary, PaymentStatus
 from app.models.advances import Advances, AdvanceStatus, DeductionPlan
 from app.models.rankings import Rankings, PeriodType
 from app.routers.auth import get_current_staff
-from app.utils.auth import verify_local_network, get_password_hash
-from app.services.salary_calculator import SalaryCalculator
-from app.services.backup_service import BackupService
+from app.middleware.security import verify_local_network
+from app.routers.auth import get_password_hash
+from app.services.salary_service import salary_service
+from app.services.backup_service import backup_service
 from pydantic import BaseModel
 import openpyxl
 import os

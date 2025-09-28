@@ -239,3 +239,6 @@ class BackupService:
             "disk_usage": sum(backup['file_size'] for backup in backups),
             "oldest_backup": backups[-1] if backups else None
         }
+
+# Global backup service instance
+backup_service = BackupService(None)
