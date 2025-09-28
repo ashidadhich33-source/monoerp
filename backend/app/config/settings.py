@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     bcrypt_rounds: int = 12
     
     # Network Security
-    local_network_subnet: str = "192.168.1.0/24"
+    local_network_subnet: str = "127.0.0.0/8,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12"
     allowed_wifi_mac_addresses: List[str] = ["AA:BB:CC:DD:EE:FF", "11:22:33:44:55:66"]
     max_requests_per_minute: int = 60
     session_timeout_minutes: int = 480

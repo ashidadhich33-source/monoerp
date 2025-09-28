@@ -22,7 +22,11 @@ class SecurityMiddleware:
     def add_allowed_network(self, network: str):
         """Add an allowed network subnet"""
         try:
-            self.allowed_networks.append(ipaddress.ip_network(network))
+            # Handle comma-separated networks
+            for net in network.split(','):
+                net = net.strip()
+                if net:
+                    self.allowed_networks.append(ipaddress.ip_network(net))
         except ValueError as e:
             logger.error(f"Invalid network format: {network} - {e}")
     
@@ -33,6 +37,9 @@ class SecurityMiddleware:
     def is_local_network(self, client_ip: str) -> bool:
         """Check if client IP is in allowed local networks"""
         try:
+            # Allow localhost for development
+            if client_ip in ["127.0.0.1", "localhost", "::1"]:
+                return True
             client_ip_obj = ipaddress.ip_address(client_ip)
             return any(client_ip_obj in network for network in self.allowed_networks)
         except ValueError:

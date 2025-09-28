@@ -68,6 +68,12 @@ app.add_middleware(
     allow_headers=settings.cors_headers,
 )
 
+# Initialize security middleware with settings
+from app.middleware.security import security_middleware
+security_middleware.add_allowed_network(settings.local_network_subnet)
+for mac in settings.allowed_wifi_mac_addresses:
+    security_middleware.add_wifi_mac_address(mac)
+
 # Security middleware
 app.middleware("http")(security_middleware_handler)
 
