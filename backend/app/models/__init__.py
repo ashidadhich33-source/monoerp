@@ -11,6 +11,8 @@ from .rankings import Rankings
 from .notifications import Notification
 from .audit_logs import AuditLog
 from .performance_metrics import PerformanceMetric
+from .company import Company
+from .setup_state import SetupState
 
 __all__ = [
     "Base",
@@ -25,5 +27,7 @@ __all__ = [
     "Rankings",
     "Notification",
     "AuditLog",
-    "PerformanceMetric"
+    "PerformanceMetric",
+    "Company",
+    "SetupState"
 ]

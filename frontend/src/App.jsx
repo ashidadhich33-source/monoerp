@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
+import SetupWrapper from './components/SetupWrapper';
 import StaffDashboard from './pages/staff/Dashboard';
 import StaffAttendance from './pages/staff/Attendance';
 import StaffSales from './pages/staff/Sales';
@@ -26,6 +27,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/setup" element={<SetupWrapper />} />
           <Route path="/login" element={<Login />} />
           
           {/* Staff Routes */}
@@ -145,7 +147,7 @@ function App() {
           } />
           
           {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/setup" replace />} />
         </Routes>
       </Router>
     </AuthProvider>
