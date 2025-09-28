@@ -9,7 +9,7 @@ import MobileModal from '../../components/MobileModal';
 import MobileLoading from '../../components/MobileLoading';
 
 const AdminAttendance = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(true);

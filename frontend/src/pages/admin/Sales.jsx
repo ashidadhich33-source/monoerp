@@ -9,7 +9,7 @@ import MobileModal from '../../components/MobileModal';
 import MobileLoading from '../../components/MobileLoading';
 
 const AdminSales = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [salesList, setSalesList] = useState([]);
   const [staffList, setStaffList] = useState([]);
   const [brandsList, setBrandsList] = useState([]);

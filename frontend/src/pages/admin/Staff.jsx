@@ -9,7 +9,7 @@ import MobileModal from '../../components/MobileModal';
 import MobileLoading from '../../components/MobileLoading';
 
 const AdminStaff = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
