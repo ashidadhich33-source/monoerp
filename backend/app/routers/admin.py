@@ -142,6 +142,20 @@ class AdvanceCreate(BaseModel):
 class BrandCreate(BaseModel):
     brand_name: str
     brand_code: str
+    description: Optional[str] = None
+    category: Optional[str] = None
+
+class BrandUpdate(BaseModel):
+    brand_name: Optional[str] = None
+    brand_code: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class AdvanceUpdate(BaseModel):
+    deduction_plan: Optional[DeductionPlan] = None
+    monthly_deduction_amount: Optional[float] = None
+    status: Optional[AdvanceStatus] = None
 
 # Staff Management
 @router.get("/staff/list")
@@ -552,7 +566,7 @@ async def get_targets_list(
 # Brand Management
 @router.post("/brands/add")
 async def add_brand(
-    brand_data: BrandCreate,
+    brand_data: BrandUpdate,
     request: Request,
     current_staff: Staff = Depends(get_current_staff),
     db: Session = Depends(get_db)
@@ -1011,7 +1025,7 @@ async def update_target(
 @router.put("/advance/update-deduction/{advance_id}")
 async def update_advance_deduction(
     advance_id: int,
-    deduction_data: dict,
+    deduction_data: AdvanceUpdate,
     request: Request,
     current_staff: Staff = Depends(get_current_staff),
     db: Session = Depends(get_db)
@@ -1044,7 +1058,7 @@ async def update_advance_deduction(
 @router.put("/brands/update/{brand_id}")
 async def update_brand(
     brand_id: int,
-    brand_data: BrandCreate,
+    brand_data: BrandUpdate,
     request: Request,
     current_staff: Staff = Depends(get_current_staff),
     db: Session = Depends(get_db)
