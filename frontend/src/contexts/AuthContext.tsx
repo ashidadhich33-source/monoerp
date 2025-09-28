@@ -58,7 +58,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         staff_id: response.staff_id,
         name: response.name,
         employee_code: response.employee_code,
-        is_admin: response.employee_code === 'ADMIN' // Simple admin check
+        is_admin: response.is_admin
       });
       
       localStorage.setItem('token', response.access_token);
@@ -66,7 +66,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         staff_id: response.staff_id,
         name: response.name,
         employee_code: response.employee_code,
-        is_admin: response.employee_code === 'ADMIN'
+        is_admin: response.is_admin
       }));
       
       apiService.setToken(response.access_token);

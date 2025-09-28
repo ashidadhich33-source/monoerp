@@ -31,6 +31,7 @@ class LoginResponse(BaseModel):
     staff_id: int
     name: str
     employee_code: str
+    is_admin: bool
 
 class TokenData(BaseModel):
     staff_id: Optional[int] = None
@@ -88,7 +89,7 @@ async def login(
         Staff.is_active == True
     ).first()
     
-    if not staff or not verify_password(login_data.password, get_password_hash(login_data.password)):
+    if not staff or not verify_password(login_data.password, staff.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect employee code or password"
@@ -106,7 +107,8 @@ async def login(
         token_type="bearer",
         staff_id=staff.id,
         name=staff.name,
-        employee_code=staff.employee_code
+        employee_code=staff.employee_code,
+        is_admin=staff.is_admin
     )
 
 @router.post("/logout")

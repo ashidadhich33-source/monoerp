@@ -14,7 +14,7 @@ from app.models.salary import Salary, PaymentStatus
 from app.models.advances import Advances, AdvanceStatus, DeductionPlan
 from app.models.rankings import Rankings, PeriodType
 from app.routers.auth import get_current_staff
-from app.utils.auth import verify_local_network
+from app.utils.auth import verify_local_network, get_password_hash
 from app.services.salary_calculator import SalaryCalculator
 from app.services.backup_service import BackupService
 from pydantic import BaseModel
@@ -30,6 +30,7 @@ class StaffCreate(BaseModel):
     employee_code: str
     name: str
     email: str
+    password: str
     phone: Optional[str] = None
     basic_salary: float
     incentive_percentage: float
@@ -146,6 +147,7 @@ async def create_staff(
         employee_code=staff_data.employee_code,
         name=staff_data.name,
         email=staff_data.email,
+        password=get_password_hash(staff_data.password),
         phone=staff_data.phone,
         basic_salary=staff_data.basic_salary,
         incentive_percentage=staff_data.incentive_percentage,
