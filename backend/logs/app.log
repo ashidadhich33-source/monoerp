@@ -1461,3 +1461,34 @@ FROM staff
  LIMIT ? OFFSET ?
 2025-09-28 11:22:01,198 - sqlalchemy.engine.Engine - INFO - [cached since 164.9s ago] (100, 0)
 2025-09-28 11:22:01,199 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:24:25,968 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:24:25,969 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:24:25,969 - sqlalchemy.engine.Engine - INFO - [cached since 343.1s ago] ()
+2025-09-28 11:24:25,977 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.id = ?
+ LIMIT ? OFFSET ?
+2025-09-28 11:24:25,977 - sqlalchemy.engine.Engine - INFO - [cached since 339.2s ago] ('1', 1, 0)
+2025-09-28 11:24:25,983 - sqlalchemy.engine.Engine - INFO - SELECT attendance.id AS attendance_id, attendance.staff_id AS attendance_staff_id, attendance.check_in_time AS attendance_check_in_time, attendance.check_out_time AS attendance_check_out_time, attendance.date AS attendance_date, attendance.wifi_mac_address AS attendance_wifi_mac_address, attendance.ip_address AS attendance_ip_address, attendance.device_fingerprint AS attendance_device_fingerprint, attendance.status AS attendance_status, attendance.created_at AS attendance_created_at 
+FROM attendance 
+WHERE attendance.staff_id = ? AND attendance.date = ?
+ LIMIT ? OFFSET ?
+2025-09-28 11:24:25,983 - sqlalchemy.engine.Engine - INFO - [cached since 331.2s ago] (1, '2025-09-28', 1, 0)
+2025-09-28 11:24:25,984 - sqlalchemy.engine.Engine - INFO - SELECT sum(sales.sale_amount) AS sum_1 
+FROM sales 
+WHERE sales.staff_id = ? AND sales.sale_date = ?
+2025-09-28 11:24:25,984 - sqlalchemy.engine.Engine - INFO - [cached since 331.2s ago] (1, '2025-09-28')
+2025-09-28 11:24:25,985 - sqlalchemy.engine.Engine - INFO - SELECT sum(sales.sale_amount) AS sum_1 
+FROM sales 
+WHERE sales.staff_id = ? AND sales.sale_date >= ? AND sales.sale_date <= ?
+2025-09-28 11:24:25,985 - sqlalchemy.engine.Engine - INFO - [cached since 331.2s ago] (1, '2025-09-01', '2025-09-28')
+2025-09-28 11:24:25,986 - sqlalchemy.engine.Engine - INFO - SELECT targets.id AS targets_id, targets.staff_id AS targets_staff_id, targets.target_type AS targets_target_type, targets.total_target_amount AS targets_total_target_amount, targets.brand_wise_targets AS targets_brand_wise_targets, targets.period_start AS targets_period_start, targets.period_end AS targets_period_end, targets.incentive_percentage AS targets_incentive_percentage, targets.created_at AS targets_created_at 
+FROM targets 
+WHERE targets.staff_id = ? AND targets.period_start <= ? AND targets.period_end >= ? AND targets.target_type = ?
+ LIMIT ? OFFSET ?
+2025-09-28 11:24:25,986 - sqlalchemy.engine.Engine - INFO - [cached since 331.2s ago] (1, '2025-09-28', '2025-09-28', 'MONTHLY', 1, 0)
+2025-09-28 11:24:25,987 - sqlalchemy.engine.Engine - INFO - SELECT count(attendance.id) AS count_1 
+FROM attendance 
+WHERE attendance.staff_id = ? AND attendance.status = ? AND attendance.date >= ?
+2025-09-28 11:24:25,987 - sqlalchemy.engine.Engine - INFO - [cached since 331.2s ago] (1, 'PRESENT', '2025-09-01')
+2025-09-28 11:24:25,988 - sqlalchemy.engine.Engine - INFO - ROLLBACK
