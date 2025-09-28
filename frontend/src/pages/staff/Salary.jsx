@@ -59,7 +59,7 @@ const StaffSalary = () => {
   const downloadSalarySlip = async () => {
     try {
       // This would need a new API endpoint for downloading salary slips
-      console.log('Downloading salary slip for:', selectedMonth);
+      // Downloading salary slip for: selectedMonth
     } catch (error) {
       console.error('Failed to download salary slip:', error);
     }
@@ -279,7 +279,7 @@ const StaffSalary = () => {
                             ₹{salary.net_salary.toLocaleString()}
                           </span>
                           <MobileButton
-                            onClick={() => console.log('Download salary slip for:', salary.month_year)}
+                            onClick={() => handleDownloadSalarySlip(salary.month_year)}
                             variant="outline"
                             size="sm"
                           >

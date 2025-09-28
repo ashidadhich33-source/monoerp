@@ -75,7 +75,7 @@ app.middleware("http")(security_middleware_handler)
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(staff.router, prefix="/api/staff", tags=["Staff Panel"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin Panel"])
-app.include_router(setup.router, prefix="/api/setup", tags=["Setup"])
+app.include_router(setup.router, tags=["Setup"])
 
 
 @app.get("/")

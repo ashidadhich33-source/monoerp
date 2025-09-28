@@ -171,6 +171,7 @@ const Setup = () => {
 
     setLoading(true);
     setError('');
+    setSuccess('');
 
     try {
       const response = await api.post('/setup/complete', {
@@ -190,10 +191,23 @@ const Setup = () => {
           navigate('/login');
         }, 2000);
       } else {
-        setError(response.data.message || 'Setup failed');
+        setError(response.data.message || 'Setup failed. Please check your information and try again.');
       }
     } catch (error) {
-      setError(error.response?.data?.detail || 'Setup failed. Please try again.');
+      console.error('Setup error:', error);
+      
+      // Enhanced error handling with specific messages
+      if (error.response?.status === 400) {
+        setError('Invalid data provided. Please check all fields and try again.');
+      } else if (error.response?.status === 409) {
+        setError('Setup has already been completed. Please contact your administrator.');
+      } else if (error.response?.status === 500) {
+        setError('Server error occurred. Please try again in a few moments.');
+      } else if (error.code === 'NETWORK_ERROR' || !error.response) {
+        setError('Unable to connect to server. Please check your network connection and try again.');
+      } else {
+        setError(error.response?.data?.detail || 'Setup failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -474,38 +488,90 @@ const Setup = () => {
             <div className="flex items-center justify-center space-x-4">
               {[1, 2, 3].map((step) => (
                 <div key={step} className="flex items-center">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                    step <= currentStep 
-                      ? 'bg-blue-600 text-white' 
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                    step < currentStep 
+                      ? 'bg-green-600 text-white' 
+                      : step === currentStep
+                      ? 'bg-blue-600 text-white ring-4 ring-blue-200'
                       : 'bg-gray-300 text-gray-600'
                   }`}>
-                    {step}
+                    {step < currentStep ? (
+                      <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      step
+                    )}
                   </div>
                   {step < 3 && (
-                    <div className={`w-16 h-1 ml-4 ${
-                      step < currentStep ? 'bg-blue-600' : 'bg-gray-300'
+                    <div className={`w-16 h-2 ml-4 rounded-full transition-all duration-300 ${
+                      step < currentStep ? 'bg-green-600' : 'bg-gray-300'
                     }`} />
                   )}
                 </div>
               ))}
             </div>
-            <div className="flex justify-between mt-2 text-sm text-gray-600">
-              <span>Company</span>
-              <span>Admin</span>
-              <span>Complete</span>
+            <div className="flex justify-between mt-3 text-sm">
+              <div className={`text-center ${currentStep >= 1 ? 'text-blue-600 font-medium' : 'text-gray-500'}`}>
+                <div className="font-medium">Company</div>
+                <div className="text-xs">Information</div>
+              </div>
+              <div className={`text-center ${currentStep >= 2 ? 'text-blue-600 font-medium' : 'text-gray-500'}`}>
+                <div className="font-medium">Admin</div>
+                <div className="text-xs">Account</div>
+              </div>
+              <div className={`text-center ${currentStep >= 3 ? 'text-blue-600 font-medium' : 'text-gray-500'}`}>
+                <div className="font-medium">Complete</div>
+                <div className="text-xs">Setup</div>
+              </div>
             </div>
           </div>
 
           {/* Error/Success Messages */}
           {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-red-800">Setup Error</h3>
+                  <p className="text-sm text-red-700 mt-1">{error}</p>
+                </div>
+              </div>
             </div>
           )}
 
           {success && (
-            <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              {success}
+            <div className="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-green-800">Setup Complete</h3>
+                  <p className="text-sm text-green-700 mt-1">{success}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Loading State */}
+          {loading && (
+            <div className="mb-4 p-4 bg-blue-50 border border-blue-200 text-blue-800 rounded-lg">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-blue-300 border-t-blue-600"></div>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm font-medium text-blue-800">Setting up your system...</p>
+                  <p className="text-xs text-blue-600 mt-1">This may take a few moments</p>
+                </div>
+              </div>
             </div>
           )}
 

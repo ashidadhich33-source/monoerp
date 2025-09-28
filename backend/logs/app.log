@@ -629,3 +629,283 @@ CREATE TABLE setup_states (
 2025-09-28 10:34:12,800 - sqlalchemy.engine.Engine - INFO - [no key 0.00023s] ()
 2025-09-28 10:34:12,803 - sqlalchemy.engine.Engine - INFO - COMMIT
 2025-09-28 10:34:12,803 - main - INFO - Database tables created successfully
+2025-09-28 11:11:18,981 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:11:18,981 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 11:11:18,982 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,983 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 11:11:18,984 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,984 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 11:11:18,985 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,985 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 11:11:18,985 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,986 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 11:11:18,986 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,986 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 11:11:18,986 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,986 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 11:11:18,986 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 11:11:18,988 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,989 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 11:11:18,989 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,989 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-28 11:11:18,989 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,989 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-28 11:11:18,989 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:18,990 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 11:11:18,990 - __main__ - INFO - Database tables created successfully
+2025-09-28 11:11:19,088 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 11:11:19,089 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 11:11:19,089 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 11:11:19,089 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 11:11:19,090 - __main__ - INFO - Application started with background tasks
+2025-09-28 11:11:48,433 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:11:48,433 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 11:11:48,433 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,434 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 11:11:48,435 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,435 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 11:11:48,435 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,435 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 11:11:48,435 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,435 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 11:11:48,435 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,436 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 11:11:48,437 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,437 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 11:11:48,437 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,437 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 11:11:48,437 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,437 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-28 11:11:48,437 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,438 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-28 11:11:48,438 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:11:48,438 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 11:11:48,438 - __main__ - INFO - Database tables created successfully
+2025-09-28 11:11:48,535 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 11:11:48,539 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 11:11:48,542 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 11:11:48,543 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 11:11:48,543 - __main__ - INFO - Application started with background tasks
+2025-09-28 11:11:51,403 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:11:51,404 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:11:51,404 - sqlalchemy.engine.Engine - INFO - [generated in 0.00024s] ()
+2025-09-28 11:11:51,480 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-28 11:11:51,480 - sqlalchemy.engine.Engine - INFO - [generated in 0.00048s] (1, 0)
+2025-09-28 11:11:51,483 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:12:19,090 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 11:12:19,091 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 11:12:19,092 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-28 11:12:40,962 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:12:40,963 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 11:12:40,963 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,964 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 11:12:40,964 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 11:12:40,965 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,966 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 11:12:40,966 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,966 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 11:12:40,966 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 11:12:40,967 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,968 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-28 11:12:40,968 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,968 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-28 11:12:40,968 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:12:40,969 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 11:12:40,969 - __main__ - INFO - Database tables created successfully
+2025-09-28 11:12:41,082 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 11:12:41,083 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 11:12:41,087 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 11:12:41,087 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 11:12:41,087 - __main__ - INFO - Application started with background tasks
+2025-09-28 11:12:46,987 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:12:46,988 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:12:46,988 - sqlalchemy.engine.Engine - INFO - [cached since 55.58s ago] ()
+2025-09-28 11:12:46,997 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-28 11:12:46,997 - sqlalchemy.engine.Engine - INFO - [cached since 55.52s ago] (1, 0)
+2025-09-28 11:12:46,999 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:12:51,894 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:12:51,894 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:12:51,894 - sqlalchemy.engine.Engine - INFO - [cached since 60.49s ago] ()
+2025-09-28 11:12:51,896 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-28 11:12:51,896 - sqlalchemy.engine.Engine - INFO - [cached since 60.42s ago] (1, 0)
+2025-09-28 11:12:51,906 - sqlalchemy.engine.Engine - INFO - INSERT INTO companies (name, address, phone, industry_type, timezone, currency, working_hours_start, working_hours_end, is_setup_complete, setup_completed_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id, created_at
+2025-09-28 11:12:51,907 - sqlalchemy.engine.Engine - INFO - [generated in 0.00068s] ('Test Company', '123 Test Street', '+1234567890', 'Technology', 'UTC', 'USD', '09:00', '17:00', 0, None, None)
+2025-09-28 11:12:51,909 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 11:12:51,934 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:12:51,943 - sqlalchemy.engine.Engine - INFO - SELECT companies.id, companies.name, companies.address, companies.phone, companies.industry_type, companies.timezone, companies.currency, companies.working_hours_start, companies.working_hours_end, companies.is_setup_complete, companies.setup_completed_at, companies.created_at, companies.updated_at 
+FROM companies 
+WHERE companies.id = ?
+2025-09-28 11:12:51,943 - sqlalchemy.engine.Engine - INFO - [generated in 0.00497s] (1,)
+2025-09-28 11:12:51,951 - sqlalchemy.engine.Engine - INFO - SELECT setup_states.id AS setup_states_id, setup_states.company_created AS setup_states_company_created, setup_states.admin_created AS setup_states_admin_created, setup_states.database_initialized AS setup_states_database_initialized, setup_states.system_configured AS setup_states_system_configured, setup_states.setup_data AS setup_states_setup_data, setup_states.last_error AS setup_states_last_error, setup_states.error_count AS setup_states_error_count, setup_states.started_at AS setup_states_started_at, setup_states.completed_at AS setup_states_completed_at, setup_states.updated_at AS setup_states_updated_at 
+FROM setup_states
+ LIMIT ? OFFSET ?
+2025-09-28 11:12:51,951 - sqlalchemy.engine.Engine - INFO - [generated in 0.00051s] (1, 0)
+2025-09-28 11:12:51,958 - sqlalchemy.engine.Engine - INFO - INSERT INTO setup_states (company_created, admin_created, database_initialized, system_configured, setup_data, last_error, error_count, completed_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) RETURNING id, started_at
+2025-09-28 11:12:51,959 - sqlalchemy.engine.Engine - INFO - [generated in 0.00047s] (1, 0, 0, 0, None, None, 0, None, None)
+2025-09-28 11:12:51,960 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 11:12:51,977 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:12:51,978 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies 
+WHERE companies.id = ?
+2025-09-28 11:12:51,979 - sqlalchemy.engine.Engine - INFO - [generated in 0.00043s] (1,)
+2025-09-28 11:12:51,983 - app.services.setup_service - INFO - Company created successfully: Test Company
+2025-09-28 11:12:51,992 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-28 11:12:51,992 - sqlalchemy.engine.Engine - INFO - [generated in 0.00036s] (1, 0)
+2025-09-28 11:12:51,996 - app.services.setup_service - ERROR - Unexpected error creating admin user: bcrypt: no backends available -- recommend you install one (e.g. 'pip install bcrypt')
+2025-09-28 11:12:51,996 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:12:51,996 - app.models.base - ERROR - Unexpected database error: 400: Error creating admin user: Unexpected error: bcrypt: no backends available -- recommend you install one (e.g. 'pip install bcrypt')
+2025-09-28 11:13:04,780 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:13:04,781 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 11:13:04,781 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,783 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 11:13:04,783 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,783 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 11:13:04,783 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,787 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 11:13:04,787 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,787 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 11:13:04,788 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,788 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 11:13:04,788 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,788 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 11:13:04,788 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,789 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 11:13:04,789 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,789 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 11:13:04,789 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,789 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 11:13:04,789 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,794 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 11:13:04,794 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,794 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 11:13:04,794 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,795 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-28 11:13:04,795 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,795 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-28 11:13:04,795 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 11:13:04,796 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 11:13:04,796 - __main__ - INFO - Database tables created successfully
+2025-09-28 11:13:04,992 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 11:13:04,992 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 11:13:04,993 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 11:13:04,993 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 11:13:04,993 - __main__ - INFO - Application started with background tasks
+2025-09-28 11:13:11,260 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:13:11,260 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:13:11,261 - sqlalchemy.engine.Engine - INFO - [generated in 0.00024s] ()
+2025-09-28 11:13:11,352 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-28 11:13:11,353 - sqlalchemy.engine.Engine - INFO - [generated in 0.00046s] (1, 0)
+2025-09-28 11:13:11,354 - app.models.base - ERROR - Unexpected database error: 400: Error creating company: Company already exists
+2025-09-28 11:13:11,354 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:13:16,108 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:13:16,109 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:13:16,109 - sqlalchemy.engine.Engine - INFO - [cached since 4.849s ago] ()
+2025-09-28 11:13:16,114 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-28 11:13:16,114 - sqlalchemy.engine.Engine - INFO - [cached since 4.762s ago] (1, 0)
+2025-09-28 11:13:16,121 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-28 11:13:16,121 - sqlalchemy.engine.Engine - INFO - [generated in 0.00038s] (1, 0)
+2025-09-28 11:13:16,123 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:13:20,138 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:13:20,139 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:13:20,139 - sqlalchemy.engine.Engine - INFO - [cached since 8.878s ago] ()
+2025-09-28 11:13:20,140 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-28 11:13:20,140 - sqlalchemy.engine.Engine - INFO - [cached since 4.019s ago] (1, 0)
+2025-09-28 11:13:20,142 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-09-28 11:13:20,165 - app.services.setup_service - ERROR - Unexpected error creating admin user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2025-09-28 11:13:20,166 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:13:20,167 - app.models.base - ERROR - Unexpected database error: 400: Unexpected error: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2025-09-28 11:13:26,449 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:13:26,449 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:13:26,450 - sqlalchemy.engine.Engine - INFO - [cached since 15.19s ago] ()
+2025-09-28 11:13:26,451 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-28 11:13:26,451 - sqlalchemy.engine.Engine - INFO - [cached since 10.33s ago] (1, 0)
+2025-09-28 11:13:26,452 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.13/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-09-28 11:13:26,469 - app.services.setup_service - ERROR - Unexpected error creating admin user: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2025-09-28 11:13:26,474 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:13:26,475 - app.models.base - ERROR - Unexpected database error: 400: Unexpected error: password cannot be longer than 72 bytes, truncate manually if necessary (e.g. my_password[:72])
+2025-09-28 11:13:34,126 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:13:34,127 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:13:34,127 - sqlalchemy.engine.Engine - INFO - [cached since 22.87s ago] ()
+2025-09-28 11:13:34,129 - sqlalchemy.engine.Engine - INFO - DELETE FROM staff
+2025-09-28 11:13:34,129 - sqlalchemy.engine.Engine - INFO - [generated in 0.00045s] ()
+2025-09-28 11:13:34,130 - sqlalchemy.engine.Engine - INFO - DELETE FROM companies
+2025-09-28 11:13:34,130 - sqlalchemy.engine.Engine - INFO - [generated in 0.00021s] ()
+2025-09-28 11:13:34,134 - sqlalchemy.engine.Engine - INFO - DELETE FROM setup_states
+2025-09-28 11:13:34,134 - sqlalchemy.engine.Engine - INFO - [generated in 0.00021s] ()
+2025-09-28 11:13:34,135 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 11:13:34,149 - app.services.setup_service - INFO - Setup reset successfully
+2025-09-28 11:13:40,088 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:13:40,088 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:13:40,088 - sqlalchemy.engine.Engine - INFO - [cached since 28.83s ago] ()
+2025-09-28 11:13:40,089 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-28 11:13:40,090 - sqlalchemy.engine.Engine - INFO - [cached since 28.74s ago] (1, 0)
+2025-09-28 11:13:40,090 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:13:41,083 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 11:13:41,084 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 11:13:41,084 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-28 11:13:48,545 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 11:13:48,545 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 11:13:48,545 - __main__ - INFO - Application shutdown with background tasks stopped
