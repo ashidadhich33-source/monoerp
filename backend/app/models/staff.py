@@ -28,3 +28,4 @@ class Staff(Base):
     salary_records = relationship("Salary", back_populates="staff")
     advances = relationship("Advances", back_populates="staff")
     rankings = relationship("Rankings", back_populates="staff")
+    notifications = relationship("Notification", back_populates="staff")

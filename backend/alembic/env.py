@@ -19,6 +19,9 @@ from app.models.achievements import Achievements
 from app.models.salary import Salary
 from app.models.advances import Advances
 from app.models.rankings import Rankings
+from app.models.notifications import Notification
+from app.models.audit_logs import AuditLog
+from app.models.performance_metrics import PerformanceMetric
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -8,6 +8,9 @@ from .achievements import Achievements
 from .salary import Salary
 from .advances import Advances
 from .rankings import Rankings
+from .notifications import Notification
+from .audit_logs import AuditLog
+from .performance_metrics import PerformanceMetric
 
 __all__ = [
     "Base",
@@ -19,5 +22,8 @@ __all__ = [
     "Achievements",
     "Salary",
     "Advances",
-    "Rankings"
+    "Rankings",
+    "Notification",
+    "AuditLog",
+    "PerformanceMetric"
 ]
