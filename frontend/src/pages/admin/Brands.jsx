@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { apiService } from '../../services/api';
 
 const Brands = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);

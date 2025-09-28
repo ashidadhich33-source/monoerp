@@ -3,7 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { apiService } from '../../services/api';
 
 const Advances = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
   const [advances, setAdvances] = useState([]);
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);

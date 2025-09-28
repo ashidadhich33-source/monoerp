@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const Calendar = ({ 
   attendanceData = [], 
@@ -9,16 +9,16 @@ const Calendar = ({
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState([]);
 
-  useEffect(() => {
-    generateCalendarDays();
-  }, [currentDate]);
+  const getAttendanceForDate = useCallback((date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    return attendanceData.find(att => att.date === dateStr);
+  }, [attendanceData]);
 
-  const generateCalendarDays = () => {
+  const generateCalendarDays = useCallback(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
     
@@ -39,12 +39,11 @@ const Calendar = ({
     }
     
     setCalendarDays(days);
-  };
+  }, [currentDate, getAttendanceForDate, selectedDate]);
 
-  const getAttendanceForDate = (date) => {
-    const dateStr = date.toISOString().split('T')[0];
-    return attendanceData.find(att => att.date === dateStr);
-  };
+  useEffect(() => {
+    generateCalendarDays();
+  }, [generateCalendarDays]);
 
   const navigateMonth = (direction) => {
     setCurrentDate(prev => {

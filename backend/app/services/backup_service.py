@@ -240,5 +240,5 @@ class BackupService:
             "oldest_backup": backups[-1] if backups else None
         }
 
-# Global backup service instance
-backup_service = BackupService(None)
+# Global backup service instance - will be initialized with proper db session when used
+backup_service = None

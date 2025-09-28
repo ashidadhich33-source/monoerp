@@ -18,7 +18,7 @@ from app.routers.auth import get_current_staff
 from app.middleware.security import verify_local_network
 from app.utils.auth import get_password_hash
 from app.services.salary_service import salary_service
-from app.services.backup_service import backup_service
+from app.services.backup_service import BackupService
 from pydantic import BaseModel
 import openpyxl
 import os
@@ -363,8 +363,8 @@ async def add_sales(
 
 @router.post("/sales/bulk-upload")
 async def bulk_upload_sales(
-    file: UploadFile = File(...),
     request: Request,
+    file: UploadFile = File(...),
     current_staff: Staff = Depends(get_current_staff),
     db: Session = Depends(get_db)
 ):
@@ -855,7 +855,8 @@ async def create_backup(
         )
     
     try:
-        backup_path = backup_service.create_daily_backup()
+        backup_service_instance = BackupService(db)
+        backup_path = backup_service_instance.create_daily_backup()
         
         return {
             "message": "Backup created successfully",
@@ -883,7 +884,8 @@ async def list_backups(
             detail="Access denied: Not on local network"
         )
     
-    backups = backup_service.list_backups()
+    backup_service_instance = BackupService(db)
+    backups = backup_service_instance.list_backups()
     
     return {
         "backups": backups,
@@ -907,7 +909,8 @@ async def restore_backup(
         )
     
     try:
-        success = backup_service.restore_backup(backup_id)
+        backup_service_instance = BackupService(db)
+        success = backup_service_instance.restore_backup(backup_id)
         
         if success:
             return {
@@ -941,7 +944,8 @@ async def get_backup_status(
             detail="Access denied: Not on local network"
         )
     
-    status = backup_service.get_backup_status()
+    backup_service_instance = BackupService(db)
+    status = backup_service_instance.get_backup_status()
     
     return status
 

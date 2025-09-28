@@ -6,7 +6,7 @@ import MobileButton from '../../components/MobileButton';
 import MobileLoading from '../../components/MobileLoading';
 
 const StaffDashboard = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
 
