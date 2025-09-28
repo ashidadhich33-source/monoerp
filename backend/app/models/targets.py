@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey, JSON, Enum
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .base import Base
 import enum
 
@@ -20,7 +21,7 @@ class Targets(Base):
     period_start = Column(Date, nullable=False)
     period_end = Column(Date, nullable=False)
     incentive_percentage = Column(Float, nullable=False, default=0.0)
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
     
     # Relationships
     staff = relationship("Staff", back_populates="targets")

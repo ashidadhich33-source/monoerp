@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, Date, Boolean, DateTime, Text
 from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
 from .base import Base
 
 class Staff(Base):
@@ -9,7 +10,7 @@ class Staff(Base):
     employee_code = Column(String(50), unique=True, index=True, nullable=False)
     name = Column(String(100), nullable=False)
     email = Column(String(100), unique=True, index=True, nullable=False)
-    password = Column(String(255), nullable=False)
+    password_hash = Column(String(255), nullable=False)
     phone = Column(String(20), nullable=True)
     basic_salary = Column(Float, nullable=False, default=0.0)
     incentive_percentage = Column(Float, nullable=False, default=0.0)
@@ -17,8 +18,8 @@ class Staff(Base):
     joining_date = Column(Date, nullable=False)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime, nullable=False)
-    updated_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
     
     # Relationships
     attendance_records = relationship("Attendance", back_populates="staff")
@@ -28,3 +29,4 @@ class Staff(Base):
     salary_records = relationship("Salary", back_populates="staff")
     advances = relationship("Advances", back_populates="staff")
     rankings = relationship("Rankings", back_populates="staff")
+    notifications = relationship("Notification", back_populates="staff")

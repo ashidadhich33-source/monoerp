@@ -2,271 +2,362 @@
 
 A comprehensive staff attendance and sales management system with fraud prevention, automated salary calculation, and performance tracking capabilities.
 
-## Features
+## 🚀 Features
 
-### Core Features
-- **Fraud Prevention**: WiFi MAC address verification and local network restrictions
-- **Attendance Management**: Check-in/check-out with device fingerprinting
-- **Sales Tracking**: Personal and team sales performance monitoring
-- **Salary Calculation**: Automated salary calculation with the specified formula
-- **Target Management**: Set and track sales targets for staff
-- **Rankings**: Weekly/Monthly/Quarterly/Yearly leaderboards
-- **Advance Management**: Issue and track staff advances
-- **Backup System**: Daily automated backups with SQLite storage
+### Core Functionality
+- **Staff Management**: Complete CRUD operations for staff members
+- **Attendance Tracking**: Check-in/out with fraud prevention
+- **Sales Management**: Track sales with brand-wise analysis
+- **Salary Calculation**: Automated salary calculation with incentives
+- **Target Management**: Set and track sales targets
+- **Advance Management**: Handle staff advances with deduction tracking
+- **Reporting**: Comprehensive reports and analytics
+- **Backup System**: Automated daily backups with restore functionality
 
-### Technology Stack
-- **Backend**: Python FastAPI with SQLAlchemy ORM
-- **Frontend**: React.js with TypeScript and Tailwind CSS
-- **Database**: SQLite (configurable to PostgreSQL/MySQL)
-- **Authentication**: JWT tokens with network verification
+### Security Features
+- **Network Verification**: Local network access control
+- **WiFi MAC Verification**: Device-based authentication
+- **Time-window Validation**: Prevent backdated entries
+- **Rate Limiting**: API rate limiting for security
+- **Audit Logging**: Complete audit trail of all actions
+- **Session Management**: Secure session handling
 
-## Project Structure
+### Mobile-First Design
+- **Responsive Interface**: Works on all device sizes
+- **Touch-Friendly**: Optimized for mobile devices
+- **Offline Capability**: Basic offline functionality
+- **Progressive Web App**: PWA-ready features
 
-```
-/workspace/
-├── backend/                 # FastAPI backend
-│   ├── app/
-│   │   ├── models/         # Database models
-│   │   ├── routers/        # API endpoints
-│   │   ├── services/       # Business logic
-│   │   ├── utils/          # Utility functions
-│   │   └── config/         # Configuration
-│   ├── main.py            # FastAPI application
-│   └── requirements.txt    # Python dependencies
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/    # Reusable components
-│   │   ├── pages/         # Page components
-│   │   ├── contexts/      # React contexts
-│   │   ├── services/      # API services
-│   │   └── utils/         # Utility functions
-│   └── package.json       # Node.js dependencies
-└── README.md              # This file
-```
+## 🛠 Technology Stack
 
-## Setup Instructions
+### Backend
+- **Framework**: FastAPI (Python)
+- **Database**: PostgreSQL (Primary), SQLite (Backup)
+- **ORM**: SQLAlchemy with Alembic migrations
+- **Authentication**: JWT with bcrypt password hashing
+- **Caching**: Redis (optional)
+- **File Processing**: openpyxl for Excel operations
+- **Scheduling**: schedule for background tasks
 
-### Backend Setup
+### Frontend
+- **Framework**: React.js
+- **Styling**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Routing**: React Router DOM
+- **State Management**: Context API
 
-1. **Navigate to backend directory:**
-   ```bash
-   cd backend
-   ```
+### Infrastructure
+- **Web Server**: Nginx
+- **Process Management**: systemd
+- **Database**: PostgreSQL
+- **Backup**: Automated daily backups
+- **Monitoring**: Built-in performance monitoring
 
-2. **Create and activate virtual environment:**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
+## 📋 Prerequisites
 
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+- Python 3.8+
+- Node.js 16+
+- PostgreSQL 12+
+- Redis (optional)
+- Nginx (production)
 
-4. **Configure environment variables:**
-   ```bash
-   cp .env.example .env
-   # Edit .env file with your configuration
-   ```
+## 🚀 Quick Start
 
-5. **Run the application:**
-   ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-   ```
-
-### Frontend Setup
-
-1. **Navigate to frontend directory:**
-   ```bash
-   cd frontend
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server:**
-   ```bash
-   npm start
-   ```
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/login` - Staff login with network verification
-- `POST /api/auth/logout` - Staff logout
-- `GET /api/auth/verify-network` - Check network status
-
-### Staff Panel (Local Network Only)
-- `GET /api/staff/dashboard/{staff_id}` - Staff dashboard data
-- `POST /api/staff/attendance/check-in` - Check in
-- `POST /api/staff/attendance/check-out` - Check out
-- `GET /api/staff/attendance/history` - Attendance history
-- `GET /api/staff/sales/personal` - Personal sales data
-- `GET /api/staff/sales/all-staff` - All staff sales
-- `GET /api/staff/rankings/{period_type}` - Rankings
-- `GET /api/staff/salary/details/{month_year}` - Salary details
-
-### Admin Panel
-- `GET /api/admin/staff/list` - List all staff
-- `POST /api/admin/staff/create` - Create staff
-- `PUT /api/admin/staff/update/{id}` - Update staff
-- `DELETE /api/admin/staff/delete/{id}` - Delete staff
-- `POST /api/admin/sales/add` - Add sales record
-- `POST /api/admin/sales/bulk-upload` - Bulk upload sales
-- `GET /api/admin/sales/report` - Sales report
-- `POST /api/admin/targets/set` - Set targets
-- `GET /api/admin/targets/list` - List targets
-- `POST /api/admin/advance/issue` - Issue advance
-- `GET /api/admin/advance/list` - List advances
-- `GET /api/admin/salary/calculate/{month_year}` - Calculate salaries
-- `POST /api/admin/salary/approve` - Approve salaries
-- `GET /api/admin/salary/report` - Salary report
-- `POST /api/admin/backup/create` - Create backup
-- `GET /api/admin/backup/list` - List backups
-- `POST /api/admin/backup/restore/{backup_id}` - Restore backup
-
-## Salary Calculation Formula
-
-The system implements the following salary calculation formula:
-
-```
-Net Salary = (Basic Salary/30 * Working Days) + (Basic Salary/30 * Sundays) + Target Incentive + Basic Incentive - Advance Deduction
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd staff-attendance-system
 ```
 
-Where:
-- **Working Days**: Total working days in the month (excluding Sundays)
-- **Sundays**: Number of Sundays in the month
-- **Target Incentive**: Based on target achievement percentage
-- **Basic Incentive**: Based on total sales and staff incentive percentage
-- **Advance Deduction**: Monthly advance deductions
+### 2. Backend Setup
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-## Security Features
+### 3. Database Setup
+```bash
+# Create database
+createdb staff_attendance_db
 
-### Network Security
-- **Local Network Verification**: Only allows access from configured local network
-- **WiFi MAC Address Verification**: Validates device MAC addresses
-- **Device Fingerprinting**: Tracks device characteristics for additional security
+# Run migrations
+alembic upgrade head
+```
 
-### Authentication
-- **JWT Tokens**: Secure token-based authentication
-- **Session Management**: Automatic token refresh and expiration
-- **Role-based Access**: Separate staff and admin panels
+### 4. Environment Configuration
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
 
-## Database Schema
+### 5. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run build
+```
 
-The system includes the following main tables:
-- **Staff**: Employee information and settings
-- **Attendance**: Check-in/check-out records with security data
-- **Sales**: Sales transactions and performance data
-- **Brands**: Product brand information
-- **Targets**: Sales targets and goals
-- **Achievements**: Target achievement records
-- **Salary**: Calculated salary records
-- **Advances**: Staff advance records
-- **Rankings**: Performance rankings
+### 6. Start the Application
+```bash
+# Backend
+cd backend
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 
-## Deployment
+# Frontend (development)
+cd frontend
+npm start
+```
 
-### Local Server Deployment (Without Docker)
-
-1. **Install Dependencies:**
-   ```bash
-   # Install Python 3.9+ and Node.js 16+
-   # Install PostgreSQL or MySQL (optional, SQLite is default)
-   ```
-
-2. **Backend Setup:**
-   ```bash
-   cd backend
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   uvicorn main:app --host 0.0.0.0 --port 8000
-   ```
-
-3. **Frontend Setup:**
-   ```bash
-   cd frontend
-   npm install
-   npm run build
-   npm start
-   ```
-
-4. **Configure Nginx (Optional):**
-   ```nginx
-   server {
-       listen 80;
-       server_name your-domain.com;
-       
-       location / {
-           proxy_pass http://localhost:3000;
-       }
-       
-       location /api {
-           proxy_pass http://localhost:8000;
-       }
-   }
-   ```
-
-## Configuration
+## 🔧 Configuration
 
 ### Environment Variables
-
-Create a `.env` file in the backend directory:
+Copy `.env.example` to `.env` and configure:
 
 ```env
 # Database
-DATABASE_URL=sqlite:///./staff_attendance.db
+DATABASE_URL=postgresql://user:password@localhost/staff_attendance_db
 
 # Security
 SECRET_KEY=your-secret-key-here
-JWT_EXPIRY_HOURS=8
-
-# Network Security
 LOCAL_NETWORK_SUBNET=192.168.1.0/24
-WIFI_MAC_ADDRESSES=AA:BB:CC:DD:EE:FF,11:22:33:44:55:66
+ALLOWED_WIFI_MAC_ADDRESSES=AA:BB:CC:DD:EE:FF
 
 # Admin
-ADMIN_DEFAULT_PASSWORD=changeMe123
+ADMIN_EMPLOYEE_CODE=ADMIN001
+ADMIN_PASSWORD=admin123
 
-# File Upload
+# File Paths
 EXCEL_UPLOAD_PATH=./uploads
 BACKUP_PATH=./backups
-
-# Application
-DEBUG=True
-APP_NAME=Staff Attendance & Payout System
-VERSION=1.0.0
 ```
 
-## Testing
+### Network Security
+Configure allowed networks and WiFi MAC addresses:
+```env
+LOCAL_NETWORK_SUBNET=192.168.1.0/24
+ALLOWED_WIFI_MAC_ADDRESSES=AA:BB:CC:DD:EE:FF,11:22:33:44:55:66
+```
 
-### Backend Testing
+## 📱 Mobile-First Design
+
+The application is designed with mobile-first principles:
+
+- **Responsive Grid**: Adapts to all screen sizes
+- **Touch Targets**: Minimum 44px touch targets
+- **Swipe Gestures**: Swipeable cards and navigation
+- **Collapsible Navigation**: Mobile-friendly menu
+- **Bottom Navigation**: Easy thumb navigation
+- **Responsive Tables**: Horizontal scroll on mobile
+
+## 🔒 Security Implementation
+
+### Fraud Prevention
+- **WiFi MAC Verification**: Only allowed devices can access
+- **Network Verification**: Local network access only
+- **Time-window Validation**: Prevent backdated entries
+- **Device Fingerprinting**: Track device characteristics
+- **Session Management**: Secure session handling
+
+### Access Control
+- **Role-based Access**: Staff vs Admin permissions
+- **JWT Authentication**: Secure token-based auth
+- **Rate Limiting**: API rate limiting
+- **Input Sanitization**: XSS and injection prevention
+
+## 📊 Salary Calculation
+
+The system uses a comprehensive salary calculation formula:
+
+```
+Salary for Days = (Basic Salary / Working Days) × Present Days
+Target Incentive = (Sales - Target) × 10% (if target achieved)
+Basic Incentive = Sales × Incentive Percentage
+Gross Salary = Salary for Days + Target Incentive + Basic Incentive
+Net Salary = Gross Salary - Advance Deduction
+```
+
+## 📈 Reporting & Analytics
+
+### Available Reports
+- **Sales Reports**: Brand-wise, staff-wise, period-wise
+- **Attendance Reports**: Daily, monthly, yearly
+- **Performance Reports**: Target achievement, rankings
+- **Salary Reports**: Payment status, deductions
+- **System Reports**: Usage statistics, performance metrics
+
+### Export Options
+- **Excel Export**: All reports can be exported to Excel
+- **PDF Export**: Salary slips and reports
+- **CSV Export**: Data export for analysis
+
+## 🔄 Backup & Recovery
+
+### Automated Backups
+- **Daily Backups**: Automatic daily database backups
+- **Compression**: gzip compression for storage efficiency
+- **Retention**: Configurable retention period
+- **Verification**: Backup integrity verification
+
+### Manual Backup
 ```bash
+# Create manual backup
+python -m app.services.backup_service create
+
+# Restore from backup
+python -m app.services.backup_service restore backup_file.sql
+```
+
+## 🚀 Production Deployment
+
+### Automated Deployment
+```bash
+# Run deployment script
+sudo ./deploy.sh
+```
+
+### Manual Deployment
+1. **Server Setup**: Install required packages
+2. **Database Setup**: Configure PostgreSQL
+3. **Application Setup**: Deploy application files
+4. **Web Server**: Configure Nginx
+5. **Process Management**: Setup systemd services
+6. **Security**: Configure firewall and SSL
+
+### Production Checklist
+- [ ] Change default admin password
+- [ ] Configure SSL certificates
+- [ ] Setup firewall rules
+- [ ] Configure backup retention
+- [ ] Setup monitoring
+- [ ] Test all functionality
+- [ ] Configure allowed MAC addresses
+
+## 🧪 Testing
+
+### Run Tests
+```bash
+# Backend tests
 cd backend
-python -m pytest tests/
-```
+pytest tests/
 
-### Frontend Testing
-```bash
+# Frontend tests
 cd frontend
 npm test
 ```
 
-## Support & Maintenance
+### Test Coverage
+- **Unit Tests**: Individual component testing
+- **Integration Tests**: API endpoint testing
+- **Security Tests**: Authentication and authorization
+- **Performance Tests**: Load and stress testing
 
-- **Weekly Backup Verification**: Check backup system status
-- **Monthly Security Updates**: Update dependencies and security patches
-- **Quarterly Performance Review**: Monitor system performance
-- **User Feedback Incorporation**: Regular feature updates based on requirements
+## 📚 API Documentation
 
-## License
+### Authentication Endpoints
+- `POST /api/auth/login` - User login
+- `POST /api/auth/refresh-token` - Refresh JWT token
+- `GET /api/auth/verify-network` - Network verification
+
+### Staff Endpoints
+- `GET /api/staff/dashboard` - Staff dashboard
+- `POST /api/staff/check-in` - Check in
+- `POST /api/staff/check-out` - Check out
+- `GET /api/staff/attendance` - Attendance history
+- `GET /api/staff/sales` - Personal sales
+- `GET /api/staff/rankings` - Performance rankings
+- `GET /api/staff/salary` - Salary details
+
+### Admin Endpoints
+- `GET /api/admin/dashboard` - Admin dashboard
+- `GET /api/admin/staff` - Staff management
+- `POST /api/admin/staff` - Create staff
+- `PUT /api/admin/staff/{id}` - Update staff
+- `DELETE /api/admin/staff/{id}` - Delete staff
+- `GET /api/admin/sales` - Sales management
+- `POST /api/admin/sales` - Create sales record
+- `GET /api/admin/targets` - Target management
+- `GET /api/admin/salary` - Salary management
+- `GET /api/admin/backup` - Backup management
+- `GET /api/admin/reports` - Reports and analytics
+- `GET /api/admin/settings` - System settings
+
+## 🔧 Maintenance
+
+### Daily Tasks
+- Monitor system performance
+- Check backup status
+- Review security logs
+- Update system if needed
+
+### Weekly Tasks
+- Review audit logs
+- Check disk space
+- Update dependencies
+- Test backup restore
+
+### Monthly Tasks
+- Performance optimization
+- Security audit
+- Database maintenance
+- Update documentation
+
+## 🆘 Troubleshooting
+
+### Common Issues
+
+#### Database Connection Issues
+```bash
+# Check database status
+sudo systemctl status postgresql
+
+# Check connection
+psql -h localhost -U staff_user -d staff_attendance_db
+```
+
+#### Performance Issues
+```bash
+# Check system metrics
+curl http://localhost:8000/api/admin/performance
+
+# Check logs
+journalctl -u staff-attendance-system-backend -f
+```
+
+#### Backup Issues
+```bash
+# Check backup status
+curl http://localhost:8000/api/admin/backup/status
+
+# Manual backup
+python -m app.services.backup_service create
+```
+
+## 📞 Support
+
+For technical support and questions:
+- Check the troubleshooting section
+- Review the API documentation
+- Check system logs
+- Contact system administrator
+
+## 📄 License
 
 This project is proprietary software. All rights reserved.
 
-## Contact
+## 🔄 Version History
 
-For support and questions, please contact the development team.
+### v1.0.0
+- Initial release
+- Complete staff attendance system
+- Sales management
+- Salary calculation
+- Mobile-responsive design
+- Security features
+- Backup system
+- Performance monitoring
+
+---
+
+**Staff Attendance & Payout System** - A comprehensive solution for modern workforce management.

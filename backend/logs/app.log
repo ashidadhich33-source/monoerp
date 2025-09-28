@@ -1,0 +1,631 @@
+2025-09-28 09:36:52,189 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:36:52,189 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 09:36:52,189 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,190 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("staff")
+2025-09-28 09:36:52,191 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,191 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 09:36:52,191 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,191 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("attendance")
+2025-09-28 09:36:52,191 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,191 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 09:36:52,191 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("sales")
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("brands")
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,192 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("targets")
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("achievements")
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("salary")
+2025-09-28 09:36:52,193 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("advances")
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("rankings")
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 09:36:52,194 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("notifications")
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("audit_logs")
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("performance_metrics")
+2025-09-28 09:36:52,195 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:36:52,197 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE staff (
+	id INTEGER NOT NULL, 
+	employee_code VARCHAR(50) NOT NULL, 
+	name VARCHAR(100) NOT NULL, 
+	email VARCHAR(100) NOT NULL, 
+	password_hash VARCHAR(255) NOT NULL, 
+	phone VARCHAR(20), 
+	basic_salary FLOAT NOT NULL, 
+	incentive_percentage FLOAT NOT NULL, 
+	department VARCHAR(100), 
+	joining_date DATE NOT NULL, 
+	is_active BOOLEAN, 
+	is_admin BOOLEAN, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+
+2025-09-28 09:36:52,197 - sqlalchemy.engine.Engine - INFO - [no key 0.00020s] ()
+2025-09-28 09:36:52,211 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_staff_email ON staff (email)
+2025-09-28 09:36:52,212 - sqlalchemy.engine.Engine - INFO - [no key 0.00034s] ()
+2025-09-28 09:36:52,230 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_staff_id ON staff (id)
+2025-09-28 09:36:52,230 - sqlalchemy.engine.Engine - INFO - [no key 0.00035s] ()
+2025-09-28 09:36:52,237 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_staff_employee_code ON staff (employee_code)
+2025-09-28 09:36:52,237 - sqlalchemy.engine.Engine - INFO - [no key 0.00027s] ()
+2025-09-28 09:36:52,247 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE brands (
+	id INTEGER NOT NULL, 
+	brand_name VARCHAR(100) NOT NULL, 
+	brand_code VARCHAR(50) NOT NULL, 
+	description VARCHAR(500), 
+	category VARCHAR(100), 
+	is_active BOOLEAN, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+
+2025-09-28 09:36:52,247 - sqlalchemy.engine.Engine - INFO - [no key 0.00028s] ()
+2025-09-28 09:36:52,251 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_brands_brand_code ON brands (brand_code)
+2025-09-28 09:36:52,251 - sqlalchemy.engine.Engine - INFO - [no key 0.00021s] ()
+2025-09-28 09:36:52,266 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_brands_id ON brands (id)
+2025-09-28 09:36:52,266 - sqlalchemy.engine.Engine - INFO - [no key 0.00024s] ()
+2025-09-28 09:36:52,271 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE audit_logs (
+	id INTEGER NOT NULL, 
+	user_id INTEGER, 
+	action VARCHAR(100) NOT NULL, 
+	resource_type VARCHAR(50) NOT NULL, 
+	resource_id INTEGER, 
+	details JSON, 
+	ip_address VARCHAR(45), 
+	user_agent TEXT, 
+	severity VARCHAR(20) NOT NULL, 
+	timestamp DATETIME NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+
+2025-09-28 09:36:52,271 - sqlalchemy.engine.Engine - INFO - [no key 0.00025s] ()
+2025-09-28 09:36:52,278 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_audit_logs_user_id ON audit_logs (user_id)
+2025-09-28 09:36:52,278 - sqlalchemy.engine.Engine - INFO - [no key 0.00021s] ()
+2025-09-28 09:36:52,280 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_audit_logs_timestamp ON audit_logs (timestamp)
+2025-09-28 09:36:52,280 - sqlalchemy.engine.Engine - INFO - [no key 0.00021s] ()
+2025-09-28 09:36:52,285 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_audit_logs_action ON audit_logs (action)
+2025-09-28 09:36:52,286 - sqlalchemy.engine.Engine - INFO - [no key 0.00016s] ()
+2025-09-28 09:36:52,293 - sqlalchemy.engine.Engine - INFO - CREATE INDEX idx_user_timestamp ON audit_logs (user_id, timestamp)
+2025-09-28 09:36:52,293 - sqlalchemy.engine.Engine - INFO - [no key 0.00022s] ()
+2025-09-28 09:36:52,299 - sqlalchemy.engine.Engine - INFO - CREATE INDEX idx_action_timestamp ON audit_logs (action, timestamp)
+2025-09-28 09:36:52,300 - sqlalchemy.engine.Engine - INFO - [no key 0.00019s] ()
+2025-09-28 09:36:52,303 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_audit_logs_resource_id ON audit_logs (resource_id)
+2025-09-28 09:36:52,303 - sqlalchemy.engine.Engine - INFO - [no key 0.00024s] ()
+2025-09-28 09:36:52,308 - sqlalchemy.engine.Engine - INFO - CREATE INDEX idx_resource_timestamp ON audit_logs (resource_type, timestamp)
+2025-09-28 09:36:52,308 - sqlalchemy.engine.Engine - INFO - [no key 0.00025s] ()
+2025-09-28 09:36:52,321 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_audit_logs_id ON audit_logs (id)
+2025-09-28 09:36:52,322 - sqlalchemy.engine.Engine - INFO - [no key 0.00024s] ()
+2025-09-28 09:36:52,324 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_audit_logs_resource_type ON audit_logs (resource_type)
+2025-09-28 09:36:52,324 - sqlalchemy.engine.Engine - INFO - [no key 0.00030s] ()
+2025-09-28 09:36:52,329 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE performance_metrics (
+	id INTEGER NOT NULL, 
+	metric_type VARCHAR(50) NOT NULL, 
+	value FLOAT NOT NULL, 
+	details JSON, 
+	timestamp DATETIME NOT NULL, 
+	PRIMARY KEY (id)
+)
+
+
+2025-09-28 09:36:52,329 - sqlalchemy.engine.Engine - INFO - [no key 0.00032s] ()
+2025-09-28 09:36:52,332 - sqlalchemy.engine.Engine - INFO - CREATE INDEX idx_timestamp_metric ON performance_metrics (timestamp, metric_type)
+2025-09-28 09:36:52,332 - sqlalchemy.engine.Engine - INFO - [no key 0.00027s] ()
+2025-09-28 09:36:52,336 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_performance_metrics_id ON performance_metrics (id)
+2025-09-28 09:36:52,337 - sqlalchemy.engine.Engine - INFO - [no key 0.00026s] ()
+2025-09-28 09:36:52,345 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_performance_metrics_timestamp ON performance_metrics (timestamp)
+2025-09-28 09:36:52,346 - sqlalchemy.engine.Engine - INFO - [no key 0.00020s] ()
+2025-09-28 09:36:52,352 - sqlalchemy.engine.Engine - INFO - CREATE INDEX idx_metric_timestamp ON performance_metrics (metric_type, timestamp)
+2025-09-28 09:36:52,352 - sqlalchemy.engine.Engine - INFO - [no key 0.00021s] ()
+2025-09-28 09:36:52,358 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_performance_metrics_metric_type ON performance_metrics (metric_type)
+2025-09-28 09:36:52,359 - sqlalchemy.engine.Engine - INFO - [no key 0.00023s] ()
+2025-09-28 09:36:52,363 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE attendance (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	check_in_time DATETIME, 
+	check_out_time DATETIME, 
+	date DATE NOT NULL, 
+	wifi_mac_address VARCHAR(17), 
+	ip_address VARCHAR(45), 
+	device_fingerprint VARCHAR(255), 
+	status VARCHAR(8), 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id)
+)
+
+
+2025-09-28 09:36:52,363 - sqlalchemy.engine.Engine - INFO - [no key 0.00025s] ()
+2025-09-28 09:36:52,377 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_attendance_id ON attendance (id)
+2025-09-28 09:36:52,377 - sqlalchemy.engine.Engine - INFO - [no key 0.00023s] ()
+2025-09-28 09:36:52,391 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE sales (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	brand_id INTEGER NOT NULL, 
+	sale_amount FLOAT NOT NULL, 
+	sale_date DATE NOT NULL, 
+	units_sold INTEGER NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id), 
+	FOREIGN KEY(brand_id) REFERENCES brands (id)
+)
+
+
+2025-09-28 09:36:52,391 - sqlalchemy.engine.Engine - INFO - [no key 0.00030s] ()
+2025-09-28 09:36:52,397 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_sales_id ON sales (id)
+2025-09-28 09:36:52,397 - sqlalchemy.engine.Engine - INFO - [no key 0.00022s] ()
+2025-09-28 09:36:52,406 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE targets (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	target_type VARCHAR(9) NOT NULL, 
+	total_target_amount FLOAT NOT NULL, 
+	brand_wise_targets JSON, 
+	period_start DATE NOT NULL, 
+	period_end DATE NOT NULL, 
+	incentive_percentage FLOAT NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id)
+)
+
+
+2025-09-28 09:36:52,406 - sqlalchemy.engine.Engine - INFO - [no key 0.00025s] ()
+2025-09-28 09:36:52,409 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_targets_id ON targets (id)
+2025-09-28 09:36:52,409 - sqlalchemy.engine.Engine - INFO - [no key 0.00025s] ()
+2025-09-28 09:36:52,428 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE salary (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	month_year VARCHAR(7) NOT NULL, 
+	basic_salary FLOAT NOT NULL, 
+	working_days INTEGER NOT NULL, 
+	present_days INTEGER NOT NULL, 
+	sunday_count INTEGER NOT NULL, 
+	salary_for_days FLOAT NOT NULL, 
+	target_incentive FLOAT NOT NULL, 
+	basic_incentive FLOAT NOT NULL, 
+	gross_salary FLOAT NOT NULL, 
+	advance_deduction FLOAT NOT NULL, 
+	net_salary FLOAT NOT NULL, 
+	payment_status VARCHAR(8), 
+	payment_date DATE, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id)
+)
+
+
+2025-09-28 09:36:52,428 - sqlalchemy.engine.Engine - INFO - [no key 0.00028s] ()
+2025-09-28 09:36:52,441 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_salary_id ON salary (id)
+2025-09-28 09:36:52,441 - sqlalchemy.engine.Engine - INFO - [no key 0.00025s] ()
+2025-09-28 09:36:52,450 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE advances (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	advance_amount FLOAT NOT NULL, 
+	reason TEXT, 
+	issue_date DATE NOT NULL, 
+	total_deducted FLOAT NOT NULL, 
+	remaining_amount FLOAT NOT NULL, 
+	deduction_plan VARCHAR(7) NOT NULL, 
+	monthly_deduction_amount FLOAT, 
+	status VARCHAR(7), 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id)
+)
+
+
+2025-09-28 09:36:52,457 - sqlalchemy.engine.Engine - INFO - [no key 0.00751s] ()
+2025-09-28 09:36:52,461 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_advances_id ON advances (id)
+2025-09-28 09:36:52,461 - sqlalchemy.engine.Engine - INFO - [no key 0.00026s] ()
+2025-09-28 09:36:52,467 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE rankings (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	period_type VARCHAR(9) NOT NULL, 
+	period_date DATE NOT NULL, 
+	total_sales FLOAT NOT NULL, 
+	rank_position INTEGER NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id)
+)
+
+
+2025-09-28 09:36:52,468 - sqlalchemy.engine.Engine - INFO - [no key 0.00069s] ()
+2025-09-28 09:36:52,482 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_rankings_id ON rankings (id)
+2025-09-28 09:36:52,482 - sqlalchemy.engine.Engine - INFO - [no key 0.00037s] ()
+2025-09-28 09:36:52,485 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE notifications (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	title VARCHAR(255) NOT NULL, 
+	message TEXT NOT NULL, 
+	notification_type VARCHAR(50) NOT NULL, 
+	priority VARCHAR(20) NOT NULL, 
+	data JSON, 
+	is_read BOOLEAN NOT NULL, 
+	read_at DATETIME, 
+	created_at DATETIME NOT NULL, 
+	updated_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id)
+)
+
+
+2025-09-28 09:36:52,485 - sqlalchemy.engine.Engine - INFO - [no key 0.00024s] ()
+2025-09-28 09:36:52,487 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_notifications_staff_id ON notifications (staff_id)
+2025-09-28 09:36:52,487 - sqlalchemy.engine.Engine - INFO - [no key 0.00016s] ()
+2025-09-28 09:36:52,501 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_notifications_id ON notifications (id)
+2025-09-28 09:36:52,501 - sqlalchemy.engine.Engine - INFO - [no key 0.00028s] ()
+2025-09-28 09:36:52,511 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE achievements (
+	id INTEGER NOT NULL, 
+	staff_id INTEGER NOT NULL, 
+	target_id INTEGER NOT NULL, 
+	achieved_amount FLOAT NOT NULL, 
+	achievement_percentage FLOAT NOT NULL, 
+	incentive_earned FLOAT NOT NULL, 
+	period VARCHAR(20) NOT NULL, 
+	created_at DATETIME NOT NULL, 
+	PRIMARY KEY (id), 
+	FOREIGN KEY(staff_id) REFERENCES staff (id), 
+	FOREIGN KEY(target_id) REFERENCES targets (id)
+)
+
+
+2025-09-28 09:36:52,511 - sqlalchemy.engine.Engine - INFO - [no key 0.00027s] ()
+2025-09-28 09:36:52,515 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_achievements_id ON achievements (id)
+2025-09-28 09:36:52,515 - sqlalchemy.engine.Engine - INFO - [no key 0.00022s] ()
+2025-09-28 09:36:52,522 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 09:36:52,523 - main - INFO - Database tables created successfully
+2025-09-28 09:39:47,217 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:39:47,218 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 09:39:47,218 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,219 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 09:39:47,220 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,220 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 09:39:47,220 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,220 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 09:39:47,220 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,220 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 09:39:47,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,222 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 09:39:47,222 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,222 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 09:39:47,222 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,222 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 09:39:47,222 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:47,223 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 09:39:47,223 - __main__ - INFO - Database tables created successfully
+2025-09-28 09:39:47,326 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 09:39:47,327 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 09:39:47,331 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 09:39:47,331 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 09:39:47,331 - __main__ - INFO - Application started with background tasks
+2025-09-28 09:39:52,006 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:39:52,007 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 09:39:52,007 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,009 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 09:39:52,009 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,009 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 09:39:52,009 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,010 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 09:39:52,010 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,010 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 09:39:52,010 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,011 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 09:39:52,011 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,011 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 09:39:52,011 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,011 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 09:39:52,011 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 09:39:52,012 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:52,014 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 09:39:52,014 - main - INFO - Database tables created successfully
+2025-09-28 09:39:52,052 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 09:39:52,053 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 09:39:52,057 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 09:39:52,057 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 09:39:52,057 - main - INFO - Application started with background tasks
+2025-09-28 09:39:56,244 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:39:56,245 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 09:39:56,245 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,246 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 09:39:56,246 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,246 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 09:39:56,246 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,246 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 09:39:56,247 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,247 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 09:39:56,247 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,247 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 09:39:56,247 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,247 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 09:39:56,247 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,248 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 09:39:56,249 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:39:56,250 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 09:39:56,250 - main - INFO - Database tables created successfully
+2025-09-28 09:39:56,280 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 09:39:56,281 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 09:39:56,285 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 09:39:56,285 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 09:39:56,285 - main - INFO - Application started with background tasks
+2025-09-28 09:40:52,054 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 09:40:52,054 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 09:40:52,055 - main - INFO - Application shutdown with background tasks stopped
+2025-09-28 09:40:56,281 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 09:40:56,282 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 09:40:56,287 - main - INFO - Application shutdown with background tasks stopped
+2025-09-28 09:41:02,325 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:41:02,325 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 09:41:02,325 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 09:41:02,327 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,331 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 09:41:02,331 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,331 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 09:41:02,331 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,331 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 09:41:02,331 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 09:41:02,332 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:02,333 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 09:41:02,333 - main - INFO - Database tables created successfully
+2025-09-28 09:41:02,549 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 09:41:02,549 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 09:41:02,551 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 09:41:02,551 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 09:41:02,551 - main - INFO - Application started with background tasks
+2025-09-28 09:41:09,219 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:41:09,219 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 09:41:09,219 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,220 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 09:41:09,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,221 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 09:41:09,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,221 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 09:41:09,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,221 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 09:41:09,221 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 09:41:09,222 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,223 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 09:41:09,223 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,223 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 09:41:09,223 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,223 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 09:41:09,223 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:41:09,224 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 09:41:09,224 - main - INFO - Database tables created successfully
+2025-09-28 09:41:09,321 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 09:41:09,322 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 09:41:09,322 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 09:41:09,322 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 09:41:09,322 - main - INFO - Application started with background tasks
+2025-09-28 09:42:02,552 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 09:42:02,553 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 09:42:02,553 - main - INFO - Application shutdown with background tasks stopped
+2025-09-28 09:42:05,896 - app.models.base - ERROR - Database connection error: Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')
+2025-09-28 09:42:05,925 - app.utils.error_handler - ERROR - Application Error: {
+  "timestamp": "2025-09-28T09:42:05.900558",
+  "error_type": "ArgumentError",
+  "error_message": "Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')",
+  "user_id": null,
+  "request_url": null,
+  "request_method": null,
+  "client_ip": null,
+  "traceback": "Traceback (most recent call last):\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 182, in __call__\n    with recv_stream, send_stream, collapse_excgroups():\n                                   ~~~~~~~~~~~~~~~~~~^^\n  File \"/usr/lib/python3.13/contextlib.py\", line 162, in __exit__\n    self.gen.throw(value)\n    ~~~~~~~~~~~~~~^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_utils.py\", line 85, in collapse_excgroups\n    raise exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 184, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/backend/app/middleware/security.py\", line 131, in security_middleware_handler\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 159, in call_next\n    raise app_exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 144, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/cors.py\", line 85, in __call__\n    await self.app(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/exceptions.py\", line 63, in __call__\n    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 716, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 736, in app\n    await route.handle(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 290, in handle\n    await self.app(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 78, in app\n    await wrap_app_handling_exceptions(app, request)(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 75, in app\n    response = await f(request)\n               ^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/routing.py\", line 298, in app\n    solved_result = await solve_dependencies(\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<6 lines>...\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/dependencies/utils.py\", line 642, in solve_dependencies\n    solved = await solve_generator(\n             ^^^^^^^^^^^^^^^^^^^^^^\n        call=call, stack=async_exit_stack, sub_values=solved_result.values\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/dependencies/utils.py\", line 568, in solve_generator\n    return await stack.enter_async_context(cm)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/contextlib.py\", line 668, in enter_async_context\n    result = await _enter(cm)\n             ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/contextlib.py\", line 214, in __aenter__\n    return await anext(self.gen)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/concurrency.py\", line 35, in contextmanager_in_threadpool\n    raise e\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/concurrency.py\", line 27, in contextmanager_in_threadpool\n    yield await run_in_threadpool(cm.__enter__)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/concurrency.py\", line 38, in run_in_threadpool\n    return await anyio.to_thread.run_sync(func)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/anyio/to_thread.py\", line 56, in run_sync\n    return await get_async_backend().run_sync_in_worker_thread(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/anyio/_backends/_asyncio.py\", line 2485, in run_sync_in_worker_thread\n    return await future\n           ^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/anyio/_backends/_asyncio.py\", line 976, in run\n    result = context.run(func, *args)\n  File \"/usr/lib/python3.13/contextlib.py\", line 141, in __enter__\n    return next(self.gen)\n  File \"/workspace/backend/app/models/base.py\", line 36, in get_db\n    db.execute(\"SELECT 1\")\n    ~~~~~~~~~~^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/orm/session.py\", line 2365, in execute\n    return self._execute_internal(\n           ~~~~~~~~~~~~~~~~~~~~~~^\n        statement,\n        ^^^^^^^^^^\n    ...<4 lines>...\n        _add_event=_add_event,\n        ^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/orm/session.py\", line 2149, in _execute_internal\n    statement = coercions.expect(roles.StatementRole, statement)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 395, in expect\n    resolved = impl._literal_coercion(\n        element, argname=argname, **kw\n    )\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 621, in _literal_coercion\n    return self._text_coercion(element, argname, **kw)\n           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 614, in _text_coercion\n    return _no_text_coercion(element, argname)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 584, in _no_text_coercion\n    raise exc_cls(\n    ...<7 lines>...\n    ) from err\nsqlalchemy.exc.ArgumentError: Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')\n"
+}
+2025-09-28 09:42:08,049 - app.models.base - ERROR - Database connection error: Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')
+2025-09-28 09:42:08,059 - app.utils.error_handler - ERROR - Application Error: {
+  "timestamp": "2025-09-28T09:42:08.050865",
+  "error_type": "ArgumentError",
+  "error_message": "Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')",
+  "user_id": null,
+  "request_url": null,
+  "request_method": null,
+  "client_ip": null,
+  "traceback": "Traceback (most recent call last):\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/errors.py\", line 164, in __call__\n    await self.app(scope, receive, _send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 182, in __call__\n    with recv_stream, send_stream, collapse_excgroups():\n                                   ~~~~~~~~~~~~~~~~~~^^\n  File \"/usr/lib/python3.13/contextlib.py\", line 162, in __exit__\n    self.gen.throw(value)\n    ~~~~~~~~~~~~~~^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_utils.py\", line 85, in collapse_excgroups\n    raise exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 184, in __call__\n    response = await self.dispatch_func(request, call_next)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/backend/app/middleware/security.py\", line 131, in security_middleware_handler\n    response = await call_next(request)\n               ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 159, in call_next\n    raise app_exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/base.py\", line 144, in coro\n    await self.app(scope, receive_or_disconnect, send_no_error)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/cors.py\", line 85, in __call__\n    await self.app(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/middleware/exceptions.py\", line 63, in __call__\n    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 716, in __call__\n    await self.middleware_stack(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 736, in app\n    await route.handle(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 290, in handle\n    await self.app(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 78, in app\n    await wrap_app_handling_exceptions(app, request)(scope, receive, send)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 53, in wrapped_app\n    raise exc\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/_exception_handler.py\", line 42, in wrapped_app\n    await app(scope, receive, sender)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/routing.py\", line 75, in app\n    response = await f(request)\n               ^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/routing.py\", line 298, in app\n    solved_result = await solve_dependencies(\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^\n    ...<6 lines>...\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/dependencies/utils.py\", line 642, in solve_dependencies\n    solved = await solve_generator(\n             ^^^^^^^^^^^^^^^^^^^^^^\n        call=call, stack=async_exit_stack, sub_values=solved_result.values\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/dependencies/utils.py\", line 568, in solve_generator\n    return await stack.enter_async_context(cm)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/contextlib.py\", line 668, in enter_async_context\n    result = await _enter(cm)\n             ^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.13/contextlib.py\", line 214, in __aenter__\n    return await anext(self.gen)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/concurrency.py\", line 35, in contextmanager_in_threadpool\n    raise e\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/fastapi/concurrency.py\", line 27, in contextmanager_in_threadpool\n    yield await run_in_threadpool(cm.__enter__)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/starlette/concurrency.py\", line 38, in run_in_threadpool\n    return await anyio.to_thread.run_sync(func)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/anyio/to_thread.py\", line 56, in run_sync\n    return await get_async_backend().run_sync_in_worker_thread(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter\n        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/anyio/_backends/_asyncio.py\", line 2485, in run_sync_in_worker_thread\n    return await future\n           ^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/anyio/_backends/_asyncio.py\", line 976, in run\n    result = context.run(func, *args)\n  File \"/usr/lib/python3.13/contextlib.py\", line 141, in __enter__\n    return next(self.gen)\n  File \"/workspace/backend/app/models/base.py\", line 36, in get_db\n    db.execute(\"SELECT 1\")\n    ~~~~~~~~~~^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/orm/session.py\", line 2365, in execute\n    return self._execute_internal(\n           ~~~~~~~~~~~~~~~~~~~~~~^\n        statement,\n        ^^^^^^^^^^\n    ...<4 lines>...\n        _add_event=_add_event,\n        ^^^^^^^^^^^^^^^^^^^^^^\n    )\n    ^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/orm/session.py\", line 2149, in _execute_internal\n    statement = coercions.expect(roles.StatementRole, statement)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 395, in expect\n    resolved = impl._literal_coercion(\n        element, argname=argname, **kw\n    )\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 621, in _literal_coercion\n    return self._text_coercion(element, argname, **kw)\n           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 614, in _text_coercion\n    return _no_text_coercion(element, argname)\n  File \"/home/ubuntu/.local/lib/python3.13/site-packages/sqlalchemy/sql/coercions.py\", line 584, in _no_text_coercion\n    raise exc_cls(\n    ...<7 lines>...\n    ) from err\nsqlalchemy.exc.ArgumentError: Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')\n"
+}
+2025-09-28 09:42:09,323 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 09:42:09,323 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 09:42:09,324 - main - INFO - Application shutdown with background tasks stopped
+2025-09-28 09:42:28,322 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:42:28,322 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 09:42:28,322 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,323 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 09:42:28,323 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,324 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 09:42:28,324 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,324 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 09:42:28,324 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,324 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 09:42:28,324 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,324 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 09:42:28,325 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,326 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 09:42:28,326 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,326 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 09:42:28,326 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 09:42:28,327 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 09:42:28,327 - main - INFO - Database tables created successfully
+2025-09-28 09:42:28,434 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-28 09:42:28,435 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-28 09:42:28,439 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-28 09:42:28,439 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-28 09:42:28,439 - main - INFO - Application started with background tasks
+2025-09-28 09:42:31,580 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 09:42:31,581 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 09:42:31,581 - sqlalchemy.engine.Engine - INFO - [generated in 0.00046s] ()
+2025-09-28 09:42:31,586 - app.models.base - ERROR - Unexpected database error: 403: Access denied: Not on local network
+2025-09-28 09:42:31,586 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 09:42:47,331 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-28 09:42:47,331 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-28 09:42:47,332 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-28 10:34:12,769 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 10:34:12,770 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-28 10:34:12,770 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,771 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-28 10:34:12,771 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,771 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-28 10:34:12,772 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-28 10:34:12,773 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("companies")
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - PRAGMA temp.table_info("setup_states")
+2025-09-28 10:34:12,774 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-28 10:34:12,776 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE companies (
+	id INTEGER NOT NULL, 
+	name VARCHAR(255) NOT NULL, 
+	address TEXT, 
+	phone VARCHAR(50), 
+	industry_type VARCHAR(100), 
+	timezone VARCHAR(50), 
+	currency VARCHAR(10), 
+	working_hours_start VARCHAR(10), 
+	working_hours_end VARCHAR(10), 
+	is_setup_complete BOOLEAN, 
+	setup_completed_at DATETIME, 
+	created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+	updated_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2025-09-28 10:34:12,776 - sqlalchemy.engine.Engine - INFO - [no key 0.00020s] ()
+2025-09-28 10:34:12,782 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_companies_id ON companies (id)
+2025-09-28 10:34:12,782 - sqlalchemy.engine.Engine - INFO - [no key 0.00021s] ()
+2025-09-28 10:34:12,788 - sqlalchemy.engine.Engine - INFO - CREATE UNIQUE INDEX ix_companies_name ON companies (name)
+2025-09-28 10:34:12,788 - sqlalchemy.engine.Engine - INFO - [no key 0.00017s] ()
+2025-09-28 10:34:12,790 - sqlalchemy.engine.Engine - INFO - 
+CREATE TABLE setup_states (
+	id INTEGER NOT NULL, 
+	company_created BOOLEAN, 
+	admin_created BOOLEAN, 
+	database_initialized BOOLEAN, 
+	system_configured BOOLEAN, 
+	setup_data TEXT, 
+	last_error TEXT, 
+	error_count INTEGER, 
+	started_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+	completed_at DATETIME, 
+	updated_at DATETIME, 
+	PRIMARY KEY (id)
+)
+
+
+2025-09-28 10:34:12,791 - sqlalchemy.engine.Engine - INFO - [no key 0.00020s] ()
+2025-09-28 10:34:12,800 - sqlalchemy.engine.Engine - INFO - CREATE INDEX ix_setup_states_id ON setup_states (id)
+2025-09-28 10:34:12,800 - sqlalchemy.engine.Engine - INFO - [no key 0.00023s] ()
+2025-09-28 10:34:12,803 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-28 10:34:12,803 - main - INFO - Database tables created successfully

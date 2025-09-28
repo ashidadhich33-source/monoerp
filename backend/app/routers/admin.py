@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
 from typing import List, Optional
 from datetime import datetime, date, timedelta
+import logging
 from app.models.base import get_db
 from app.models.staff import Staff
 from app.models.attendance import Attendance, AttendanceStatus
@@ -14,8 +15,9 @@ from app.models.salary import Salary, PaymentStatus
 from app.models.advances import Advances, AdvanceStatus, DeductionPlan
 from app.models.rankings import Rankings, PeriodType
 from app.routers.auth import get_current_staff
-from app.utils.auth import verify_local_network, get_password_hash
-from app.services.salary_calculator import SalaryCalculator
+from app.middleware.security import verify_local_network
+from app.utils.auth import get_password_hash
+from app.services.salary_service import salary_service
 from app.services.backup_service import BackupService
 from pydantic import BaseModel
 import openpyxl
@@ -24,6 +26,73 @@ from app.config.settings import get_settings
 
 router = APIRouter()
 settings = get_settings()
+logger = logging.getLogger(__name__)
+
+@router.get("/dashboard")
+async def get_admin_dashboard(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get admin dashboard data"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get basic statistics
+        total_staff = db.query(func.count(Staff.id)).filter(Staff.is_active == True).scalar() or 0
+        total_sales_today = db.query(func.sum(Sales.sale_amount)).filter(
+            Sales.sale_date == date.today()
+        ).scalar() or 0.0
+        total_sales_month = db.query(func.sum(Sales.sale_amount)).filter(
+            Sales.sale_date >= date.today().replace(day=1)
+        ).scalar() or 0.0
+        
+        pending_salaries = db.query(func.count(Salary.id)).filter(
+            Salary.payment_status == PaymentStatus.PENDING
+        ).scalar() or 0
+        
+        active_advances = db.query(func.count(Advances.id)).filter(
+            Advances.status == AdvanceStatus.ACTIVE
+        ).scalar() or 0
+        
+        # Get attendance rate for today
+        total_attendance_today = db.query(func.count(Attendance.id)).filter(
+            Attendance.date == date.today(),
+            Attendance.status == AttendanceStatus.PRESENT
+        ).scalar() or 0
+        
+        attendance_rate = (total_attendance_today / total_staff * 100) if total_staff > 0 else 0
+        
+        return {
+            "message": "Welcome to the admin dashboard!",
+            "total_staff": total_staff,
+            "total_sales_today": total_sales_today,
+            "total_sales_month": total_sales_month,
+            "pending_salaries": pending_salaries,
+            "active_advances": active_advances,
+            "attendance_rate": round(attendance_rate, 2),
+            "system_health": "OK"
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get admin dashboard data: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to load dashboard data"
+        )
 
 # Pydantic models for request/response
 class StaffCreate(BaseModel):
@@ -73,6 +142,20 @@ class AdvanceCreate(BaseModel):
 class BrandCreate(BaseModel):
     brand_name: str
     brand_code: str
+    description: Optional[str] = None
+    category: Optional[str] = None
+
+class BrandUpdate(BaseModel):
+    brand_name: Optional[str] = None
+    brand_code: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class AdvanceUpdate(BaseModel):
+    deduction_plan: Optional[DeductionPlan] = None
+    monthly_deduction_amount: Optional[float] = None
+    status: Optional[AdvanceStatus] = None
 
 # Staff Management
 @router.get("/staff/list")
@@ -147,7 +230,7 @@ async def create_staff(
         employee_code=staff_data.employee_code,
         name=staff_data.name,
         email=staff_data.email,
-        password=get_password_hash(staff_data.password),
+        password_hash=get_password_hash(staff_data.password),
         phone=staff_data.phone,
         basic_salary=staff_data.basic_salary,
         incentive_percentage=staff_data.incentive_percentage,
@@ -280,8 +363,8 @@ async def add_sales(
 
 @router.post("/sales/bulk-upload")
 async def bulk_upload_sales(
-    file: UploadFile = File(...),
     request: Request,
+    file: UploadFile = File(...),
     current_staff: Staff = Depends(get_current_staff),
     db: Session = Depends(get_db)
 ):
@@ -483,7 +566,7 @@ async def get_targets_list(
 # Brand Management
 @router.post("/brands/add")
 async def add_brand(
-    brand_data: BrandCreate,
+    brand_data: BrandUpdate,
     request: Request,
     current_staff: Staff = Depends(get_current_staff),
     db: Session = Depends(get_db)
@@ -661,8 +744,7 @@ async def calculate_salaries(
         )
     
     # Calculate salaries
-    calculator = SalaryCalculator(db)
-    salary_records = calculator.calculate_all_salaries(month_year)
+    salary_records = salary_service.calculate_all_salaries(db, month_year)
     
     return {
         "message": f"Salaries calculated for {len(salary_records)} staff members",
@@ -773,8 +855,8 @@ async def create_backup(
         )
     
     try:
-        backup_service = BackupService(db)
-        backup_path = backup_service.create_daily_backup()
+        backup_service_instance = BackupService(db)
+        backup_path = backup_service_instance.create_daily_backup()
         
         return {
             "message": "Backup created successfully",
@@ -802,8 +884,8 @@ async def list_backups(
             detail="Access denied: Not on local network"
         )
     
-    backup_service = BackupService(db)
-    backups = backup_service.list_backups()
+    backup_service_instance = BackupService(db)
+    backups = backup_service_instance.list_backups()
     
     return {
         "backups": backups,
@@ -827,8 +909,8 @@ async def restore_backup(
         )
     
     try:
-        backup_service = BackupService(db)
-        success = backup_service.restore_backup(backup_id)
+        backup_service_instance = BackupService(db)
+        success = backup_service_instance.restore_backup(backup_id)
         
         if success:
             return {
@@ -862,7 +944,255 @@ async def get_backup_status(
             detail="Access denied: Not on local network"
         )
     
-    backup_service = BackupService(db)
-    status = backup_service.get_backup_status()
+    backup_service_instance = BackupService(db)
+    status = backup_service_instance.get_backup_status()
     
     return status
+
+# Missing endpoints from specification
+
+@router.put("/sales/update/{sales_id}")
+async def update_sales(
+    sales_id: int,
+    sales_data: SalesCreate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update sales record"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find sales record
+    sales = db.query(Sales).filter(Sales.id == sales_id).first()
+    if not sales:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sales record not found"
+        )
+    
+    # Update fields
+    sales.staff_id = sales_data.staff_id
+    sales.brand_id = sales_data.brand_id
+    sales.sale_amount = sales_data.sale_amount
+    sales.sale_date = sales_data.sale_date
+    sales.units_sold = sales_data.units_sold
+    sales.updated_at = datetime.now()
+    
+    db.commit()
+    
+    return {"message": "Sales record updated successfully"}
+
+@router.put("/targets/update/{target_id}")
+async def update_target(
+    target_id: int,
+    target_data: TargetCreate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update target"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find target
+    target = db.query(Targets).filter(Targets.id == target_id).first()
+    if not target:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Target not found"
+        )
+    
+    # Update fields
+    target.staff_id = target_data.staff_id
+    target.target_type = target_data.target_type
+    target.total_target_amount = target_data.total_target_amount
+    target.brand_wise_targets = target_data.brand_wise_targets
+    target.period_start = target_data.period_start
+    target.period_end = target_data.period_end
+    target.incentive_percentage = target_data.incentive_percentage
+    
+    db.commit()
+    
+    return {"message": "Target updated successfully"}
+
+@router.put("/advance/update-deduction/{advance_id}")
+async def update_advance_deduction(
+    advance_id: int,
+    deduction_data: AdvanceUpdate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update advance deduction plan"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find advance
+    advance = db.query(Advances).filter(Advances.id == advance_id).first()
+    if not advance:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Advance not found"
+        )
+    
+    # Update deduction plan
+    advance.deduction_plan = deduction_data.get("deduction_plan", advance.deduction_plan)
+    advance.monthly_deduction_amount = deduction_data.get("monthly_deduction_amount", advance.monthly_deduction_amount)
+    
+    db.commit()
+    
+    return {"message": "Advance deduction plan updated successfully"}
+
+@router.put("/brands/update/{brand_id}")
+async def update_brand(
+    brand_id: int,
+    brand_data: BrandUpdate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update brand"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find brand
+    brand = db.query(Brands).filter(Brands.id == brand_id).first()
+    if not brand:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Brand not found"
+        )
+    
+    # Update fields
+    brand.brand_name = brand_data.brand_name
+    brand.brand_code = brand_data.brand_code
+    
+    db.commit()
+    
+    return {"message": "Brand updated successfully"}
+
+@router.delete("/brands/delete/{brand_id}")
+async def delete_brand(
+    brand_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Delete a brand"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get brand
+        brand = db.query(Brands).filter(Brands.id == brand_id).first()
+        if not brand:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Brand not found"
+            )
+        
+        # Check if brand is used in sales
+        sales_count = db.query(func.count(Sales.id)).filter(Sales.brand_id == brand_id).scalar()
+        if sales_count > 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot delete brand that is used in sales records"
+            )
+        
+        # Delete brand
+        db.delete(brand)
+        db.commit()
+        
+        return {"message": "Brand deleted successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to delete brand {brand_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete brand"
+        )
+
+@router.delete("/advance/delete/{advance_id}")
+async def delete_advance(
+    advance_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Delete an advance"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get advance
+        advance = db.query(Advances).filter(Advances.id == advance_id).first()
+        if not advance:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Advance not found"
+            )
+        
+        # Check if advance is already completed
+        if advance.status == AdvanceStatus.COMPLETED:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot delete completed advance"
+            )
+        
+        # Delete advance
+        db.delete(advance)
+        db.commit()
+        
+        return {"message": "Advance deleted successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to delete advance {advance_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete advance"
+        )

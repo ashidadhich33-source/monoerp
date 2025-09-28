@@ -8,11 +8,12 @@ from app.models.staff import Staff
 from app.models.attendance import Attendance, AttendanceStatus
 from app.models.sales import Sales
 from app.models.rankings import Rankings, PeriodType
+from app.models.brands import Brands
 from app.models.salary import Salary
 from app.models.targets import Targets
 from app.models.achievements import Achievements
 from app.routers.auth import get_current_staff
-from app.utils.auth import verify_local_network, get_device_fingerprint
+from app.middleware.security import verify_local_network, generate_device_fingerprint
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -168,7 +169,7 @@ async def check_in(
         existing_attendance.status = AttendanceStatus.PRESENT
         existing_attendance.wifi_mac_address = attendance_data.mac_address
         existing_attendance.ip_address = request.client.host
-        existing_attendance.device_fingerprint = get_device_fingerprint(request)
+        existing_attendance.device_fingerprint = generate_device_fingerprint(request)
         db.commit()
         return {"message": "Checked in successfully", "attendance_id": existing_attendance.id}
     else:
@@ -178,7 +179,7 @@ async def check_in(
             date=today,
             wifi_mac_address=attendance_data.mac_address,
             ip_address=request.client.host,
-            device_fingerprint=get_device_fingerprint(request),
+            device_fingerprint=generate_device_fingerprint(request),
             status=AttendanceStatus.PRESENT,
             created_at=datetime.now()
         )
