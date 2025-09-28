@@ -1397,3 +1397,67 @@ FROM setup_states
 2025-09-28 11:19:27,349 - app.services.scheduler_service - INFO - Scheduler stopped
 2025-09-28 11:19:27,349 - app.services.scheduler_service - INFO - All background tasks stopped
 2025-09-28 11:19:27,349 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-28 11:21:11,476 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:21:11,476 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:21:11,476 - sqlalchemy.engine.Engine - INFO - [cached since 148.6s ago] ()
+2025-09-28 11:21:11,478 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.employee_code = ? AND staff.is_active = 1
+ LIMIT ? OFFSET ?
+2025-09-28 11:21:11,478 - sqlalchemy.engine.Engine - INFO - [cached since 148.5s ago] ('ADMIN20250928111801', 1, 0)
+2025-09-28 11:21:11,480 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:21:13,754 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:21:13,754 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:21:13,754 - sqlalchemy.engine.Engine - INFO - [cached since 150.9s ago] ()
+2025-09-28 11:21:13,756 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.employee_code = ? AND staff.is_active = 1
+ LIMIT ? OFFSET ?
+2025-09-28 11:21:13,756 - sqlalchemy.engine.Engine - INFO - [cached since 150.8s ago] ('ADMIN20250928111801', 1, 0)
+2025-09-28 11:21:13,757 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:21:18,671 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:21:18,671 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:21:18,671 - sqlalchemy.engine.Engine - INFO - [cached since 155.8s ago] ()
+2025-09-28 11:21:18,679 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.id = ?
+ LIMIT ? OFFSET ?
+2025-09-28 11:21:18,679 - sqlalchemy.engine.Engine - INFO - [cached since 151.9s ago] ('1', 1, 0)
+2025-09-28 11:21:18,680 - sqlalchemy.engine.Engine - INFO - SELECT count(staff.id) AS count_1 
+FROM staff 
+WHERE staff.is_active = 1
+2025-09-28 11:21:18,680 - sqlalchemy.engine.Engine - INFO - [cached since 151.9s ago] ()
+2025-09-28 11:21:18,681 - sqlalchemy.engine.Engine - INFO - SELECT sum(sales.sale_amount) AS sum_1 
+FROM sales 
+WHERE sales.sale_date = ?
+2025-09-28 11:21:18,681 - sqlalchemy.engine.Engine - INFO - [cached since 151.9s ago] ('2025-09-28',)
+2025-09-28 11:21:18,682 - sqlalchemy.engine.Engine - INFO - SELECT sum(sales.sale_amount) AS sum_1 
+FROM sales 
+WHERE sales.sale_date >= ?
+2025-09-28 11:21:18,682 - sqlalchemy.engine.Engine - INFO - [cached since 151.9s ago] ('2025-09-01',)
+2025-09-28 11:21:18,683 - sqlalchemy.engine.Engine - INFO - SELECT count(salary.id) AS count_1 
+FROM salary 
+WHERE salary.payment_status = ?
+2025-09-28 11:21:18,683 - sqlalchemy.engine.Engine - INFO - [cached since 151.9s ago] ('PENDING',)
+2025-09-28 11:21:18,683 - sqlalchemy.engine.Engine - INFO - SELECT count(advances.id) AS count_1 
+FROM advances 
+WHERE advances.status = ?
+2025-09-28 11:21:18,686 - sqlalchemy.engine.Engine - INFO - [cached since 151.9s ago] ('ACTIVE',)
+2025-09-28 11:21:18,687 - sqlalchemy.engine.Engine - INFO - SELECT count(attendance.id) AS count_1 
+FROM attendance 
+WHERE attendance.date = ? AND attendance.status = ?
+2025-09-28 11:21:18,687 - sqlalchemy.engine.Engine - INFO - [cached since 151.9s ago] ('2025-09-28', 'PRESENT')
+2025-09-28 11:21:18,688 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-28 11:22:01,191 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-28 11:22:01,193 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-28 11:22:01,193 - sqlalchemy.engine.Engine - INFO - [cached since 198.4s ago] ()
+2025-09-28 11:22:01,196 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.id = ?
+ LIMIT ? OFFSET ?
+2025-09-28 11:22:01,196 - sqlalchemy.engine.Engine - INFO - [cached since 194.5s ago] ('1', 1, 0)
+2025-09-28 11:22:01,198 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff
+ LIMIT ? OFFSET ?
+2025-09-28 11:22:01,198 - sqlalchemy.engine.Engine - INFO - [cached since 164.9s ago] (100, 0)
+2025-09-28 11:22:01,199 - sqlalchemy.engine.Engine - INFO - ROLLBACK
