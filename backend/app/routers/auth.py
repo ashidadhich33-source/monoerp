@@ -7,25 +7,14 @@ from app.models.base import get_db
 from app.models.staff import Staff
 from app.config.settings import get_settings
 from app.middleware.security import verify_local_network, verify_wifi_mac_address
+from app.utils.auth import verify_password, get_password_hash
 from datetime import timedelta, datetime
-from passlib.context import CryptContext
 from jose import JWTError, jwt
 import ipaddress
 
 router = APIRouter()
 security = HTTPBearer()
 settings = get_settings()
-
-# Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a password against its hash"""
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password: str) -> str:
-    """Hash a password"""
-    return pwd_context.hash(password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     """Create JWT access token"""

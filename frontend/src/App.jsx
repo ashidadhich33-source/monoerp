@@ -17,6 +17,8 @@ import AdminBackup from './pages/admin/Backup';
 import AdminAttendance from './pages/admin/Attendance';
 import AdminReports from './pages/admin/Reports';
 import AdminSettings from './pages/admin/Settings';
+import AdminBrands from './pages/admin/Brands';
+import AdminAdvances from './pages/admin/Advances';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -124,6 +126,20 @@ function App() {
             <ProtectedRoute adminOnly>
               <Layout>
                 <AdminSettings />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/brands" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <AdminBrands />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/advances" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <AdminAdvances />
               </Layout>
             </ProtectedRoute>
           } />

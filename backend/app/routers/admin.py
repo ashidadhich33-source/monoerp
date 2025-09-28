@@ -16,7 +16,7 @@ from app.models.advances import Advances, AdvanceStatus, DeductionPlan
 from app.models.rankings import Rankings, PeriodType
 from app.routers.auth import get_current_staff
 from app.middleware.security import verify_local_network
-from app.routers.auth import get_password_hash
+from app.utils.auth import get_password_hash
 from app.services.salary_service import salary_service
 from app.services.backup_service import backup_service
 from pydantic import BaseModel
@@ -1073,3 +1073,108 @@ async def update_brand(
     db.commit()
     
     return {"message": "Brand updated successfully"}
+
+@router.delete("/brands/delete/{brand_id}")
+async def delete_brand(
+    brand_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Delete a brand"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get brand
+        brand = db.query(Brands).filter(Brands.id == brand_id).first()
+        if not brand:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Brand not found"
+            )
+        
+        # Check if brand is used in sales
+        sales_count = db.query(func.count(Sales.id)).filter(Sales.brand_id == brand_id).scalar()
+        if sales_count > 0:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot delete brand that is used in sales records"
+            )
+        
+        # Delete brand
+        db.delete(brand)
+        db.commit()
+        
+        return {"message": "Brand deleted successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to delete brand {brand_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete brand"
+        )
+
+@router.delete("/advance/delete/{advance_id}")
+async def delete_advance(
+    advance_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Delete an advance"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get advance
+        advance = db.query(Advances).filter(Advances.id == advance_id).first()
+        if not advance:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Advance not found"
+            )
+        
+        # Check if advance is already completed
+        if advance.status == AdvanceStatus.COMPLETED:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot delete completed advance"
+            )
+        
+        # Delete advance
+        db.delete(advance)
+        db.commit()
+        
+        return {"message": "Advance deleted successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to delete advance {advance_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to delete advance"
+        )

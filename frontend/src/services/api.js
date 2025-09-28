@@ -195,8 +195,23 @@ class ApiService {
     return response.data;
   }
 
-  async getBrandsList() {
+  async getBrands() {
     const response = await this.api.get('/api/admin/brands/list');
+    return response.data;
+  }
+
+  async createBrand(brandData) {
+    const response = await this.api.post('/api/admin/brands/add', brandData);
+    return response.data;
+  }
+
+  async updateBrand(brandId, brandData) {
+    const response = await this.api.put(`/api/admin/brands/update/${brandId}`, brandData);
+    return response.data;
+  }
+
+  async deleteBrand(brandId) {
+    const response = await this.api.delete(`/api/admin/brands/delete/${brandId}`);
     return response.data;
   }
 
@@ -205,8 +220,23 @@ class ApiService {
     return response.data;
   }
 
-  async getAdvancesList() {
+  async getAdvances() {
     const response = await this.api.get('/api/admin/advance/list');
+    return response.data;
+  }
+
+  async addAdvance(advanceData) {
+    const response = await this.api.post('/api/admin/advance/issue', advanceData);
+    return response.data;
+  }
+
+  async updateAdvanceDeduction(advanceId, deductionData) {
+    const response = await this.api.put(`/api/admin/advance/update-deduction/${advanceId}`, deductionData);
+    return response.data;
+  }
+
+  async deleteAdvance(advanceId) {
+    const response = await this.api.delete(`/api/admin/advance/delete/${advanceId}`);
     return response.data;
   }
 
