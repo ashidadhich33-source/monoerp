@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 
-const Login: React.FC = () => {
+const Login = () => {
   const [employeeCode, setEmployeeCode] = useState('');
   const [password, setPassword] = useState('');
   const [macAddress, setMacAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [networkStatus, setNetworkStatus] = useState<any>(null);
+  const [networkStatus, setNetworkStatus] = useState(null);
   
   const { login, user } = useAuth();
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Login: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -41,7 +41,7 @@ const Login: React.FC = () => {
       await login(employeeCode, password, macAddress);
       const { user: currentUser } = useAuth();
       navigate(currentUser?.is_admin ? '/admin' : '/staff', { replace: true });
-    } catch (error: any) {
+    } catch (error) {
       setError(error.response?.data?.detail || 'Login failed');
     } finally {
       setLoading(false);

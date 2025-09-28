@@ -1,22 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { apiService } from '../services/api';
 
-interface User {
-  staff_id: number;
-  name: string;
-  employee_code: string;
-  is_admin?: boolean;
-}
-
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  login: (employeeCode: string, password: string, macAddress?: string) => Promise<void>;
-  logout: () => void;
-  loading: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext(undefined);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -26,13 +11,9 @@ export const useAuth = () => {
   return context;
 };
 
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,7 +30,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (employeeCode: string, password: string, macAddress?: string) => {
+  const login = async (employeeCode, password, macAddress) => {
     try {
       const response = await apiService.login(employeeCode, password, macAddress);
       

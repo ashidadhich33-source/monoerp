@@ -11,8 +11,22 @@ module.exports = {
         'md': '768px',
         'lg': '1024px',
         'xl': '1280px',
+        '2xl': '1536px',
+      },
+      spacing: {
+        '18': '4.5rem',
+        '88': '22rem',
+      },
+      minHeight: {
+        'screen-75': '75vh',
+      },
+      touchAction: {
+        'pan-x': 'pan-x',
+        'pan-y': 'pan-y',
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+  ],
 }
