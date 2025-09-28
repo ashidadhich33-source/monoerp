@@ -866,3 +866,146 @@ async def get_backup_status(
     status = backup_service.get_backup_status()
     
     return status
+
+# Missing endpoints from specification
+
+@router.put("/sales/update/{sales_id}")
+async def update_sales(
+    sales_id: int,
+    sales_data: SalesCreate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update sales record"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find sales record
+    sales = db.query(Sales).filter(Sales.id == sales_id).first()
+    if not sales:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sales record not found"
+        )
+    
+    # Update fields
+    sales.staff_id = sales_data.staff_id
+    sales.brand_id = sales_data.brand_id
+    sales.sale_amount = sales_data.sale_amount
+    sales.sale_date = sales_data.sale_date
+    sales.units_sold = sales_data.units_sold
+    sales.updated_at = datetime.now()
+    
+    db.commit()
+    
+    return {"message": "Sales record updated successfully"}
+
+@router.put("/targets/update/{target_id}")
+async def update_target(
+    target_id: int,
+    target_data: TargetCreate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update target"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find target
+    target = db.query(Targets).filter(Targets.id == target_id).first()
+    if not target:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Target not found"
+        )
+    
+    # Update fields
+    target.staff_id = target_data.staff_id
+    target.target_type = target_data.target_type
+    target.total_target_amount = target_data.total_target_amount
+    target.brand_wise_targets = target_data.brand_wise_targets
+    target.period_start = target_data.period_start
+    target.period_end = target_data.period_end
+    target.incentive_percentage = target_data.incentive_percentage
+    
+    db.commit()
+    
+    return {"message": "Target updated successfully"}
+
+@router.put("/advance/update-deduction/{advance_id}")
+async def update_advance_deduction(
+    advance_id: int,
+    deduction_data: dict,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update advance deduction plan"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find advance
+    advance = db.query(Advances).filter(Advances.id == advance_id).first()
+    if not advance:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Advance not found"
+        )
+    
+    # Update deduction plan
+    advance.deduction_plan = deduction_data.get("deduction_plan", advance.deduction_plan)
+    advance.monthly_deduction_amount = deduction_data.get("monthly_deduction_amount", advance.monthly_deduction_amount)
+    
+    db.commit()
+    
+    return {"message": "Advance deduction plan updated successfully"}
+
+@router.put("/brands/update/{brand_id}")
+async def update_brand(
+    brand_id: int,
+    brand_data: BrandCreate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update brand"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find brand
+    brand = db.query(Brands).filter(Brands.id == brand_id).first()
+    if not brand:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Brand not found"
+        )
+    
+    # Update fields
+    brand.brand_name = brand_data.brand_name
+    brand.brand_code = brand_data.brand_code
+    
+    db.commit()
+    
+    return {"message": "Brand updated successfully"}

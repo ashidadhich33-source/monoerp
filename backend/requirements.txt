@@ -10,3 +10,4 @@ pydantic-settings
 openpyxl
 schedule
 python-dotenv
+redis

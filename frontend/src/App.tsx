@@ -13,6 +13,9 @@ import AdminSales from './pages/admin/Sales';
 import AdminTargets from './pages/admin/Targets';
 import AdminSalary from './pages/admin/Salary';
 import AdminBackup from './pages/admin/Backup';
+import AdminAttendance from './pages/admin/Attendance';
+import AdminReports from './pages/admin/Reports';
+import AdminSettings from './pages/admin/Settings';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -79,6 +82,21 @@ function App() {
             <Route path="/admin/backup" element={
               <ProtectedRoute adminOnly>
                 <AdminBackup />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/attendance" element={
+              <ProtectedRoute adminOnly>
+                <AdminAttendance />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/reports" element={
+              <ProtectedRoute adminOnly>
+                <AdminReports />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/settings" element={
+              <ProtectedRoute adminOnly>
+                <AdminSettings />
               </ProtectedRoute>
             } />
             

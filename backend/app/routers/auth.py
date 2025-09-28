@@ -143,3 +143,19 @@ async def verify_network(request: Request):
         "client_ip": client_ip,
         "message": "Local network access verified" if is_local else "Not on local network"
     }
+
+@router.post("/refresh-token")
+async def refresh_token(
+    current_staff: Staff = Depends(get_current_staff)
+):
+    """Refresh access token"""
+    access_token_expires = timedelta(hours=8)
+    access_token = create_access_token(
+        data={"sub": str(current_staff.id), "employee_code": current_staff.employee_code},
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }

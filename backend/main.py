@@ -3,7 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.models.base import engine, Base
 from app.config.settings import get_settings
 from app.routers import auth, staff, admin
+from app.services.scheduler_service import start_background_tasks, stop_background_tasks
 import os
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
@@ -32,6 +38,18 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(staff.router, prefix="/api/staff", tags=["Staff Panel"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin Panel"])
+
+@app.on_event("startup")
+async def startup_event():
+    """Start background tasks on application startup"""
+    start_background_tasks()
+    logger.info("Application started with background tasks")
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    """Stop background tasks on application shutdown"""
+    stop_background_tasks()
+    logger.info("Application shutdown with background tasks stopped")
 
 @app.get("/")
 async def root():
