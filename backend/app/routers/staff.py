@@ -8,6 +8,7 @@ from app.models.staff import Staff
 from app.models.attendance import Attendance, AttendanceStatus
 from app.models.sales import Sales
 from app.models.rankings import Rankings, PeriodType
+from app.models.brands import Brands
 from app.models.salary import Salary
 from app.models.targets import Targets
 from app.models.achievements import Achievements
