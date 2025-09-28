@@ -4,6 +4,7 @@ from app.models.base import engine, Base
 from app.config.settings import get_settings
 from app.routers import auth, staff, admin
 from app.services.scheduler_service import start_background_tasks, stop_background_tasks
+from app.middleware.security import security_middleware_handler
 import os
 import logging
 
@@ -33,6 +34,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Security middleware
+app.middleware("http")(security_middleware_handler)
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
