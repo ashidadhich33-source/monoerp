@@ -66,6 +66,17 @@ class TokenData(BaseModel):
     staff_id: Optional[int] = None
     employee_code: Optional[str] = None
 
+class StaffRegister(BaseModel):
+    employee_code: str
+    name: str
+    email: str
+    password: str
+    phone: Optional[str] = None
+    basic_salary: float
+    incentive_percentage: float = 0.0
+    department: Optional[str] = None
+    joining_date: str  # YYYY-MM-DD format
+
 def get_current_staff(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
@@ -89,6 +100,75 @@ def get_current_staff(
         )
     
     return staff
+
+@router.post("/register")
+async def register_staff(
+    staff_data: StaffRegister,
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    """Register a new staff member"""
+    
+    # Verify local network access for registration
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Registration only allowed on local network"
+        )
+    
+    # Check if employee code already exists
+    existing_staff = db.query(Staff).filter(Staff.employee_code == staff_data.employee_code).first()
+    if existing_staff:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Employee code already exists"
+        )
+    
+    # Check if email already exists
+    existing_email = db.query(Staff).filter(Staff.email == staff_data.email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already exists"
+        )
+    
+    # Parse joining date
+    try:
+        joining_date = datetime.strptime(staff_data.joining_date, "%Y-%m-%d").date()
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid joining date format. Use YYYY-MM-DD"
+        )
+    
+    # Create new staff
+    new_staff = Staff(
+        employee_code=staff_data.employee_code,
+        name=staff_data.name,
+        email=staff_data.email,
+        password_hash=get_password_hash(staff_data.password),
+        phone=staff_data.phone,
+        basic_salary=staff_data.basic_salary,
+        incentive_percentage=staff_data.incentive_percentage,
+        department=staff_data.department,
+        joining_date=joining_date,
+        is_active=True,
+        is_admin=False,
+        created_at=datetime.utcnow(),
+        updated_at=datetime.utcnow()
+    )
+    
+    db.add(new_staff)
+    db.commit()
+    db.refresh(new_staff)
+    
+    return {
+        "message": "Staff registered successfully",
+        "staff_id": new_staff.id,
+        "employee_code": new_staff.employee_code,
+        "name": new_staff.name,
+        "email": new_staff.email
+    }
 
 @router.post("/login", response_model=LoginResponse)
 async def login(

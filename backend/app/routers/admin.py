@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, desc
 from typing import List, Optional
 from datetime import datetime, date, timedelta
+import logging
 from app.models.base import get_db
 from app.models.staff import Staff
 from app.models.attendance import Attendance, AttendanceStatus
@@ -25,6 +26,73 @@ from app.config.settings import get_settings
 
 router = APIRouter()
 settings = get_settings()
+logger = logging.getLogger(__name__)
+
+@router.get("/dashboard")
+async def get_admin_dashboard(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get admin dashboard data"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get basic statistics
+        total_staff = db.query(func.count(Staff.id)).filter(Staff.is_active == True).scalar() or 0
+        total_sales_today = db.query(func.sum(Sales.sale_amount)).filter(
+            Sales.sale_date == date.today()
+        ).scalar() or 0.0
+        total_sales_month = db.query(func.sum(Sales.sale_amount)).filter(
+            Sales.sale_date >= date.today().replace(day=1)
+        ).scalar() or 0.0
+        
+        pending_salaries = db.query(func.count(Salary.id)).filter(
+            Salary.payment_status == PaymentStatus.PENDING
+        ).scalar() or 0
+        
+        active_advances = db.query(func.count(Advances.id)).filter(
+            Advances.status == AdvanceStatus.ACTIVE
+        ).scalar() or 0
+        
+        # Get attendance rate for today
+        total_attendance_today = db.query(func.count(Attendance.id)).filter(
+            Attendance.date == date.today(),
+            Attendance.status == AttendanceStatus.PRESENT
+        ).scalar() or 0
+        
+        attendance_rate = (total_attendance_today / total_staff * 100) if total_staff > 0 else 0
+        
+        return {
+            "message": "Welcome to the admin dashboard!",
+            "total_staff": total_staff,
+            "total_sales_today": total_sales_today,
+            "total_sales_month": total_sales_month,
+            "pending_salaries": pending_salaries,
+            "active_advances": active_advances,
+            "attendance_rate": round(attendance_rate, 2),
+            "system_health": "OK"
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get admin dashboard data: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to load dashboard data"
+        )
 
 # Pydantic models for request/response
 class StaffCreate(BaseModel):
@@ -148,7 +216,7 @@ async def create_staff(
         employee_code=staff_data.employee_code,
         name=staff_data.name,
         email=staff_data.email,
-        password=get_password_hash(staff_data.password),
+        password_hash=get_password_hash(staff_data.password),
         phone=staff_data.phone,
         basic_salary=staff_data.basic_salary,
         incentive_percentage=staff_data.incentive_percentage,
@@ -662,8 +730,7 @@ async def calculate_salaries(
         )
     
     # Calculate salaries
-    calculator = SalaryCalculator(db)
-    salary_records = calculator.calculate_all_salaries(month_year)
+    salary_records = salary_service.calculate_all_salaries(db, month_year)
     
     return {
         "message": f"Salaries calculated for {len(salary_records)} staff members",
@@ -774,7 +841,6 @@ async def create_backup(
         )
     
     try:
-        backup_service = BackupService(db)
         backup_path = backup_service.create_daily_backup()
         
         return {
@@ -803,7 +869,6 @@ async def list_backups(
             detail="Access denied: Not on local network"
         )
     
-    backup_service = BackupService(db)
     backups = backup_service.list_backups()
     
     return {
@@ -828,7 +893,6 @@ async def restore_backup(
         )
     
     try:
-        backup_service = BackupService(db)
         success = backup_service.restore_backup(backup_id)
         
         if success:
@@ -863,7 +927,6 @@ async def get_backup_status(
             detail="Access denied: Not on local network"
         )
     
-    backup_service = BackupService(db)
     status = backup_service.get_backup_status()
     
     return status

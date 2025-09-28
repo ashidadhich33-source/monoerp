@@ -19,18 +19,13 @@ const AdminDashboard = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      // Fetch basic stats - in a real app, you'd have dedicated endpoints for this
-      const [staffList, salesReport, advancesList] = await Promise.all([
-        apiService.getStaffList(),
-        apiService.getSalesReport(),
-        apiService.getAdvancesList()
-      ]);
+      const dashboardData = await apiService.getAdminDashboard();
       
       setStats({
-        totalStaff: staffList.length,
-        totalSales: salesReport.reduce((sum, sale) => sum + sale.sale_amount, 0),
-        pendingSalaries: 0, // Would need a dedicated endpoint
-        activeAdvances: advancesList.filter((advance) => advance.status === 'active').length
+        totalStaff: dashboardData.total_staff,
+        totalSales: dashboardData.total_sales_month,
+        pendingSalaries: dashboardData.pending_salaries,
+        activeAdvances: dashboardData.active_advances
       });
     } catch (error) {
       console.error('Failed to fetch dashboard stats:', error);

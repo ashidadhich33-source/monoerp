@@ -368,6 +368,26 @@ class SalaryService:
         except Exception as e:
             logger.error(f"Failed to get salary statistics: {e}")
             return {}
+    
+    def calculate_all_salaries(self, db: Session, month_year: str) -> List[Salary]:
+        """Calculate salaries for all active staff for a specific month"""
+        try:
+            year, month = map(int, month_year.split('-'))
+            
+            # Get all active staff
+            staff_members = db.query(Staff).filter(Staff.is_active == True).all()
+            salary_records = []
+            
+            for staff in staff_members:
+                salary = self.calculate_staff_salary(db, staff.id, month, year)
+                if salary:
+                    salary_records.append(salary)
+            
+            return salary_records
+            
+        except Exception as e:
+            logger.error(f"Failed to calculate all salaries for {month_year}: {e}")
+            return []
 
 # Global salary service instance
 salary_service = SalaryService()

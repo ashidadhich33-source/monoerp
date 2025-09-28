@@ -129,6 +129,11 @@ class ApiService {
   }
 
   // Admin endpoints
+  async getAdminDashboard() {
+    const response = await this.api.get('/api/admin/dashboard');
+    return response.data;
+  }
+
   async getStaffList(skip = 0, limit = 100) {
     const response = await this.api.get(`/api/admin/staff/list?skip=${skip}&limit=${limit}`);
     return response.data;
