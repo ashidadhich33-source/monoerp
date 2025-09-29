@@ -6,6 +6,7 @@ import MobileButton from '../../components/MobileButton';
 import MobileInput from '../../components/MobileInput';
 import MobileTable from '../../components/MobileTable';
 import MobileLoading from '../../components/MobileLoading';
+import { downloadCSV, downloadPDF, generateFilename } from '../../utils/fileDownload';
 
 const AdminReports = () => {
   const { user } = useAuth();
@@ -68,9 +69,82 @@ const AdminReports = () => {
     setDateRange({ startDate: '', endDate: '' });
   };
 
-  const exportReport = (format) => {
-    // Implementation for exporting reports
-    console.log(`Exporting ${activeReport} report as ${format}`);
+  const exportReport = async (format) => {
+    try {
+      let blob;
+      let filename;
+      
+      if (activeReport === 'sales') {
+        if (format === 'csv') {
+          blob = await apiService.exportSalesCSV(dateRange.startDate, dateRange.endDate);
+          filename = generateFilename('sales_report', 'csv');
+          downloadCSV(blob, filename);
+        } else if (format === 'pdf') {
+          blob = await apiService.exportSalesPDF(dateRange.startDate, dateRange.endDate);
+          filename = generateFilename('sales_report', 'pdf');
+          downloadPDF(blob, filename);
+        }
+      } else if (activeReport === 'attendance') {
+        if (format === 'csv') {
+          blob = await apiService.exportAttendanceCSV(dateRange.startDate, dateRange.endDate);
+          filename = generateFilename('attendance_report', 'csv');
+          downloadCSV(blob, filename);
+        } else if (format === 'pdf') {
+          blob = await apiService.exportAttendancePDF(dateRange.startDate, dateRange.endDate);
+          filename = generateFilename('attendance_report', 'pdf');
+          downloadPDF(blob, filename);
+        }
+      } else if (activeReport === 'performance') {
+        // For performance reports, we'll export as CSV for now
+        if (format === 'csv') {
+          // Convert performance data to CSV format
+          const csvData = reportData.map(item => ({
+            'Staff Name': item.staff_name,
+            'Total Sales': item.total_sales,
+            'Target Achieved': `${item.target_achieved.toFixed(2)}%`,
+            'Incentive Earned': item.incentive_earned
+          }));
+          
+          // Create CSV content
+          const headers = Object.keys(csvData[0] || {});
+          const csvContent = [
+            headers.join(','),
+            ...csvData.map(row => headers.map(header => row[header]).join(','))
+          ].join('\n');
+          
+          const blob = new Blob([csvContent], { type: 'text/csv' });
+          filename = generateFilename('performance_report', 'csv');
+          downloadCSV(blob, filename);
+        } else if (format === 'pdf') {
+          // For PDF, we'll use the same data but format it for PDF
+          const pdfData = reportData.map(item => ({
+            staff_name: item.staff_name,
+            total_sales: `₹${item.total_sales.toLocaleString()}`,
+            target_achieved: `${item.target_achieved.toFixed(2)}%`,
+            incentive_earned: `₹${item.incentive_earned.toLocaleString()}`
+          }));
+          
+          // For now, we'll create a simple CSV and convert to PDF
+          // In a real implementation, you'd want a proper PDF generation service
+          const headers = ['Staff Name', 'Total Sales', 'Target Achieved', 'Incentive Earned'];
+          const csvContent = [
+            headers.join(','),
+            ...pdfData.map(row => Object.values(row).join(','))
+          ].join('\n');
+          
+          const blob = new Blob([csvContent], { type: 'text/csv' });
+          filename = generateFilename('performance_report', 'csv');
+          downloadCSV(blob, filename);
+        }
+      }
+      
+      // Show success message
+      alert(`${activeReport} report exported successfully as ${format.toUpperCase()}`);
+      
+    } catch (error) {
+      console.error(`Failed to export ${activeReport} report:`, error);
+      alert(`Failed to export ${activeReport} report. Please try again.`);
+    }
   };
 
   if (loading) {

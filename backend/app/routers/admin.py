@@ -19,6 +19,9 @@ from app.middleware.security import verify_local_network
 from app.utils.auth import get_password_hash
 from app.services.salary_service import salary_service
 from app.services.backup_service import BackupService
+from app.services.file_service import file_service
+from app.services.excel_service import excel_service
+from app.services.notification_service import notification_service
 from pydantic import BaseModel
 import openpyxl
 import os
@@ -1230,4 +1233,694 @@ async def delete_advance(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete advance"
+        )
+
+# Notification endpoints
+@router.get("/notifications")
+async def get_notifications(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db),
+    limit: int = 50,
+    offset: int = 0,
+    unread_only: bool = False
+):
+    """Get notifications for current user"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    try:
+        notifications = notification_service.get_user_notifications(
+            db=db,
+            user_id=current_staff.id,
+            limit=limit,
+            offset=offset,
+            unread_only=unread_only
+        )
+        
+        return {
+            "notifications": notifications,
+            "total": len(notifications)
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get notifications: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to get notifications"
+        )
+
+@router.put("/notifications/{notification_id}/read")
+async def mark_notification_read(
+    notification_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Mark a notification as read"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    try:
+        result = notification_service.mark_notification_read(
+            db=db,
+            notification_id=notification_id,
+            user_id=current_staff.id
+        )
+        
+        if not result["success"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=result["error"]
+            )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Failed to mark notification as read: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to mark notification as read"
+        )
+
+@router.put("/notifications/read-all")
+async def mark_all_notifications_read(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Mark all notifications as read for current user"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    try:
+        result = notification_service.mark_all_notifications_read(
+            db=db,
+            user_id=current_staff.id
+        )
+        
+        if not result["success"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=result["error"]
+            )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Failed to mark all notifications as read: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to mark all notifications as read"
+        )
+
+@router.get("/notifications/statistics")
+async def get_notification_statistics(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get notification statistics for current user"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    try:
+        statistics = notification_service.get_notification_statistics(
+            db=db,
+            user_id=current_staff.id
+        )
+        
+        return statistics
+        
+    except Exception as e:
+        logger.error(f"Failed to get notification statistics: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to get notification statistics"
+        )
+
+@router.post("/notifications/send-attendance-reminder/{staff_id}")
+async def send_attendance_reminder(
+    staff_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Send attendance reminder to a staff member"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        result = notification_service.send_attendance_reminder(
+            db=db,
+            staff_id=staff_id
+        )
+        
+        if not result["success"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=result["error"]
+            )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Failed to send attendance reminder: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send attendance reminder"
+        )
+
+@router.post("/notifications/send-system-alert")
+async def send_system_alert(
+    message: str,
+    alert_type: str = "system",
+    request: Request = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Send system alert to all admin users"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        result = notification_service.send_system_alert(
+            db=db,
+            message=message,
+            alert_type=alert_type
+        )
+        
+        if not result["success"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=result["error"]
+            )
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Failed to send system alert: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to send system alert"
+        )
+
+# Template download endpoints
+@router.get("/sales/template")
+async def download_sales_template(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Download Excel template for sales upload"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get template file path
+        template_path = excel_service.get_excel_template("sales")
+        
+        # Read template file
+        with open(template_path, "rb") as file:
+            content = file.read()
+        
+        # Clean up template file
+        os.remove(template_path)
+        
+        # Return file as response
+        from fastapi.responses import Response
+        return Response(
+            content=content,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=sales_template.xlsx"}
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to generate sales template: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate template"
+        )
+
+@router.get("/attendance/template")
+async def download_attendance_template(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Download Excel template for attendance upload"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get template file path
+        template_path = excel_service.get_excel_template("attendance")
+        
+        # Read template file
+        with open(template_path, "rb") as file:
+            content = file.read()
+        
+        # Clean up template file
+        os.remove(template_path)
+        
+        # Return file as response
+        from fastapi.responses import Response
+        return Response(
+            content=content,
+            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            headers={"Content-Disposition": "attachment; filename=attendance_template.xlsx"}
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to generate attendance template: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate template"
+        )
+
+# Export endpoints
+@router.get("/reports/sales/export/csv")
+async def export_sales_csv(
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+    request: Request = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Export sales report as CSV"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Build query
+        query = db.query(
+            Sales.id,
+            Sales.sale_amount,
+            Sales.sale_date,
+            Sales.units_sold,
+            Staff.name.label('staff_name'),
+            Brands.brand_name
+        ).join(Staff, Sales.staff_id == Staff.id).join(Brands, Sales.brand_id == Brands.id)
+        
+        if start_date:
+            query = query.filter(Sales.sale_date >= start_date)
+        if end_date:
+            query = query.filter(Sales.sale_date <= end_date)
+        
+        sales_data = query.all()
+        
+        # Convert to list of dicts
+        data = []
+        for sale in sales_data:
+            data.append({
+                'id': sale.id,
+                'staff_name': sale.staff_name,
+                'brand_name': sale.brand_name,
+                'sale_amount': float(sale.sale_amount),
+                'units_sold': sale.units_sold,
+                'sale_date': sale.sale_date.strftime('%Y-%m-%d')
+            })
+        
+        filename = f"sales_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        return file_service.generate_csv(data, filename)
+        
+    except Exception as e:
+        logger.error(f"Failed to export sales CSV: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to export sales data"
+        )
+
+@router.get("/reports/sales/export/pdf")
+async def export_sales_pdf(
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+    request: Request = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Export sales report as PDF"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Build query
+        query = db.query(
+            Sales.id,
+            Sales.sale_amount,
+            Sales.sale_date,
+            Sales.units_sold,
+            Staff.name.label('staff_name'),
+            Brands.brand_name
+        ).join(Staff, Sales.staff_id == Staff.id).join(Brands, Sales.brand_id == Brands.id)
+        
+        if start_date:
+            query = query.filter(Sales.sale_date >= start_date)
+        if end_date:
+            query = query.filter(Sales.sale_date <= end_date)
+        
+        sales_data = query.all()
+        
+        # Convert to list of dicts
+        data = []
+        for sale in sales_data:
+            data.append({
+                'id': sale.id,
+                'staff_name': sale.staff_name,
+                'brand_name': sale.brand_name,
+                'sale_amount': f"₹{sale.sale_amount:,.2f}",
+                'units_sold': sale.units_sold,
+                'sale_date': sale.sale_date.strftime('%Y-%m-%d')
+            })
+        
+        columns = [
+            {'key': 'id', 'header': 'ID'},
+            {'key': 'staff_name', 'header': 'Staff Name'},
+            {'key': 'brand_name', 'header': 'Brand'},
+            {'key': 'sale_amount', 'header': 'Amount'},
+            {'key': 'units_sold', 'header': 'Units'},
+            {'key': 'sale_date', 'header': 'Date'}
+        ]
+        
+        title = f"Sales Report ({start_date or 'All'} to {end_date or 'All'})"
+        filename = f"sales_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        
+        return file_service.generate_pdf_report(data, title, columns, filename)
+        
+    except Exception as e:
+        logger.error(f"Failed to export sales PDF: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to export sales data"
+        )
+
+@router.get("/reports/attendance/export/csv")
+async def export_attendance_csv(
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+    request: Request = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Export attendance report as CSV"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Build query
+        query = db.query(
+            Attendance.id,
+            Attendance.date,
+            Attendance.check_in_time,
+            Attendance.check_out_time,
+            Attendance.status,
+            Staff.name.label('staff_name')
+        ).join(Staff, Attendance.staff_id == Staff.id)
+        
+        if start_date:
+            query = query.filter(Attendance.date >= start_date)
+        if end_date:
+            query = query.filter(Attendance.date <= end_date)
+        
+        attendance_data = query.all()
+        
+        # Convert to list of dicts
+        data = []
+        for attendance in attendance_data:
+            data.append({
+                'id': attendance.id,
+                'staff_name': attendance.staff_name,
+                'date': attendance.date.strftime('%Y-%m-%d'),
+                'check_in_time': attendance.check_in_time.strftime('%H:%M:%S') if attendance.check_in_time else 'N/A',
+                'check_out_time': attendance.check_out_time.strftime('%H:%M:%S') if attendance.check_out_time else 'N/A',
+                'status': attendance.status.value
+            })
+        
+        filename = f"attendance_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        return file_service.generate_csv(data, filename)
+        
+    except Exception as e:
+        logger.error(f"Failed to export attendance CSV: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to export attendance data"
+        )
+
+@router.get("/reports/attendance/export/pdf")
+async def export_attendance_pdf(
+    start_date: Optional[date] = None,
+    end_date: Optional[date] = None,
+    request: Request = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Export attendance report as PDF"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Build query
+        query = db.query(
+            Attendance.id,
+            Attendance.date,
+            Attendance.check_in_time,
+            Attendance.check_out_time,
+            Attendance.status,
+            Staff.name.label('staff_name')
+        ).join(Staff, Attendance.staff_id == Staff.id)
+        
+        if start_date:
+            query = query.filter(Attendance.date >= start_date)
+        if end_date:
+            query = query.filter(Attendance.date <= end_date)
+        
+        attendance_data = query.all()
+        
+        # Convert to list of dicts
+        data = []
+        for attendance in attendance_data:
+            data.append({
+                'id': attendance.id,
+                'staff_name': attendance.staff_name,
+                'date': attendance.date.strftime('%Y-%m-%d'),
+                'check_in_time': attendance.check_in_time.strftime('%H:%M:%S') if attendance.check_in_time else 'N/A',
+                'check_out_time': attendance.check_out_time.strftime('%H:%M:%S') if attendance.check_out_time else 'N/A',
+                'status': attendance.status.value
+            })
+        
+        columns = [
+            {'key': 'id', 'header': 'ID'},
+            {'key': 'staff_name', 'header': 'Staff Name'},
+            {'key': 'date', 'header': 'Date'},
+            {'key': 'check_in_time', 'header': 'Check In'},
+            {'key': 'check_out_time', 'header': 'Check Out'},
+            {'key': 'status', 'header': 'Status'}
+        ]
+        
+        title = f"Attendance Report ({start_date or 'All'} to {end_date or 'All'})"
+        filename = f"attendance_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        
+        return file_service.generate_pdf_report(data, title, columns, filename)
+        
+    except Exception as e:
+        logger.error(f"Failed to export attendance PDF: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to export attendance data"
+        )
+
+@router.get("/salary/slip/{staff_id}/{month_year}/pdf")
+async def generate_salary_slip_pdf(
+    staff_id: int,
+    month_year: str,
+    request: Request = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Generate salary slip PDF for a staff member"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get staff member
+        staff = db.query(Staff).filter(Staff.id == staff_id).first()
+        if not staff:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Staff member not found"
+            )
+        
+        # Get salary record for the month
+        salary = db.query(Salary).filter(
+            Salary.staff_id == staff_id,
+            Salary.month_year == month_year
+        ).first()
+        
+        if not salary:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Salary record not found for the specified month"
+            )
+        
+        # Get company info
+        company_info = {
+            "name": "Your Company Name",
+            "address": "Company Address, City, State, ZIP",
+            "phone": "+1 (555) 123-4567",
+            "email": "hr@company.com"
+        }
+        
+        # Calculate values
+        basic_salary = salary.basic_salary
+        incentives = salary.incentive_amount
+        advances_deducted = salary.advance_deduction
+        net_salary = salary.net_salary
+        
+        filename = f"salary_slip_{staff.employee_code}_{month_year}.pdf"
+        
+        return file_service.generate_salary_slip_pdf(
+            staff_name=staff.name,
+            employee_code=staff.employee_code,
+            month_year=month_year,
+            basic_salary=basic_salary,
+            incentives=incentives,
+            advances_deducted=advances_deducted,
+            net_salary=net_salary,
+            company_info=company_info,
+            filename=filename
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to generate salary slip PDF: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to generate salary slip"
         )

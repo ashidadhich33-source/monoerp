@@ -2,362 +2,368 @@
 
 A comprehensive staff attendance and sales management system with fraud prevention, automated salary calculation, and performance tracking capabilities.
 
-## 🚀 Features
+## Features
 
 ### Core Functionality
-- **Staff Management**: Complete CRUD operations for staff members
-- **Attendance Tracking**: Check-in/out with fraud prevention
-- **Sales Management**: Track sales with brand-wise analysis
-- **Salary Calculation**: Automated salary calculation with incentives
-- **Target Management**: Set and track sales targets
-- **Advance Management**: Handle staff advances with deduction tracking
-- **Reporting**: Comprehensive reports and analytics
-- **Backup System**: Automated daily backups with restore functionality
+- **Staff Management**: Complete staff lifecycle management with role-based access
+- **Attendance Tracking**: Real-time attendance monitoring with fraud prevention
+- **Sales Management**: Comprehensive sales tracking and reporting
+- **Target Management**: Goal setting and achievement tracking
+- **Salary Calculation**: Automated salary computation with incentives
+- **Advance Management**: Employee advance tracking and deduction planning
+- **Performance Analytics**: Detailed performance metrics and rankings
+- **Report Generation**: Export capabilities for all data types
 
 ### Security Features
-- **Network Verification**: Local network access control
-- **WiFi MAC Verification**: Device-based authentication
-- **Time-window Validation**: Prevent backdated entries
-- **Rate Limiting**: API rate limiting for security
-- **Audit Logging**: Complete audit trail of all actions
-- **Session Management**: Secure session handling
+- **Network-based Access Control**: Local network verification for security
+- **Device Fingerprinting**: MAC address-based device authentication
+- **Role-based Permissions**: Admin and staff access levels
+- **Data Encryption**: Secure data storage and transmission
 
-### Mobile-First Design
-- **Responsive Interface**: Works on all device sizes
-- **Touch-Friendly**: Optimized for mobile devices
-- **Offline Capability**: Basic offline functionality
-- **Progressive Web App**: PWA-ready features
+### Advanced Features
+- **Real-time Notifications**: System alerts and user notifications
+- **Excel Integration**: Bulk data import/export capabilities
+- **PDF Generation**: Salary slips and report generation
+- **Backup & Recovery**: Automated data backup system
+- **Audit Logging**: Comprehensive activity tracking
 
-## 🛠 Technology Stack
+## Technology Stack
 
 ### Backend
-- **Framework**: FastAPI (Python)
-- **Database**: PostgreSQL (Primary), SQLite (Backup)
-- **ORM**: SQLAlchemy with Alembic migrations
-- **Authentication**: JWT with bcrypt password hashing
-- **Caching**: Redis (optional)
-- **File Processing**: openpyxl for Excel operations
-- **Scheduling**: schedule for background tasks
+- **FastAPI**: Modern, fast web framework for building APIs
+- **SQLAlchemy**: SQL toolkit and Object-Relational Mapping (ORM)
+- **PostgreSQL**: Robust, open-source relational database
+- **Pydantic**: Data validation using Python type annotations
+- **JWT**: JSON Web Token authentication
+- **ReportLab**: PDF generation library
+- **Pandas**: Data manipulation and analysis
+- **OpenPyXL**: Excel file processing
 
 ### Frontend
-- **Framework**: React.js
-- **Styling**: Tailwind CSS
-- **HTTP Client**: Axios
-- **Routing**: React Router DOM
-- **State Management**: Context API
+- **React**: Modern JavaScript library for building user interfaces
+- **React Router**: Declarative routing for React
+- **Tailwind CSS**: Utility-first CSS framework
+- **Axios**: Promise-based HTTP client
+- **Context API**: State management solution
 
-### Infrastructure
-- **Web Server**: Nginx
-- **Process Management**: systemd
-- **Database**: PostgreSQL
-- **Backup**: Automated daily backups
-- **Monitoring**: Built-in performance monitoring
+## Installation
 
-## 📋 Prerequisites
-
+### Prerequisites
 - Python 3.8+
 - Node.js 16+
 - PostgreSQL 12+
-- Redis (optional)
-- Nginx (production)
+- Git
 
-## 🚀 Quick Start
+### Backend Setup
 
-### 1. Clone the Repository
-```bash
-git clone <repository-url>
-cd staff-attendance-system
-```
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd staff-attendance-system
+   ```
 
-### 2. Backend Setup
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
+2. **Create virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
-### 3. Database Setup
-```bash
-# Create database
-createdb staff_attendance_db
+3. **Install dependencies**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
 
-# Run migrations
-alembic upgrade head
-```
+4. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-### 4. Environment Configuration
-```bash
-cp .env.example .env
-# Edit .env with your configuration
-```
+5. **Set up database**
+   ```bash
+   # Create PostgreSQL database
+   createdb staff_attendance_db
+   
+   # Run migrations
+   python -m alembic upgrade head
+   ```
 
-### 5. Frontend Setup
-```bash
-cd frontend
-npm install
-npm run build
-```
+6. **Run the application**
+   ```bash
+   python main.py
+   ```
 
-### 6. Start the Application
-```bash
-# Backend
-cd backend
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+### Frontend Setup
 
-# Frontend (development)
-cd frontend
-npm start
-```
+1. **Navigate to frontend directory**
+   ```bash
+   cd frontend
+   ```
 
-## 🔧 Configuration
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your configuration
+   ```
+
+4. **Run the application**
+   ```bash
+   npm start
+   ```
+
+## Configuration
 
 ### Environment Variables
-Copy `.env.example` to `.env` and configure:
 
+#### Backend (.env)
 ```env
 # Database
-DATABASE_URL=postgresql://user:password@localhost/staff_attendance_db
+DATABASE_URL=postgresql://username:password@localhost:5432/staff_attendance_db
 
 # Security
 SECRET_KEY=your-secret-key-here
-LOCAL_NETWORK_SUBNET=192.168.1.0/24
-ALLOWED_WIFI_MAC_ADDRESSES=AA:BB:CC:DD:EE:FF
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-# Admin
-ADMIN_EMPLOYEE_CODE=ADMIN001
-ADMIN_PASSWORD=admin123
-
-# File Paths
-EXCEL_UPLOAD_PATH=./uploads
-BACKUP_PATH=./backups
-```
-
-### Network Security
-Configure allowed networks and WiFi MAC addresses:
-```env
+# Network Security
 LOCAL_NETWORK_SUBNET=192.168.1.0/24
 ALLOWED_WIFI_MAC_ADDRESSES=AA:BB:CC:DD:EE:FF,11:22:33:44:55:66
+
+# Email (Optional)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+SMTP_USE_TLS=true
+EMAIL_NOTIFICATIONS_ENABLED=false
+
+# File Storage
+EXCEL_UPLOAD_PATH=./uploads/excel
+BACKUP_PATH=./backups
+LOG_PATH=./logs
+TEMP_PATH=./temp
 ```
 
-## 📱 Mobile-First Design
-
-The application is designed with mobile-first principles:
-
-- **Responsive Grid**: Adapts to all screen sizes
-- **Touch Targets**: Minimum 44px touch targets
-- **Swipe Gestures**: Swipeable cards and navigation
-- **Collapsible Navigation**: Mobile-friendly menu
-- **Bottom Navigation**: Easy thumb navigation
-- **Responsive Tables**: Horizontal scroll on mobile
-
-## 🔒 Security Implementation
-
-### Fraud Prevention
-- **WiFi MAC Verification**: Only allowed devices can access
-- **Network Verification**: Local network access only
-- **Time-window Validation**: Prevent backdated entries
-- **Device Fingerprinting**: Track device characteristics
-- **Session Management**: Secure session handling
-
-### Access Control
-- **Role-based Access**: Staff vs Admin permissions
-- **JWT Authentication**: Secure token-based auth
-- **Rate Limiting**: API rate limiting
-- **Input Sanitization**: XSS and injection prevention
-
-## 📊 Salary Calculation
-
-The system uses a comprehensive salary calculation formula:
-
-```
-Salary for Days = (Basic Salary / Working Days) × Present Days
-Target Incentive = (Sales - Target) × 10% (if target achieved)
-Basic Incentive = Sales × Incentive Percentage
-Gross Salary = Salary for Days + Target Incentive + Basic Incentive
-Net Salary = Gross Salary - Advance Deduction
+#### Frontend (.env.local)
+```env
+REACT_APP_API_URL=http://localhost:8000
+REACT_APP_APP_NAME=Staff Attendance System
 ```
 
-## 📈 Reporting & Analytics
+## Usage
 
-### Available Reports
-- **Sales Reports**: Brand-wise, staff-wise, period-wise
-- **Attendance Reports**: Daily, monthly, yearly
-- **Performance Reports**: Target achievement, rankings
-- **Salary Reports**: Payment status, deductions
-- **System Reports**: Usage statistics, performance metrics
+### Initial Setup
 
-### Export Options
-- **Excel Export**: All reports can be exported to Excel
-- **PDF Export**: Salary slips and reports
-- **CSV Export**: Data export for analysis
+1. **Access the application**
+   - Open your browser and navigate to `http://localhost:3000`
+   - You'll be redirected to the setup page
 
-## 🔄 Backup & Recovery
+2. **Complete system setup**
+   - Enter company information
+   - Create admin account
+   - Configure system settings
 
-### Automated Backups
-- **Daily Backups**: Automatic daily database backups
-- **Compression**: gzip compression for storage efficiency
-- **Retention**: Configurable retention period
-- **Verification**: Backup integrity verification
+3. **Login and start using**
+   - Use admin credentials to login
+   - Begin adding staff members
+   - Set up brands and targets
 
-### Manual Backup
+### User Roles
+
+#### Admin Users
+- Full system access
+- Staff management
+- System configuration
+- Report generation
+- Data export/import
+
+#### Staff Users
+- Personal dashboard
+- Attendance marking
+- Sales entry
+- Performance tracking
+- Salary viewing
+
+### Key Workflows
+
+#### Daily Operations
+1. **Staff Check-in**: Staff members mark attendance
+2. **Sales Entry**: Record daily sales transactions
+3. **Performance Monitoring**: Track progress against targets
+4. **Report Generation**: Generate daily/weekly reports
+
+#### Monthly Operations
+1. **Target Setting**: Define monthly targets for staff
+2. **Salary Calculation**: Automated salary computation
+3. **Advance Management**: Process advance requests
+4. **Performance Review**: Analyze monthly performance
+
+## API Documentation
+
+### Authentication Endpoints
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `POST /api/auth/register` - Staff registration
+- `POST /api/auth/refresh-token` - Token refresh
+
+### Admin Endpoints
+- `GET /api/admin/dashboard` - Admin dashboard data
+- `GET /api/admin/staff/list` - Staff list
+- `POST /api/admin/staff/create` - Create staff
+- `PUT /api/admin/staff/update/{id}` - Update staff
+- `GET /api/admin/sales/list` - Sales list
+- `POST /api/admin/sales/create` - Create sales record
+- `GET /api/admin/reports/sales/export/csv` - Export sales CSV
+- `GET /api/admin/reports/sales/export/pdf` - Export sales PDF
+
+### Staff Endpoints
+- `GET /api/staff/dashboard/{id}` - Staff dashboard
+- `POST /api/staff/attendance/check-in` - Check in
+- `POST /api/staff/attendance/check-out` - Check out
+- `GET /api/staff/sales/list` - Personal sales
+- `GET /api/staff/salary/details/{month_year}` - Salary details
+
+## Testing
+
+### Running Tests
+
+#### Backend Tests
 ```bash
-# Create manual backup
-python -m app.services.backup_service create
-
-# Restore from backup
-python -m app.services.backup_service restore backup_file.sql
-```
-
-## 🚀 Production Deployment
-
-### Automated Deployment
-```bash
-# Run deployment script
-sudo ./deploy.sh
-```
-
-### Manual Deployment
-1. **Server Setup**: Install required packages
-2. **Database Setup**: Configure PostgreSQL
-3. **Application Setup**: Deploy application files
-4. **Web Server**: Configure Nginx
-5. **Process Management**: Setup systemd services
-6. **Security**: Configure firewall and SSL
-
-### Production Checklist
-- [ ] Change default admin password
-- [ ] Configure SSL certificates
-- [ ] Setup firewall rules
-- [ ] Configure backup retention
-- [ ] Setup monitoring
-- [ ] Test all functionality
-- [ ] Configure allowed MAC addresses
-
-## 🧪 Testing
-
-### Run Tests
-```bash
-# Backend tests
 cd backend
-pytest tests/
+pip install -r requirements-test.txt
+pytest
+```
 
-# Frontend tests
+#### Frontend Tests
+```bash
 cd frontend
 npm test
 ```
 
 ### Test Coverage
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: API endpoint testing
-- **Security Tests**: Authentication and authorization
-- **Performance Tests**: Load and stress testing
+- Unit tests for all major components
+- Integration tests for API endpoints
+- End-to-end tests for critical workflows
 
-## 📚 API Documentation
+## Deployment
 
-### Authentication Endpoints
-- `POST /api/auth/login` - User login
-- `POST /api/auth/refresh-token` - Refresh JWT token
-- `GET /api/auth/verify-network` - Network verification
+### Production Deployment
 
-### Staff Endpoints
-- `GET /api/staff/dashboard` - Staff dashboard
-- `POST /api/staff/check-in` - Check in
-- `POST /api/staff/check-out` - Check out
-- `GET /api/staff/attendance` - Attendance history
-- `GET /api/staff/sales` - Personal sales
-- `GET /api/staff/rankings` - Performance rankings
-- `GET /api/staff/salary` - Salary details
+#### Backend
+1. **Set up production database**
+2. **Configure environment variables**
+3. **Set up reverse proxy (Nginx)**
+4. **Configure SSL certificates**
+5. **Set up monitoring and logging**
 
-### Admin Endpoints
-- `GET /api/admin/dashboard` - Admin dashboard
-- `GET /api/admin/staff` - Staff management
-- `POST /api/admin/staff` - Create staff
-- `PUT /api/admin/staff/{id}` - Update staff
-- `DELETE /api/admin/staff/{id}` - Delete staff
-- `GET /api/admin/sales` - Sales management
-- `POST /api/admin/sales` - Create sales record
-- `GET /api/admin/targets` - Target management
-- `GET /api/admin/salary` - Salary management
-- `GET /api/admin/backup` - Backup management
-- `GET /api/admin/reports` - Reports and analytics
-- `GET /api/admin/settings` - System settings
+#### Frontend
+1. **Build production bundle**
+   ```bash
+   npm run build
+   ```
+2. **Deploy to web server**
+3. **Configure CDN (optional)**
 
-## 🔧 Maintenance
+### Docker Deployment
 
-### Daily Tasks
-- Monitor system performance
-- Check backup status
-- Review security logs
-- Update system if needed
+#### Backend Dockerfile
+```dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["python", "main.py"]
+```
 
-### Weekly Tasks
-- Review audit logs
-- Check disk space
-- Update dependencies
-- Test backup restore
+#### Frontend Dockerfile
+```dockerfile
+FROM node:16-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+CMD ["npm", "start"]
+```
 
-### Monthly Tasks
-- Performance optimization
-- Security audit
-- Database maintenance
-- Update documentation
+## Security Considerations
 
-## 🆘 Troubleshooting
+### Network Security
+- Local network access only
+- MAC address verification
+- IP address whitelisting
+
+### Data Security
+- Encrypted data transmission
+- Secure password storage
+- Regular security audits
+
+### Access Control
+- Role-based permissions
+- Session management
+- Audit logging
+
+## Troubleshooting
 
 ### Common Issues
 
-#### Database Connection Issues
-```bash
-# Check database status
-sudo systemctl status postgresql
+#### Backend Issues
+- **Database connection errors**: Check database credentials and connectivity
+- **Import errors**: Verify all dependencies are installed
+- **Permission errors**: Check file permissions for upload directories
 
-# Check connection
-psql -h localhost -U staff_user -d staff_attendance_db
-```
+#### Frontend Issues
+- **API connection errors**: Verify backend URL configuration
+- **Build errors**: Check Node.js version and dependencies
+- **Runtime errors**: Check browser console for detailed error messages
 
-#### Performance Issues
-```bash
-# Check system metrics
-curl http://localhost:8000/api/admin/performance
+### Logs and Debugging
+- Backend logs: `./logs/app.log`
+- Frontend logs: Browser developer console
+- Database logs: PostgreSQL logs
 
-# Check logs
-journalctl -u staff-attendance-system-backend -f
-```
+## Contributing
 
-#### Backup Issues
-```bash
-# Check backup status
-curl http://localhost:8000/api/admin/backup/status
+### Development Setup
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Write tests for new functionality
+5. Submit a pull request
 
-# Manual backup
-python -m app.services.backup_service create
-```
+### Code Standards
+- Follow PEP 8 for Python code
+- Use ESLint for JavaScript code
+- Write comprehensive tests
+- Document new features
 
-## 📞 Support
+## License
 
-For technical support and questions:
-- Check the troubleshooting section
-- Review the API documentation
-- Check system logs
-- Contact system administrator
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 📄 License
+## Support
 
-This project is proprietary software. All rights reserved.
+For support and questions:
+- Create an issue in the repository
+- Contact the development team
+- Check the documentation
 
-## 🔄 Version History
+## Changelog
 
-### v1.0.0
+### Version 1.0.0
 - Initial release
-- Complete staff attendance system
-- Sales management
-- Salary calculation
-- Mobile-responsive design
+- Core functionality implementation
 - Security features
-- Backup system
-- Performance monitoring
+- Testing framework
+- Documentation
 
 ---
 
-**Staff Attendance & Payout System** - A comprehensive solution for modern workforce management.
+**Note**: This system is designed for internal use within a local network environment. Ensure proper security measures are in place before deployment.

@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { apiService } from '../services/api';
+import NotificationCenter from './NotificationCenter';
 
 const MobileNavigation = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   const isStaff = !user?.is_admin;
+
+  useEffect(() => {
+    if (user) {
+      fetchNotificationCount();
+    }
+  }, [user]);
+
+  const fetchNotificationCount = async () => {
+    try {
+      const data = await apiService.getNotificationStatistics();
+      setNotificationCount(data.unread_notifications || 0);
+    } catch (error) {
+      console.error('Failed to fetch notification count:', error);
+    }
+  };
 
   const staffNavItems = [
     { name: 'Dashboard', href: '/staff', icon: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z' },
@@ -65,6 +84,34 @@ const MobileNavigation = () => {
               <span className="text-xs font-medium truncate">{item.name}</span>
             </Link>
           ))}
+          
+          {/* Notification Button */}
+          <button
+            onClick={() => setShowNotifications(true)}
+            className="flex flex-col items-center py-2 px-3 rounded-lg min-w-0 flex-1 text-gray-600 hover:text-blue-600 relative"
+          >
+            <div className="relative">
+              <svg
+                className="h-6 w-6 mb-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 00-15 0v5h5l-5 5-5-5h5v-5a7.5 7.5 0 0115 0v5z"
+                />
+              </svg>
+              {notificationCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {notificationCount > 99 ? '99+' : notificationCount}
+                </span>
+              )}
+            </div>
+            <span className="text-xs font-medium truncate">Notifications</span>
+          </button>
         </div>
       </div>
 
@@ -107,7 +154,7 @@ const MobileNavigation = () => {
         </div>
         <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
           <div className="flex-shrink-0 w-full group block">
-            <div className="flex items-center">
+            <div className="flex items-center justify-between">
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
                   {user?.name}
@@ -116,6 +163,19 @@ const MobileNavigation = () => {
                   {user?.employee_code}
                 </p>
               </div>
+              <button
+                onClick={() => setShowNotifications(true)}
+                className="relative p-2 text-gray-400 hover:text-gray-600"
+              >
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 00-15 0v5h5l-5 5-5-5h5v-5a7.5 7.5 0 0115 0v5z" />
+                </svg>
+                {notificationCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {notificationCount > 99 ? '99+' : notificationCount}
+                  </span>
+                )}
+              </button>
             </div>
             <button
               onClick={logout}
@@ -126,6 +186,12 @@ const MobileNavigation = () => {
           </div>
         </div>
       </div>
+
+      {/* Notification Center Modal */}
+      <NotificationCenter
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+      />
     </>
   );
 };

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleApiError, showErrorToast, showSuccessToast } from '../utils/errorHandler';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
@@ -6,6 +7,7 @@ class ApiService {
   constructor() {
     this.api = axios.create({
       baseURL: API_BASE_URL,
+      timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -34,6 +36,13 @@ class ApiService {
           localStorage.removeItem('user');
           window.location.href = '/login';
         }
+        
+        // Show error toast for non-401 errors
+        if (error.response?.status !== 401) {
+          const errorMessage = handleApiError(error, 'API request');
+          showErrorToast(errorMessage);
+        }
+        
         return Promise.reject(error);
       }
     );
@@ -453,6 +462,112 @@ class ApiService {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+    });
+    return response.data;
+  }
+
+  // Export endpoints
+  async exportSalesCSV(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/reports/sales/export/csv?${params}`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  async exportSalesPDF(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/reports/sales/export/pdf?${params}`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  async exportAttendanceCSV(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/reports/attendance/export/csv?${params}`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  async exportAttendancePDF(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/reports/attendance/export/pdf?${params}`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  async generateSalarySlipPDF(staffId, monthYear) {
+    const response = await this.api.get(`/api/admin/salary/slip/${staffId}/${monthYear}/pdf`, {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  // Template download endpoints
+  async downloadSalesTemplate() {
+    const response = await this.api.get('/api/admin/sales/template', {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  async downloadAttendanceTemplate() {
+    const response = await this.api.get('/api/admin/attendance/template', {
+      responseType: 'blob'
+    });
+    return response.data;
+  }
+
+  // Notification endpoints
+  async getNotifications(limit = 50, offset = 0, unreadOnly = false) {
+    const params = new URLSearchParams();
+    params.append('limit', limit);
+    params.append('offset', offset);
+    if (unreadOnly) params.append('unread_only', 'true');
+    
+    const response = await this.api.get(`/api/admin/notifications?${params}`);
+    return response.data;
+  }
+
+  async markNotificationRead(notificationId) {
+    const response = await this.api.put(`/api/admin/notifications/${notificationId}/read`);
+    return response.data;
+  }
+
+  async markAllNotificationsRead() {
+    const response = await this.api.put('/api/admin/notifications/read-all');
+    return response.data;
+  }
+
+  async getNotificationStatistics() {
+    const response = await this.api.get('/api/admin/notifications/statistics');
+    return response.data;
+  }
+
+  async sendAttendanceReminder(staffId) {
+    const response = await this.api.post(`/api/admin/notifications/send-attendance-reminder/${staffId}`);
+    return response.data;
+  }
+
+  async sendSystemAlert(message, alertType = 'system') {
+    const response = await this.api.post('/api/admin/notifications/send-system-alert', {
+      message,
+      alert_type: alertType
     });
     return response.data;
   }
