@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { handleApiError, showErrorToast, showSuccessToast } from '../utils/errorHandler';
+import { handleApiError, showErrorToast } from '../utils/errorHandler';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
@@ -266,22 +266,22 @@ class ApiService {
     return response.data;
   }
 
-  async createBackup() {
+  async createAdminBackup() {
     const response = await this.api.post('/api/admin/backup/create');
     return response.data;
   }
 
-  async listBackups() {
+  async listAdminBackups() {
     const response = await this.api.get('/api/admin/backup/list');
     return response.data;
   }
 
-  async restoreBackup(backupId) {
+  async restoreAdminBackup(backupId) {
     const response = await this.api.post(`/api/admin/backup/restore/${backupId}`);
     return response.data;
   }
 
-  async getBackupStatus() {
+  async getAdminBackupStatus() {
     const response = await this.api.get('/api/admin/backup/status');
     return response.data;
   }
@@ -334,25 +334,6 @@ class ApiService {
     return response.data;
   }
 
-  async updateBrand(brandId, brandData) {
-    const response = await this.api.put(`/api/admin/brands/update/${brandId}`, brandData);
-    return response.data;
-  }
-
-  async deleteBrand(brandId) {
-    const response = await this.api.delete(`/api/admin/brands/delete/${brandId}`);
-    return response.data;
-  }
-
-  async updateAdvance(advanceId, advanceData) {
-    const response = await this.api.put(`/api/admin/advance/update/${advanceId}`, advanceData);
-    return response.data;
-  }
-
-  async deleteAdvance(advanceId) {
-    const response = await this.api.delete(`/api/admin/advance/delete/${advanceId}`);
-    return response.data;
-  }
 
   // Staff management endpoints
   async updateStaffStatus(staffId, isActive) {
@@ -428,21 +409,6 @@ class ApiService {
     return response.data.data || response.data;
   }
 
-  // Staff specific endpoints
-  async getCurrentTargets() {
-    const response = await this.api.get('/api/staff/targets/current');
-    return response.data;
-  }
-
-  async getAchievements() {
-    const response = await this.api.get('/api/staff/achievements');
-    return response.data;
-  }
-
-  async getRankings(periodType) {
-    const response = await this.api.get(`/api/staff/rankings/${periodType}`);
-    return response.data;
-  }
 
   // File upload endpoints
   async uploadSalesExcel(file) {
@@ -569,7 +535,7 @@ class ApiService {
     return response.data;
   }
 
-  async deleteBackup(backupId) {
+  async deleteAdminBackup(backupId) {
     const response = await this.api.delete(`/api/admin/backup/delete/${backupId}`);
     return response.data;
   }
@@ -599,7 +565,7 @@ class ApiService {
     return response.data;
   }
 
-  async acknowledgeAlert(alertId) {
+  async acknowledgeMonitoringAlert(alertId) {
     const response = await this.api.post(`/api/monitoring/alerts/${alertId}/acknowledge`);
     return response.data;
   }
@@ -636,27 +602,27 @@ class ApiService {
   }
 
   // Backup management endpoints
-  async getBackupStatus() {
+  async getMonitoringBackupStatus() {
     const response = await this.api.get('/api/monitoring/backup/status');
     return response.data;
   }
 
-  async listBackups() {
+  async listMonitoringBackups() {
     const response = await this.api.get('/api/monitoring/backup/list');
     return response.data;
   }
 
-  async createBackup(backupType = 'manual') {
+  async createMonitoringBackup(backupType = 'manual') {
     const response = await this.api.post(`/api/monitoring/backup/create?backup_type=${backupType}`);
     return response.data;
   }
 
-  async restoreBackup(backupFilename) {
+  async restoreMonitoringBackup(backupFilename) {
     const response = await this.api.post(`/api/monitoring/backup/restore/${backupFilename}`);
     return response.data;
   }
 
-  async deleteBackup(backupFilename) {
+  async deleteMonitoringBackup(backupFilename) {
     const response = await this.api.delete(`/api/monitoring/backup/${backupFilename}`);
     return response.data;
   }
@@ -848,7 +814,7 @@ class ApiService {
     return response.data;
   }
 
-  async acknowledgeAlert(alertId) {
+  async acknowledgeAlertingAlert(alertId) {
     const response = await this.api.post(`/api/alerting/alerts/${alertId}/acknowledge`);
     return response.data;
   }
