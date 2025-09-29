@@ -420,12 +420,12 @@ class ApiService {
   // Settings endpoints
   async getSystemSettings() {
     const response = await this.api.get('/api/admin/settings');
-    return response.data;
+    return response.data.data || response.data;
   }
 
   async updateSystemSettings(settings) {
     const response = await this.api.put('/api/admin/settings', settings);
-    return response.data;
+    return response.data.data || response.data;
   }
 
   // Staff specific endpoints
@@ -532,7 +532,7 @@ class ApiService {
     if (unreadOnly) params.append('unread_only', 'true');
     
     const response = await this.api.get(`/api/admin/notifications?${params}`);
-    return response.data;
+    return response.data.notifications || response.data;
   }
 
   async markNotificationRead(notificationId) {

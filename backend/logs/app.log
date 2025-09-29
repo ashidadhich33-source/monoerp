@@ -1786,3 +1786,20 @@ FROM setup_states
  LIMIT ? OFFSET ?
 2025-09-29 04:01:19,830 - sqlalchemy.engine.Engine - INFO - [cached since 38.25s ago] (1, 0)
 2025-09-29 04:01:19,831 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:04:19,505 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:04:19,505 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:04:19,505 - sqlalchemy.engine.Engine - INFO - [cached since 218s ago] ()
+2025-09-29 04:04:19,507 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-29 04:04:19,507 - sqlalchemy.engine.Engine - INFO - [cached since 217.9s ago] (1, 0)
+2025-09-29 04:04:19,508 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:04:19,509 - sqlalchemy.engine.Engine - INFO - [cached since 217.9s ago] (1, 0)
+2025-09-29 04:04:19,512 - sqlalchemy.engine.Engine - INFO - SELECT setup_states.id AS setup_states_id, setup_states.company_created AS setup_states_company_created, setup_states.admin_created AS setup_states_admin_created, setup_states.database_initialized AS setup_states_database_initialized, setup_states.system_configured AS setup_states_system_configured, setup_states.setup_data AS setup_states_setup_data, setup_states.last_error AS setup_states_last_error, setup_states.error_count AS setup_states_error_count, setup_states.started_at AS setup_states_started_at, setup_states.completed_at AS setup_states_completed_at, setup_states.updated_at AS setup_states_updated_at 
+FROM setup_states
+ LIMIT ? OFFSET ?
+2025-09-29 04:04:19,513 - sqlalchemy.engine.Engine - INFO - [cached since 217.9s ago] (1, 0)
+2025-09-29 04:04:19,514 - sqlalchemy.engine.Engine - INFO - ROLLBACK
