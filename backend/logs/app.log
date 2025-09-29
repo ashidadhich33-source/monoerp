@@ -1603,3 +1603,6 @@ WHERE attendance.staff_id = ? AND attendance.status = ? AND attendance.date >= ?
 2025-09-29 03:44:55,292 - app.services.scheduler_service - INFO - Scheduler started
 2025-09-29 03:44:55,292 - app.services.scheduler_service - INFO - All background tasks started
 2025-09-29 03:44:55,292 - __main__ - INFO - Application started with background tasks
+2025-09-29 03:45:37,202 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-29 03:45:37,202 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-29 03:45:37,202 - __main__ - INFO - Application shutdown with background tasks stopped
