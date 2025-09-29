@@ -276,6 +276,191 @@ class ApiService {
     const response = await this.api.get('/api/admin/backup/status');
     return response.data;
   }
+
+  // Setup endpoints
+  async getSetupStatus() {
+    const response = await this.api.get('/api/setup/status');
+    return response.data;
+  }
+
+  async createCompany(companyData) {
+    const response = await this.api.post('/api/setup/company', companyData);
+    return response.data;
+  }
+
+  async createAdmin(adminData) {
+    const response = await this.api.post('/api/setup/admin', adminData);
+    return response.data;
+  }
+
+  async completeSetup(setupData) {
+    const response = await this.api.post('/api/setup/complete', setupData);
+    return response.data;
+  }
+
+  // Missing admin endpoints
+  async updateSales(salesId, salesData) {
+    const response = await this.api.put(`/api/admin/sales/update/${salesId}`, salesData);
+    return response.data;
+  }
+
+  async deleteSales(salesId) {
+    const response = await this.api.delete(`/api/admin/sales/delete/${salesId}`);
+    return response.data;
+  }
+
+  async updateTarget(targetId, targetData) {
+    const response = await this.api.put(`/api/admin/targets/update/${targetId}`, targetData);
+    return response.data;
+  }
+
+  async deleteTarget(targetId) {
+    const response = await this.api.delete(`/api/admin/targets/delete/${targetId}`);
+    return response.data;
+  }
+
+  async updateBrand(brandId, brandData) {
+    const response = await this.api.put(`/api/admin/brands/update/${brandId}`, brandData);
+    return response.data;
+  }
+
+  async deleteBrand(brandId) {
+    const response = await this.api.delete(`/api/admin/brands/delete/${brandId}`);
+    return response.data;
+  }
+
+  async updateAdvance(advanceId, advanceData) {
+    const response = await this.api.put(`/api/admin/advance/update/${advanceId}`, advanceData);
+    return response.data;
+  }
+
+  async deleteAdvance(advanceId) {
+    const response = await this.api.delete(`/api/admin/advance/delete/${advanceId}`);
+    return response.data;
+  }
+
+  // Staff management endpoints
+  async updateStaffStatus(staffId, isActive) {
+    const response = await this.api.put(`/api/admin/staff/update/${staffId}`, { is_active: isActive });
+    return response.data;
+  }
+
+  // Salary management endpoints
+  async getSalaryList(monthYear) {
+    const params = monthYear ? `?month_year=${monthYear}` : '';
+    const response = await this.api.get(`/api/admin/salary/report${params}`);
+    return response.data;
+  }
+
+  async approveSalary(salaryId) {
+    const response = await this.api.put(`/api/admin/salary/approve/${salaryId}`);
+    return response.data;
+  }
+
+  async rejectSalary(salaryId) {
+    const response = await this.api.put(`/api/admin/salary/reject/${salaryId}`);
+    return response.data;
+  }
+
+  async bulkApproveSalary(monthYear) {
+    const params = monthYear ? `?month_year=${monthYear}` : '';
+    const response = await this.api.post(`/api/admin/salary/approve${params}`);
+    return response.data;
+  }
+
+  // Attendance management endpoints
+  async getAllStaffAttendance(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/attendance/report?${params}`);
+    return response.data;
+  }
+
+  async updateAttendance(attendanceId, attendanceData) {
+    const response = await this.api.put(`/api/admin/attendance/update/${attendanceId}`, attendanceData);
+    return response.data;
+  }
+
+  // Reports endpoints
+  async getSalesReport(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/reports/sales?${params}`);
+    return response.data;
+  }
+
+  async getAttendanceReport(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/reports/attendance?${params}`);
+    return response.data;
+  }
+
+  async getPerformanceReport(startDate, endDate) {
+    const params = new URLSearchParams();
+    if (startDate) params.append('start_date', startDate);
+    if (endDate) params.append('end_date', endDate);
+    
+    const response = await this.api.get(`/api/admin/reports/performance?${params}`);
+    return response.data;
+  }
+
+  // Settings endpoints
+  async getSystemSettings() {
+    const response = await this.api.get('/api/admin/settings');
+    return response.data;
+  }
+
+  async updateSystemSettings(settings) {
+    const response = await this.api.put('/api/admin/settings', settings);
+    return response.data;
+  }
+
+  // Staff specific endpoints
+  async getCurrentTargets() {
+    const response = await this.api.get('/api/staff/targets/current');
+    return response.data;
+  }
+
+  async getAchievements() {
+    const response = await this.api.get('/api/staff/achievements');
+    return response.data;
+  }
+
+  async getRankings(periodType) {
+    const response = await this.api.get(`/api/staff/rankings/${periodType}`);
+    return response.data;
+  }
+
+  // File upload endpoints
+  async uploadSalesExcel(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await this.api.post('/api/admin/sales/bulk-upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  }
+
+  // Backup endpoints
+  async getBackupHistory() {
+    const response = await this.api.get('/api/admin/backup/list');
+    return response.data;
+  }
+
+  async deleteBackup(backupId) {
+    const response = await this.api.delete(`/api/admin/backup/delete/${backupId}`);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
