@@ -1803,3 +1803,81 @@ FROM setup_states
  LIMIT ? OFFSET ?
 2025-09-29 04:04:19,513 - sqlalchemy.engine.Engine - INFO - [cached since 217.9s ago] (1, 0)
 2025-09-29 04:04:19,514 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:29:44,813 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:29:44,814 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-29 04:29:44,814 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,815 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-29 04:29:44,816 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,816 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-29 04:29:44,816 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,822 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-29 04:29:44,823 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,823 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-29 04:29:44,823 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,823 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-29 04:29:44,823 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,823 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-29 04:29:44,823 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,824 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-29 04:29:44,825 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,825 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-29 04:29:44,825 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,825 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-29 04:29:44,825 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:29:44,826 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-29 04:29:44,826 - __main__ - INFO - Database tables created successfully
+2025-09-29 04:29:45,061 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-29 04:29:45,062 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-29 04:29:45,067 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-29 04:29:45,067 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-29 04:29:45,067 - __main__ - INFO - Application started with background tasks
+2025-09-29 04:30:41,093 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-29 04:30:41,093 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-29 04:30:41,094 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-29 04:30:45,067 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-29 04:30:45,068 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-29 04:30:45,068 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-29 04:30:46,497 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:30:46,498 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-29 04:30:46,498 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,499 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-29 04:30:46,499 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,499 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-29 04:30:46,499 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-29 04:30:46,500 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-29 04:30:46,501 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,502 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-29 04:30:46,502 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,502 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-29 04:30:46,502 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,502 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-29 04:30:46,502 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:30:46,503 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-29 04:30:46,503 - __main__ - INFO - Database tables created successfully
+2025-09-29 04:30:46,652 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-29 04:30:46,652 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-29 04:30:46,656 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-29 04:30:46,656 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-29 04:30:46,656 - __main__ - INFO - Application started with background tasks
