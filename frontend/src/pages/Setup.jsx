@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiService as api } from '../services/api';
 
@@ -76,21 +76,21 @@ const Setup = () => {
     'BRL'
   ];
 
-  useEffect(() => {
-    // Check if setup is already complete
-    checkSetupStatus();
-  }, []);
-
-  const checkSetupStatus = async () => {
+  const checkSetupStatus = useCallback(async () => {
     try {
-      const response = await api.get('/setup/status');
-      if (response.data.is_setup_complete) {
+      const response = await api.getSetupStatus();
+      if (response.is_setup_complete) {
         navigate('/login');
       }
     } catch (error) {
       console.error('Error checking setup status:', error);
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    // Check if setup is already complete
+    checkSetupStatus();
+  }, [checkSetupStatus]);
 
   const handleInputChange = (section, field, value) => {
     setFormData(prev => ({
@@ -174,7 +174,7 @@ const Setup = () => {
     setSuccess('');
 
     try {
-      const response = await api.post('/setup/complete', {
+      const response = await api.completeSetup({
         company_data: formData.company,
         admin_data: {
           name: formData.admin.name,
@@ -185,13 +185,13 @@ const Setup = () => {
         system_config: {}
       });
 
-      if (response.data.success) {
+      if (response.success) {
         setSuccess('Setup completed successfully! Redirecting to login...');
         setTimeout(() => {
           navigate('/login');
         }, 2000);
       } else {
-        setError(response.data.message || 'Setup failed. Please check your information and try again.');
+        setError(response.message || 'Setup failed. Please check your information and try again.');
       }
     } catch (error) {
       console.error('Setup error:', error);

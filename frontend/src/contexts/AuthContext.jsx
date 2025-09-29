@@ -30,9 +30,9 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (employeeCode, password, macAddress) => {
+  const login = async (name, password, macAddress) => {
     try {
-      const response = await apiService.login(employeeCode, password, macAddress);
+      const response = await apiService.login(name, password, macAddress);
       
       setToken(response.access_token);
       setUser({

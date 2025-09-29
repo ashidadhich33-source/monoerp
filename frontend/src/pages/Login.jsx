@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { apiService } from '../services/api';
 
 const Login = () => {
-  const [employeeCode, setEmployeeCode] = useState('');
+  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [macAddress, setMacAddress] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,7 @@ const Login = () => {
     setError('');
 
     try {
-      await login(employeeCode, password, macAddress);
+      await login(name, password, macAddress);
       // Navigation will be handled by the useEffect when user state changes
     } catch (error) {
       setError(error.response?.data?.detail || 'Login failed');
@@ -95,18 +95,18 @@ const Login = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="employee-code" className="sr-only">
-                Employee Code
+              <label htmlFor="name" className="sr-only">
+                Name
               </label>
               <input
-                id="employee-code"
-                name="employee-code"
+                id="name"
+                name="name"
                 type="text"
                 required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Employee Code"
-                value={employeeCode}
-                onChange={(e) => setEmployeeCode(e.target.value)}
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>

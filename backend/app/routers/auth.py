@@ -39,7 +39,7 @@ def verify_token(token: str):
         )
 
 class LoginRequest(BaseModel):
-    employee_code: str
+    name: str
     password: str
     mac_address: Optional[str] = None
 
@@ -179,16 +179,16 @@ async def login(
             detail="Access denied: Invalid device"
         )
     
-    # Find staff member
+    # Find staff member by name
     staff = db.query(Staff).filter(
-        Staff.employee_code == login_data.employee_code,
+        Staff.name == login_data.name,
         Staff.is_active == True
     ).first()
     
     if not staff or not verify_password(login_data.password, staff.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect employee code or password"
+            detail="Incorrect name or password"
         )
     
     # Create access token
