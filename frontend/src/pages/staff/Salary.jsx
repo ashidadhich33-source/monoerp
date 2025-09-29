@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { apiService } from '../../services/api';
+import { generateSalarySlipPDF } from '../../utils/pdfGenerator';
 import MobileCard from '../../components/MobileCard';
 import MobileButton from '../../components/MobileButton';
 import MobileInput from '../../components/MobileInput';
@@ -15,10 +16,12 @@ const StaffSalary = () => {
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
   });
   const [historicalSalaries, setHistoricalSalaries] = useState([]);
+  const [companyInfo, setCompanyInfo] = useState(null);
 
   useEffect(() => {
     fetchSalaryDetails();
     fetchHistoricalSalaries();
+    fetchCompanyInfo();
   }, [selectedMonth]);
 
   const fetchSalaryDetails = async () => {
@@ -43,6 +46,22 @@ const StaffSalary = () => {
     }
   };
 
+  const fetchCompanyInfo = async () => {
+    try {
+      const data = await apiService.getCompanyInfo();
+      setCompanyInfo(data);
+    } catch (error) {
+      console.error('Failed to fetch company info:', error);
+      // Set default company info if API fails
+      setCompanyInfo({
+        name: 'Your Company Name',
+        address: 'Company Address',
+        phone: 'Company Phone',
+        email: 'company@email.com'
+      });
+    }
+  };
+
   const formatCurrency = (amount) => {
     return `₹${amount.toLocaleString()}`;
   };
@@ -56,12 +75,35 @@ const StaffSalary = () => {
     }
   };
 
-  const downloadSalarySlip = async () => {
+  const downloadSalarySlip = async (salaryData = null) => {
     try {
-      // This would need a new API endpoint for downloading salary slips
-      // Downloading salary slip for: selectedMonth
+      const dataToUse = salaryData || salaryDetails;
+      
+      if (!dataToUse) {
+        alert('No salary data available for download');
+        return;
+      }
+
+      // Show loading state
+      setLoading(true);
+
+      // Use company data from API or fallback to default
+      const companyData = companyInfo || {
+        name: 'Your Company Name',
+        address: 'Company Address',
+        phone: 'Company Phone',
+        email: 'company@email.com'
+      };
+
+      // Generate and download PDF
+      await generateSalarySlipPDF(dataToUse, companyData);
+      
+      console.log('Salary slip downloaded successfully');
     } catch (error) {
       console.error('Failed to download salary slip:', error);
+      alert('Failed to download salary slip. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -279,7 +321,7 @@ const StaffSalary = () => {
                             ₹{salary.net_salary.toLocaleString()}
                           </span>
                           <MobileButton
-                            onClick={() => handleDownloadSalarySlip(salary.month_year)}
+                            onClick={() => downloadSalarySlip(salary)}
                             variant="outline"
                             size="sm"
                           >
