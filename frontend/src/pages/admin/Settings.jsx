@@ -5,6 +5,7 @@ import MobileCard from '../../components/MobileCard';
 import MobileButton from '../../components/MobileButton';
 import MobileInput from '../../components/MobileInput';
 import MobileLoading from '../../components/MobileLoading';
+import MobileNotification from '../../components/MobileNotification';
 
 const AdminSettings = () => {
   const { user } = useAuth();

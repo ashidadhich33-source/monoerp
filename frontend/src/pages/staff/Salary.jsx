@@ -279,7 +279,7 @@ const StaffSalary = () => {
                             ₹{salary.net_salary.toLocaleString()}
                           </span>
                           <MobileButton
-                            onClick={() => handleDownloadSalarySlip(salary.month_year)}
+                            onClick={() => downloadSalarySlip()}
                             variant="outline"
                             size="sm"
                           >
