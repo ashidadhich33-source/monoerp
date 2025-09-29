@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from app.models.base import engine, Base
 from app.config.settings import get_settings
-from app.routers import auth, staff, admin, setup
+from app.routers import auth, staff, admin, setup, monitoring, integrations, disaster_recovery, alerting
 from app.services.scheduler_service import start_background_tasks, stop_background_tasks
 from app.middleware.security import security_middleware_handler
 from app.utils.error_handler import global_exception_handler
@@ -81,6 +81,10 @@ app.middleware("http")(security_middleware_handler)
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(staff.router, prefix="/api/staff", tags=["Staff Panel"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin Panel"])
+app.include_router(monitoring.router, prefix="/api", tags=["Monitoring"])
+app.include_router(integrations.router, prefix="/api", tags=["Integrations"])
+app.include_router(disaster_recovery.router, prefix="/api", tags=["Disaster Recovery"])
+app.include_router(alerting.router, prefix="/api", tags=["Alerting"])
 app.include_router(setup.router, tags=["Setup"])
 
 

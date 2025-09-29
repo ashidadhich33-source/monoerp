@@ -1,244 +1,357 @@
-import sqlite3
+"""
+Backup service for automated backups and disaster recovery
+"""
 import os
 import shutil
-from datetime import datetime, timedelta
-from typing import List, Dict, Any
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine, text
-from app.config.settings import get_settings
-import gzip
+import zipfile
 import json
+from datetime import datetime
+from typing import Dict, List, Any, Optional
+import logging
+from pathlib import Path
+from sqlalchemy.orm import Session
+from app.models.base import get_db
+from app.config.settings import get_settings
+
+logger = logging.getLogger(__name__)
 
 class BackupService:
-    """Service for creating and managing database backups"""
-    
-    def __init__(self, db: Session):
-        self.db = db
+    def __init__(self):
         self.settings = get_settings()
-        self.backup_dir = self.settings.backup_path
-        
-        # Ensure backup directory exists
-        os.makedirs(self.backup_dir, exist_ok=True)
+        self.backup_dir = Path(self.settings.backup_directory)
+        self.backup_dir.mkdir(exist_ok=True)
     
-    def create_daily_backup(self) -> str:
-        """Create a daily backup of the database"""
-        backup_date = datetime.now().strftime("%Y%m%d")
-        backup_filename = f"backup_{backup_date}.db"
-        backup_path = os.path.join(self.backup_dir, backup_filename)
-        
+    def create_backup(self, backup_type: str = "manual") -> Dict[str, Any]:
+        """Create a system backup"""
         try:
-            # Create SQLite backup
-            if self.settings.database_url.startswith("sqlite"):
-                # For SQLite, just copy the database file
-                db_path = self.settings.database_url.replace("sqlite:///", "")
-                shutil.copy2(db_path, backup_path)
-            else:
-                # For other databases, export to SQLite
-                self._export_to_sqlite(backup_path)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_name = f"{backup_type}_{timestamp}"
+            backup_path = self.backup_dir / f"{backup_name}.zip"
             
-            # Compress the backup
-            compressed_path = f"{backup_path}.gz"
-            with open(backup_path, 'rb') as f_in:
-                with gzip.open(compressed_path, 'wb') as f_out:
-                    shutil.copyfileobj(f_in, f_out)
+            # Create backup archive
+            with zipfile.ZipFile(backup_path, 'w', zipfile.ZIP_DEFLATED) as backup_zip:
+                # Backup database
+                self._backup_database(backup_zip)
+                
+                # Backup configuration files
+                self._backup_config(backup_zip)
+                
+                # Backup uploaded files
+                self._backup_uploads(backup_zip)
+                
+                # Backup logs
+                self._backup_logs(backup_zip)
             
-            # Remove uncompressed file
-            os.remove(backup_path)
-            
-            # Create metadata file
+            # Create backup metadata
             metadata = {
-                "backup_date": backup_date,
-                "created_at": datetime.now().isoformat(),
-                "database_url": self.settings.database_url,
-                "backup_type": "daily",
-                "compressed": True,
-                "file_size": os.path.getsize(compressed_path)
+                'backup_type': backup_type,
+                'created_at': datetime.now().isoformat(),
+                'size': backup_path.stat().st_size,
+                'files_included': self._get_backup_contents(backup_path)
             }
             
-            metadata_path = f"{compressed_path}.meta"
+            # Save metadata
+            metadata_path = self.backup_dir / f"{backup_name}_metadata.json"
             with open(metadata_path, 'w') as f:
                 json.dump(metadata, f, indent=2)
             
-            return compressed_path
+            logger.info(f"Backup created successfully: {backup_name}")
+            return {
+                'success': True,
+                'backup_name': backup_name,
+                'filename': backup_path.name,
+                'size': backup_path.stat().st_size,
+                'metadata': metadata
+            }
             
         except Exception as e:
-            raise Exception(f"Backup creation failed: {str(e)}")
+            logger.error(f"Failed to create backup: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
     
-    def _export_to_sqlite(self, backup_path: str):
-        """Export current database to SQLite backup"""
-        # This is a simplified version - in production, you'd want more sophisticated export
-        # For now, we'll create a basic SQLite database with the same schema
-        
-        # Create SQLite connection
-        sqlite_conn = sqlite3.connect(backup_path)
-        
-        # Get all tables and their data
-        tables = [
-            'staff', 'attendance', 'sales', 'brands', 'targets', 
-            'achievements', 'salary', 'advances', 'rankings'
-        ]
-        
-        for table in tables:
-            try:
-                # Get table data
-                result = self.db.execute(text(f"SELECT * FROM {table}"))
-                rows = result.fetchall()
+    def _backup_database(self, backup_zip: zipfile.ZipFile):
+        """Backup database"""
+        try:
+            # Export database to SQL
+            db_path = self.settings.database_url.replace("sqlite:///", "")
+            if os.path.exists(db_path):
+                backup_zip.write(db_path, "database/database.db")
+                logger.info("Database backed up successfully")
+        except Exception as e:
+            logger.error(f"Failed to backup database: {e}")
+    
+    def _backup_config(self, backup_zip: zipfile.ZipFile):
+        """Backup configuration files"""
+        try:
+            config_files = [
+                "app/config/settings.py",
+                "app/config/database.py",
+                "requirements.txt",
+                "requirements-test.txt",
+                "pytest.ini"
+            ]
+            
+            for config_file in config_files:
+                if os.path.exists(config_file):
+                    backup_zip.write(config_file, f"config/{os.path.basename(config_file)}")
+            
+            logger.info("Configuration files backed up successfully")
+        except Exception as e:
+            logger.error(f"Failed to backup config: {e}")
+    
+    def _backup_uploads(self, backup_zip: zipfile.ZipFile):
+        """Backup uploaded files"""
+        try:
+            uploads_dir = Path(self.settings.uploads_directory)
+            if uploads_dir.exists():
+                for file_path in uploads_dir.rglob("*"):
+                    if file_path.is_file():
+                        arcname = f"uploads/{file_path.relative_to(uploads_dir)}"
+                        backup_zip.write(file_path, arcname)
+            
+            logger.info("Uploaded files backed up successfully")
+        except Exception as e:
+            logger.error(f"Failed to backup uploads: {e}")
+    
+    def _backup_logs(self, backup_zip: zipfile.ZipFile):
+        """Backup log files"""
+        try:
+            logs_dir = Path("logs")
+            if logs_dir.exists():
+                for file_path in logs_dir.rglob("*.log"):
+                    if file_path.is_file():
+                        arcname = f"logs/{file_path.relative_to(logs_dir)}"
+                        backup_zip.write(file_path, arcname)
+            
+            logger.info("Log files backed up successfully")
+        except Exception as e:
+            logger.error(f"Failed to backup logs: {e}")
+    
+    def _get_backup_contents(self, backup_path: Path) -> List[str]:
+        """Get list of files in backup"""
+        try:
+            with zipfile.ZipFile(backup_path, 'r') as backup_zip:
+                return backup_zip.namelist()
+        except Exception as e:
+            logger.error(f"Failed to get backup contents: {e}")
+            return []
+    
+    def restore_backup(self, backup_filename: str) -> Dict[str, Any]:
+        """Restore from backup"""
+        try:
+            backup_path = self.backup_dir / backup_filename
+            if not backup_path.exists():
+                return {
+                    'success': False,
+                    'error': f"Backup file not found: {backup_filename}"
+                }
+            
+            # Extract backup
+            with zipfile.ZipFile(backup_path, 'r') as backup_zip:
+                backup_zip.extractall(self.backup_dir / "restore_temp")
+            
+            # Restore database
+            self._restore_database(backup_path)
+            
+            # Restore configuration
+            self._restore_config(backup_path)
+            
+            # Restore uploads
+            self._restore_uploads(backup_path)
+            
+            # Clean up temporary files
+            shutil.rmtree(self.backup_dir / "restore_temp")
+            
+            logger.info(f"Backup restored successfully: {backup_filename}")
+            return {
+                'success': True,
+                'message': f"Backup {backup_filename} restored successfully"
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to restore backup: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
+    
+    def _restore_database(self, backup_path: Path):
+        """Restore database from backup"""
+        try:
+            with zipfile.ZipFile(backup_path, 'r') as backup_zip:
+                if "database/database.db" in backup_zip.namelist():
+                    # Extract database
+                    backup_zip.extract("database/database.db", self.backup_dir / "restore_temp")
+                    
+                    # Replace current database
+                    current_db_path = self.settings.database_url.replace("sqlite:///", "")
+                    if os.path.exists(current_db_path):
+                        os.remove(current_db_path)
+                    
+                    shutil.move(
+                        self.backup_dir / "restore_temp" / "database" / "database.db",
+                        current_db_path
+                    )
+                    
+                    logger.info("Database restored successfully")
+        except Exception as e:
+            logger.error(f"Failed to restore database: {e}")
+    
+    def _restore_config(self, backup_path: Path):
+        """Restore configuration files"""
+        try:
+            with zipfile.ZipFile(backup_path, 'r') as backup_zip:
+                config_files = [f for f in backup_zip.namelist() if f.startswith("config/")]
                 
-                if rows:
-                    # Get column names
-                    columns = result.keys()
+                for config_file in config_files:
+                    backup_zip.extract(config_file, self.backup_dir / "restore_temp")
                     
-                    # Create table in SQLite (simplified)
-                    create_sql = f"CREATE TABLE IF NOT EXISTS {table} (id INTEGER PRIMARY KEY)"
-                    sqlite_conn.execute(create_sql)
+                    # Restore to original location
+                    original_path = config_file.replace("config/", "")
+                    if os.path.exists(original_path):
+                        os.remove(original_path)
                     
-                    # Insert data
-                    for row in rows:
-                        placeholders = ','.join(['?' for _ in columns])
-                        insert_sql = f"INSERT OR REPLACE INTO {table} VALUES ({placeholders})"
-                        sqlite_conn.execute(insert_sql, row)
-                        
-            except Exception as e:
-                print(f"Error exporting table {table}: {str(e)}")
-                continue
-        
-        sqlite_conn.commit()
-        sqlite_conn.close()
+                    shutil.move(
+                        self.backup_dir / "restore_temp" / config_file,
+                        original_path
+                    )
+                
+                logger.info("Configuration files restored successfully")
+        except Exception as e:
+            logger.error(f"Failed to restore config: {e}")
+    
+    def _restore_uploads(self, backup_path: Path):
+        """Restore uploaded files"""
+        try:
+            with zipfile.ZipFile(backup_path, 'r') as backup_zip:
+                upload_files = [f for f in backup_zip.namelist() if f.startswith("uploads/")]
+                
+                for upload_file in upload_files:
+                    backup_zip.extract(upload_file, self.backup_dir / "restore_temp")
+                    
+                    # Restore to uploads directory
+                    uploads_dir = Path(self.settings.uploads_directory)
+                    uploads_dir.mkdir(exist_ok=True)
+                    
+                    relative_path = upload_file.replace("uploads/", "")
+                    target_path = uploads_dir / relative_path
+                    target_path.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    if target_path.exists():
+                        os.remove(target_path)
+                    
+                    shutil.move(
+                        self.backup_dir / "restore_temp" / upload_file,
+                        target_path
+                    )
+                
+                logger.info("Uploaded files restored successfully")
+        except Exception as e:
+            logger.error(f"Failed to restore uploads: {e}")
     
     def list_backups(self) -> List[Dict[str, Any]]:
         """List all available backups"""
-        backups = []
-        
-        for filename in os.listdir(self.backup_dir):
-            if filename.endswith('.db.gz'):
-                backup_path = os.path.join(self.backup_dir, filename)
-                metadata_path = f"{backup_path}.meta"
+        try:
+            backups = []
+            
+            for backup_file in self.backup_dir.glob("*.zip"):
+                metadata_file = self.backup_dir / f"{backup_file.stem}_metadata.json"
                 
                 backup_info = {
-                    "filename": filename,
-                    "file_path": backup_path,
-                    "created_at": datetime.fromtimestamp(os.path.getctime(backup_path)).isoformat(),
-                    "file_size": os.path.getsize(backup_path),
-                    "has_metadata": os.path.exists(metadata_path)
+                    'filename': backup_file.name,
+                    'size': backup_file.stat().st_size,
+                    'created_at': datetime.fromtimestamp(backup_file.stat().st_mtime).isoformat()
                 }
                 
-                # Load metadata if available
-                if os.path.exists(metadata_path):
-                    try:
-                        with open(metadata_path, 'r') as f:
-                            metadata = json.load(f)
-                            backup_info.update(metadata)
-                    except Exception:
-                        pass
+                if metadata_file.exists():
+                    with open(metadata_file, 'r') as f:
+                        metadata = json.load(f)
+                        backup_info.update(metadata)
                 
                 backups.append(backup_info)
-        
-        # Sort by creation date (newest first)
-        backups.sort(key=lambda x: x['created_at'], reverse=True)
-        
-        return backups
-    
-    def restore_backup(self, backup_id: str) -> bool:
-        """Restore from a backup"""
-        try:
-            # Find backup file
-            backup_path = None
-            for filename in os.listdir(self.backup_dir):
-                if backup_id in filename and filename.endswith('.db.gz'):
-                    backup_path = os.path.join(self.backup_dir, filename)
-                    break
             
-            if not backup_path or not os.path.exists(backup_path):
-                raise Exception(f"Backup file not found: {backup_id}")
-            
-            # Decompress backup
-            temp_path = backup_path.replace('.gz', '_temp')
-            with gzip.open(backup_path, 'rb') as f_in:
-                with open(temp_path, 'wb') as f_out:
-                    shutil.copyfileobj(f_in, f_out)
-            
-            # Restore database
-            if self.settings.database_url.startswith("sqlite"):
-                # For SQLite, replace the database file
-                db_path = self.settings.database_url.replace("sqlite:///", "")
-                shutil.copy2(temp_path, db_path)
-            else:
-                # For other databases, import from SQLite
-                self._import_from_sqlite(temp_path)
-            
-            # Clean up temp file
-            os.remove(temp_path)
-            
-            return True
+            # Sort by creation time (newest first)
+            backups.sort(key=lambda x: x['created_at'], reverse=True)
+            return backups
             
         except Exception as e:
-            raise Exception(f"Restore failed: {str(e)}")
+            logger.error(f"Failed to list backups: {e}")
+            return []
     
-    def _import_from_sqlite(self, sqlite_path: str):
-        """Import data from SQLite backup to current database"""
-        # This is a simplified version - in production, you'd want more sophisticated import
-        sqlite_conn = sqlite3.connect(sqlite_path)
-        
-        tables = [
-            'staff', 'attendance', 'sales', 'brands', 'targets', 
-            'achievements', 'salary', 'advances', 'rankings'
-        ]
-        
-        for table in tables:
-            try:
-                # Get data from SQLite
-                cursor = sqlite_conn.execute(f"SELECT * FROM {table}")
-                rows = cursor.fetchall()
-                columns = [description[0] for description in cursor.description]
-                
-                if rows:
-                    # Clear existing data
-                    self.db.execute(text(f"DELETE FROM {table}"))
-                    
-                    # Insert data (simplified - would need proper mapping)
-                    for row in rows:
-                        # This is a basic implementation
-                        # In production, you'd want proper data mapping and validation
-                        pass
-                        
-            except Exception as e:
-                print(f"Error importing table {table}: {str(e)}")
-                continue
-        
-        sqlite_conn.close()
-        self.db.commit()
+    def delete_backup(self, backup_filename: str) -> Dict[str, Any]:
+        """Delete a backup"""
+        try:
+            backup_path = self.backup_dir / backup_filename
+            metadata_path = self.backup_dir / f"{backup_path.stem}_metadata.json"
+            
+            if backup_path.exists():
+                backup_path.unlink()
+                logger.info(f"Backup file deleted: {backup_filename}")
+            
+            if metadata_path.exists():
+                metadata_path.unlink()
+                logger.info(f"Metadata file deleted: {metadata_path.name}")
+            
+            return {
+                'success': True,
+                'message': f"Backup {backup_filename} deleted successfully"
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to delete backup: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
     
-    def cleanup_old_backups(self, days_to_keep: int = 30):
-        """Clean up old backup files"""
-        cutoff_date = datetime.now() - timedelta(days=days_to_keep)
-        
-        for filename in os.listdir(self.backup_dir):
-            if filename.endswith('.db.gz'):
-                file_path = os.path.join(self.backup_dir, filename)
-                file_time = datetime.fromtimestamp(os.path.getctime(file_path))
+    def cleanup_old_backups(self, days_to_keep: int = 30) -> Dict[str, Any]:
+        """Clean up old backups"""
+        try:
+            cutoff_date = datetime.now() - timedelta(days=days_to_keep)
+            deleted_count = 0
+            
+            for backup_file in self.backup_dir.glob("*.zip"):
+                file_time = datetime.fromtimestamp(backup_file.stat().st_mtime)
                 
                 if file_time < cutoff_date:
-                    try:
-                        os.remove(file_path)
-                        # Also remove metadata file if it exists
-                        metadata_path = f"{file_path}.meta"
-                        if os.path.exists(metadata_path):
-                            os.remove(metadata_path)
-                        print(f"Deleted old backup: {filename}")
-                    except Exception as e:
-                        print(f"Error deleting backup {filename}: {str(e)}")
+                    self.delete_backup(backup_file.name)
+                    deleted_count += 1
+            
+            logger.info(f"Cleaned up {deleted_count} old backups")
+            return {
+                'success': True,
+                'deleted_count': deleted_count,
+                'message': f"Cleaned up {deleted_count} old backups"
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to cleanup old backups: {e}")
+            return {
+                'success': False,
+                'error': str(e)
+            }
     
     def get_backup_status(self) -> Dict[str, Any]:
-        """Get backup system status"""
-        backups = self.list_backups()
-        
-        return {
-            "total_backups": len(backups),
-            "latest_backup": backups[0] if backups else None,
-            "backup_directory": self.backup_dir,
-            "disk_usage": sum(backup['file_size'] for backup in backups),
-            "oldest_backup": backups[-1] if backups else None
-        }
+        """Get backup service status"""
+        try:
+            backups = self.list_backups()
+            total_size = sum(backup['size'] for backup in backups)
+            
+            return {
+                'total_backups': len(backups),
+                'total_size': total_size,
+                'backup_directory': str(self.backup_dir),
+                'latest_backup': backups[0]['created_at'] if backups else None,
+                'oldest_backup': backups[-1]['created_at'] if backups else None
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to get backup status: {e}")
+            return {
+                'error': str(e)
+            }
 
-# Global backup service instance - will be initialized with proper db session when used
-backup_service = None
+# Global backup service instance
+backup_service = BackupService()
