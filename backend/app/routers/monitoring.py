@@ -10,7 +10,7 @@ from app.models.staff import Staff
 from app.services.monitoring_service import monitoring_service
 from app.services.automation_service import automation_service
 from app.services.backup_service import backup_service
-from app.auth import get_current_user
+from app.routers.auth import get_current_staff
 
 router = APIRouter(prefix="/monitoring", tags=["monitoring"])
 
@@ -59,7 +59,7 @@ async def get_metrics_summary(hours: int = 24):
 async def get_alerts(
     severity: Optional[str] = None,
     acknowledged: Optional[bool] = None,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Get system alerts"""
     try:
@@ -74,7 +74,7 @@ async def get_alerts(
 @router.post("/alerts/{alert_id}/acknowledge")
 async def acknowledge_alert(
     alert_id: int,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Acknowledge an alert"""
     try:
@@ -100,7 +100,7 @@ async def get_monitoring_status():
 
 @router.post("/start")
 async def start_monitoring(
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Start system monitoring"""
     try:
@@ -117,7 +117,7 @@ async def start_monitoring(
 
 @router.post("/stop")
 async def stop_monitoring(
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Stop system monitoring"""
     try:
@@ -147,7 +147,7 @@ async def get_automation_status():
 
 @router.post("/automation/start")
 async def start_automation(
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Start automation service"""
     try:
@@ -164,7 +164,7 @@ async def start_automation(
 
 @router.post("/automation/stop")
 async def stop_automation(
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Stop automation service"""
     try:
@@ -183,7 +183,7 @@ async def stop_automation(
 async def schedule_custom_task(
     task_name: str,
     schedule_time: datetime,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Schedule a custom automation task"""
     try:
@@ -226,7 +226,7 @@ async def list_backups():
 @router.post("/backup/create")
 async def create_backup(
     backup_type: str = "manual",
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Create a new backup"""
     try:
@@ -244,7 +244,7 @@ async def create_backup(
 @router.post("/backup/restore/{backup_filename}")
 async def restore_backup(
     backup_filename: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Restore from backup"""
     try:
@@ -262,7 +262,7 @@ async def restore_backup(
 @router.delete("/backup/{backup_filename}")
 async def delete_backup(
     backup_filename: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Delete a backup"""
     try:
@@ -280,7 +280,7 @@ async def delete_backup(
 @router.post("/backup/cleanup")
 async def cleanup_old_backups(
     days_to_keep: int = 30,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Clean up old backups"""
     try:
