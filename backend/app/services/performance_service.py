@@ -1,372 +1,338 @@
 """
-Performance monitoring and optimization service
+Performance optimization service
 """
 import time
-import psutil
-import logging
-from typing import Dict, Any, List, Optional
+import asyncio
+from typing import Any, Dict, List, Optional, Callable
+from functools import wraps
 from datetime import datetime, timedelta
+import logging
 from sqlalchemy.orm import Session
-from app.models.performance_metrics import PerformanceMetric
-from app.models.base import get_db
-import json
+from sqlalchemy import text
+from app.services.cache_service import cache_service, cache_result, cache_invalidate
+from app.config.settings import get_settings
 
 logger = logging.getLogger(__name__)
 
 class PerformanceService:
     def __init__(self):
-        self.metrics_cache = {}
-        self.performance_thresholds = {
-            'response_time': 2.0,  # seconds
-            'cpu_usage': 80.0,    # percentage
-            'memory_usage': 85.0,  # percentage
-            'disk_usage': 90.0     # percentage
-        }
+        self.settings = get_settings()
+        self.query_cache = {}
+        self.performance_metrics = {}
     
-    def record_response_time(self, endpoint: str, method: str, response_time: float, status_code: int):
-        """Record API response time"""
-        try:
-            metric = {
-                'endpoint': endpoint,
-                'method': method,
-                'response_time': response_time,
-                'status_code': status_code,
-                'timestamp': datetime.now()
+    def track_performance(self, operation_name: str):
+        """Decorator to track performance metrics"""
+        def decorator(func):
+            @wraps(func)
+            async def async_wrapper(*args, **kwargs):
+                start_time = time.time()
+                try:
+                    result = await func(*args, **kwargs)
+                    execution_time = time.time() - start_time
+                    self._record_metric(operation_name, execution_time, success=True)
+                    return result
+                except Exception as e:
+                    execution_time = time.time() - start_time
+                    self._record_metric(operation_name, execution_time, success=False)
+                    logger.error(f"Performance tracking error for {operation_name}: {e}")
+                    raise
+            
+            @wraps(func)
+            def sync_wrapper(*args, **kwargs):
+                start_time = time.time()
+                try:
+                    result = func(*args, **kwargs)
+                    execution_time = time.time() - start_time
+                    self._record_metric(operation_name, execution_time, success=True)
+                    return result
+                except Exception as e:
+                    execution_time = time.time() - start_time
+                    self._record_metric(operation_name, execution_time, success=False)
+                    logger.error(f"Performance tracking error for {operation_name}: {e}")
+                    raise
+            
+            return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
+        return decorator
+    
+    def _record_metric(self, operation_name: str, execution_time: float, success: bool):
+        """Record performance metric"""
+        if operation_name not in self.performance_metrics:
+            self.performance_metrics[operation_name] = {
+                'total_calls': 0,
+                'total_time': 0.0,
+                'success_count': 0,
+                'error_count': 0,
+                'avg_time': 0.0,
+                'min_time': float('inf'),
+                'max_time': 0.0,
+                'last_updated': datetime.now()
             }
-            
-            # Log if response time exceeds threshold
-            if response_time > self.performance_thresholds['response_time']:
-                logger.warning(f"Slow response detected: {endpoint} took {response_time:.2f}s")
-            
-            # Store in cache for batch processing
-            cache_key = f"{endpoint}_{method}"
-            if cache_key not in self.metrics_cache:
-                self.metrics_cache[cache_key] = []
-            
-            self.metrics_cache[cache_key].append(metric)
-            
-        except Exception as e:
-            logger.error(f"Failed to record response time: {e}")
-    
-    def get_system_metrics(self) -> Dict[str, Any]:
-        """Get current system performance metrics"""
-        try:
-            # CPU usage
-            cpu_percent = psutil.cpu_percent(interval=1)
-            
-            # Memory usage
-            memory = psutil.virtual_memory()
-            memory_percent = memory.percent
-            memory_used = memory.used / (1024**3)  # GB
-            memory_total = memory.total / (1024**3)  # GB
-            
-            # Disk usage
-            disk = psutil.disk_usage('/')
-            disk_percent = (disk.used / disk.total) * 100
-            disk_used = disk.used / (1024**3)  # GB
-            disk_total = disk.total / (1024**3)  # GB
-            
-            # Network I/O
-            network = psutil.net_io_counters()
-            
-            # Process count
-            process_count = len(psutil.pids())
-            
-            metrics = {
-                'timestamp': datetime.now().isoformat(),
-                'cpu': {
-                    'usage_percent': cpu_percent,
-                    'count': psutil.cpu_count()
-                },
-                'memory': {
-                    'usage_percent': memory_percent,
-                    'used_gb': round(memory_used, 2),
-                    'total_gb': round(memory_total, 2)
-                },
-                'disk': {
-                    'usage_percent': round(disk_percent, 2),
-                    'used_gb': round(disk_used, 2),
-                    'total_gb': round(disk_total, 2)
-                },
-                'network': {
-                    'bytes_sent': network.bytes_sent,
-                    'bytes_recv': network.bytes_recv,
-                    'packets_sent': network.packets_sent,
-                    'packets_recv': network.packets_recv
-                },
-                'processes': {
-                    'count': process_count
-                }
-            }
-            
-            # Check for performance issues
-            alerts = []
-            if cpu_percent > self.performance_thresholds['cpu_usage']:
-                alerts.append(f"High CPU usage: {cpu_percent:.1f}%")
-            
-            if memory_percent > self.performance_thresholds['memory_usage']:
-                alerts.append(f"High memory usage: {memory_percent:.1f}%")
-            
-            if disk_percent > self.performance_thresholds['disk_usage']:
-                alerts.append(f"High disk usage: {disk_percent:.1f}%")
-            
-            metrics['alerts'] = alerts
-            
-            return metrics
-            
-        except Exception as e:
-            logger.error(f"Failed to get system metrics: {e}")
-            return {}
-    
-    def get_database_metrics(self, db: Session) -> Dict[str, Any]:
-        """Get database performance metrics"""
-        try:
-            # Get database connection info
-            connection_info = db.get_bind().get_connection().get_connection()
-            
-            # Get query execution time
-            start_time = time.time()
-            db.execute("SELECT 1")
-            query_time = time.time() - start_time
-            
-            # Get database size (PostgreSQL)
-            try:
-                size_result = db.execute("SELECT pg_size_pretty(pg_database_size(current_database()))").fetchone()
-                db_size = size_result[0] if size_result else "Unknown"
-            except:
-                db_size = "Unknown"
-            
-            # Get active connections
-            try:
-                connections_result = db.execute("SELECT count(*) FROM pg_stat_activity").fetchone()
-                active_connections = connections_result[0] if connections_result else 0
-            except:
-                active_connections = 0
-            
-            return {
-                'timestamp': datetime.now().isoformat(),
-                'query_time': round(query_time, 4),
-                'database_size': db_size,
-                'active_connections': active_connections,
-                'connection_pool': {
-                    'size': db.get_bind().pool.size(),
-                    'checked_in': db.get_bind().pool.checkedin(),
-                    'checked_out': db.get_bind().pool.checkedout(),
-                    'overflow': db.get_bind().pool.overflow(),
-                    'invalid': db.get_bind().pool.invalid()
-                }
-            }
-            
-        except Exception as e:
-            logger.error(f"Failed to get database metrics: {e}")
-            return {}
-    
-    def get_api_metrics(self, db: Session, hours: int = 24) -> Dict[str, Any]:
-        """Get API performance metrics"""
-        try:
-            start_time = datetime.now() - timedelta(hours=hours)
-            
-            # Get response time statistics
-            metrics = db.query(PerformanceMetric).filter(
-                PerformanceMetric.timestamp >= start_time,
-                PerformanceMetric.metric_type == 'response_time'
-            ).all()
-            
-            if not metrics:
-                return {"message": "No metrics available for the specified period"}
-            
-            response_times = [float(m.value) for m in metrics]
-            
-            # Calculate statistics
-            avg_response_time = sum(response_times) / len(response_times)
-            min_response_time = min(response_times)
-            max_response_time = max(response_times)
-            
-            # Get endpoint performance
-            endpoint_stats = {}
-            for metric in metrics:
-                endpoint = metric.details.get('endpoint', 'unknown')
-                if endpoint not in endpoint_stats:
-                    endpoint_stats[endpoint] = []
-                endpoint_stats[endpoint].append(float(metric.value))
-            
-            # Calculate endpoint averages
-            endpoint_averages = {}
-            for endpoint, times in endpoint_stats.items():
-                endpoint_averages[endpoint] = {
-                    'avg_time': sum(times) / len(times),
-                    'count': len(times),
-                    'min_time': min(times),
-                    'max_time': max(times)
-                }
-            
-            return {
-                'period_hours': hours,
-                'total_requests': len(metrics),
-                'response_time': {
-                    'average': round(avg_response_time, 4),
-                    'minimum': round(min_response_time, 4),
-                    'maximum': round(max_response_time, 4)
-                },
-                'endpoints': endpoint_averages
-            }
-            
-        except Exception as e:
-            logger.error(f"Failed to get API metrics: {e}")
-            return {}
-    
-    def record_metric(
-        self,
-        db: Session,
-        metric_type: str,
-        value: float,
-        details: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
-        """Record a performance metric"""
-        try:
-            metric = PerformanceMetric(
-                metric_type=metric_type,
-                value=value,
-                details=details or {},
-                timestamp=datetime.now()
-            )
-            
-            db.add(metric)
-            db.commit()
-            
-            return {"success": True, "metric_id": metric.id}
-            
-        except Exception as e:
-            db.rollback()
-            logger.error(f"Failed to record metric: {e}")
-            return {"success": False, "error": str(e)}
-    
-    def get_performance_summary(self, db: Session) -> Dict[str, Any]:
-        """Get overall performance summary"""
-        try:
-            # Get system metrics
-            system_metrics = self.get_system_metrics()
-            
-            # Get database metrics
-            db_metrics = self.get_database_metrics(db)
-            
-            # Get API metrics
-            api_metrics = self.get_api_metrics(db, hours=1)
-            
-            # Calculate performance score
-            performance_score = self.calculate_performance_score(system_metrics, db_metrics, api_metrics)
-            
-            return {
-                'timestamp': datetime.now().isoformat(),
-                'performance_score': performance_score,
-                'system': system_metrics,
-                'database': db_metrics,
-                'api': api_metrics,
-                'status': self.get_performance_status(performance_score)
-            }
-            
-        except Exception as e:
-            logger.error(f"Failed to get performance summary: {e}")
-            return {}
-    
-    def calculate_performance_score(
-        self,
-        system_metrics: Dict[str, Any],
-        db_metrics: Dict[str, Any],
-        api_metrics: Dict[str, Any]
-    ) -> int:
-        """Calculate overall performance score (0-100)"""
-        try:
-            score = 100
-            
-            # System metrics scoring
-            if 'cpu' in system_metrics:
-                cpu_usage = system_metrics['cpu']['usage_percent']
-                if cpu_usage > 90:
-                    score -= 30
-                elif cpu_usage > 80:
-                    score -= 20
-                elif cpu_usage > 70:
-                    score -= 10
-            
-            if 'memory' in system_metrics:
-                memory_usage = system_metrics['memory']['usage_percent']
-                if memory_usage > 90:
-                    score -= 25
-                elif memory_usage > 80:
-                    score -= 15
-                elif memory_usage > 70:
-                    score -= 5
-            
-            if 'disk' in system_metrics:
-                disk_usage = system_metrics['disk']['usage_percent']
-                if disk_usage > 95:
-                    score -= 20
-                elif disk_usage > 90:
-                    score -= 10
-                elif disk_usage > 85:
-                    score -= 5
-            
-            # Database metrics scoring
-            if 'query_time' in db_metrics:
-                query_time = db_metrics['query_time']
-                if query_time > 1.0:
-                    score -= 15
-                elif query_time > 0.5:
-                    score -= 10
-                elif query_time > 0.2:
-                    score -= 5
-            
-            # API metrics scoring
-            if 'response_time' in api_metrics:
-                avg_response_time = api_metrics['response_time']['average']
-                if avg_response_time > 5.0:
-                    score -= 20
-                elif avg_response_time > 2.0:
-                    score -= 15
-                elif avg_response_time > 1.0:
-                    score -= 10
-            
-            return max(0, min(100, score))
-            
-        except Exception as e:
-            logger.error(f"Failed to calculate performance score: {e}")
-            return 50
-    
-    def get_performance_status(self, score: int) -> str:
-        """Get performance status based on score"""
-        if score >= 90:
-            return "excellent"
-        elif score >= 80:
-            return "good"
-        elif score >= 70:
-            return "fair"
-        elif score >= 60:
-            return "poor"
+        
+        metric = self.performance_metrics[operation_name]
+        metric['total_calls'] += 1
+        metric['total_time'] += execution_time
+        metric['avg_time'] = metric['total_time'] / metric['total_calls']
+        metric['min_time'] = min(metric['min_time'], execution_time)
+        metric['max_time'] = max(metric['max_time'], execution_time)
+        metric['last_updated'] = datetime.now()
+        
+        if success:
+            metric['success_count'] += 1
         else:
-            return "critical"
+            metric['error_count'] += 1
     
-    def cleanup_old_metrics(self, db: Session, days: int = 30) -> Dict[str, Any]:
-        """Clean up old performance metrics"""
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        """Get performance metrics"""
+        return self.performance_metrics
+    
+    def get_slow_operations(self, threshold: float = 1.0) -> List[Dict[str, Any]]:
+        """Get operations slower than threshold"""
+        slow_ops = []
+        for operation, metrics in self.performance_metrics.items():
+            if metrics['avg_time'] > threshold:
+                slow_ops.append({
+                    'operation': operation,
+                    'avg_time': metrics['avg_time'],
+                    'max_time': metrics['max_time'],
+                    'total_calls': metrics['total_calls']
+                })
+        return sorted(slow_ops, key=lambda x: x['avg_time'], reverse=True)
+    
+    def optimize_database_queries(self, db: Session) -> Dict[str, Any]:
+        """Analyze and optimize database queries"""
         try:
-            cutoff_date = datetime.now() - timedelta(days=days)
+            # Get query statistics
+            query_stats = db.execute(text("""
+                SELECT 
+                    query,
+                    calls,
+                    total_time,
+                    mean_time,
+                    rows
+                FROM pg_stat_statements 
+                ORDER BY mean_time DESC 
+                LIMIT 10
+            """)).fetchall()
             
-            deleted_count = db.query(PerformanceMetric).filter(
-                PerformanceMetric.timestamp < cutoff_date
-            ).delete()
+            # Get table statistics
+            table_stats = db.execute(text("""
+                SELECT 
+                    schemaname,
+                    tablename,
+                    n_tup_ins as inserts,
+                    n_tup_upd as updates,
+                    n_tup_del as deletes,
+                    n_live_tup as live_tuples,
+                    n_dead_tup as dead_tuples
+                FROM pg_stat_user_tables
+                ORDER BY n_live_tup DESC
+            """)).fetchall()
             
-            db.commit()
+            # Get index usage
+            index_stats = db.execute(text("""
+                SELECT 
+                    schemaname,
+                    tablename,
+                    indexname,
+                    idx_scan as scans,
+                    idx_tup_read as tuples_read,
+                    idx_tup_fetch as tuples_fetched
+                FROM pg_stat_user_indexes
+                WHERE idx_scan > 0
+                ORDER BY idx_scan DESC
+            """)).fetchall()
             
             return {
-                "success": True,
-                "deleted_count": deleted_count,
-                "message": f"Cleaned up {deleted_count} old performance metrics"
+                'slow_queries': [dict(row) for row in query_stats],
+                'table_stats': [dict(row) for row in table_stats],
+                'index_stats': [dict(row) for row in index_stats],
+                'recommendations': self._generate_optimization_recommendations(query_stats, table_stats, index_stats)
             }
             
         except Exception as e:
-            db.rollback()
-            logger.error(f"Failed to cleanup old metrics: {e}")
-            return {"success": False, "error": str(e)}
+            logger.error(f"Database optimization analysis failed: {e}")
+            return {'error': str(e)}
+    
+    def _generate_optimization_recommendations(self, query_stats, table_stats, index_stats) -> List[str]:
+        """Generate optimization recommendations"""
+        recommendations = []
+        
+        # Analyze slow queries
+        for query in query_stats:
+            if query.mean_time > 1000:  # Queries taking more than 1 second
+                recommendations.append(f"Optimize slow query: {query.query[:100]}... (avg: {query.mean_time:.2f}ms)")
+        
+        # Analyze table statistics
+        for table in table_stats:
+            if table.dead_tuples > table.live_tuples * 0.1:  # More than 10% dead tuples
+                recommendations.append(f"Consider VACUUM for table {table.tablename} (dead tuples: {table.dead_tuples})")
+        
+        # Analyze index usage
+        unused_indexes = [idx for idx in index_stats if idx.scans == 0]
+        if unused_indexes:
+            recommendations.append(f"Consider removing unused indexes: {[idx.indexname for idx in unused_indexes[:5]]}")
+        
+        return recommendations
+    
+    def cache_dashboard_data(self, db: Session, user_id: int) -> Dict[str, Any]:
+        """Cache dashboard data with smart invalidation"""
+        cache_key = f"dashboard:{user_id}"
+        
+        def fetch_dashboard_data():
+            # This would contain the actual dashboard data fetching logic
+            # For now, returning a placeholder
+            return {
+                'user_id': user_id,
+                'timestamp': datetime.now().isoformat(),
+                'data': 'dashboard_data_here'
+            }
+        
+        return cache_service.get_or_set(
+            cache_key,
+            fetch_dashboard_data,
+            expire=self.settings.cache_dashboard_ttl,
+            prefix="dashboard"
+        )
+    
+    def cache_report_data(self, report_type: str, filters: Dict[str, Any]) -> Dict[str, Any]:
+        """Cache report data"""
+        cache_key = f"report:{report_type}:{hash(str(filters))}"
+        
+        def fetch_report_data():
+            # This would contain the actual report data fetching logic
+            return {
+                'report_type': report_type,
+                'filters': filters,
+                'timestamp': datetime.now().isoformat(),
+                'data': 'report_data_here'
+            }
+        
+        return cache_service.get_or_set(
+            cache_key,
+            fetch_report_data,
+            expire=self.settings.cache_reports_ttl,
+            prefix="reports"
+        )
+    
+    def invalidate_user_cache(self, user_id: int):
+        """Invalidate all cache for a specific user"""
+        patterns = [
+            f"dashboard:{user_id}",
+            f"notifications:{user_id}",
+            f"attendance:{user_id}",
+            f"sales:{user_id}",
+            f"salary:{user_id}"
+        ]
+        
+        for pattern in patterns:
+            cache_service.clear_pattern(pattern, "user")
+    
+    def invalidate_system_cache(self):
+        """Invalidate system-wide cache"""
+        system_patterns = [
+            "dashboard:*",
+            "reports:*",
+            "staff:*",
+            "brands:*",
+            "targets:*"
+        ]
+        
+        for pattern in system_patterns:
+            cache_service.clear_pattern(pattern, "system")
+    
+    def get_cache_statistics(self) -> Dict[str, Any]:
+        """Get cache statistics"""
+        if cache_service.redis_client:
+            try:
+                info = cache_service.redis_client.info()
+                return {
+                    'redis_version': info.get('redis_version'),
+                    'used_memory': info.get('used_memory_human'),
+                    'connected_clients': info.get('connected_clients'),
+                    'total_commands_processed': info.get('total_commands_processed'),
+                    'keyspace_hits': info.get('keyspace_hits'),
+                    'keyspace_misses': info.get('keyspace_misses'),
+                    'hit_rate': info.get('keyspace_hits', 0) / (info.get('keyspace_hits', 0) + info.get('keyspace_misses', 1)) * 100
+                }
+            except Exception as e:
+                logger.error(f"Failed to get Redis statistics: {e}")
+                return {'error': str(e)}
+        else:
+            return {
+                'cache_type': 'memory',
+                'memory_cache_size': len(cache_service._memory_cache),
+                'performance_metrics': len(self.performance_metrics)
+            }
+    
+    def optimize_api_response(self, data: Any, max_size: int = 1024 * 1024) -> Any:
+        """Optimize API response size"""
+        if isinstance(data, dict):
+            # Remove null values and empty strings
+            optimized_data = {k: v for k, v in data.items() if v is not None and v != ""}
+            
+            # Truncate large text fields
+            for key, value in optimized_data.items():
+                if isinstance(value, str) and len(value) > 1000:
+                    optimized_data[key] = value[:1000] + "..."
+            
+            return optimized_data
+        
+        elif isinstance(data, list):
+            # Limit list size
+            if len(data) > 100:
+                return data[:100] + [{"message": f"... and {len(data) - 100} more items"}]
+            
+            return data
+        
+        return data
+    
+    def batch_process(self, items: List[Any], batch_size: int = 100, processor: Callable) -> List[Any]:
+        """Process items in batches for better performance"""
+        results = []
+        
+        for i in range(0, len(items), batch_size):
+            batch = items[i:i + batch_size]
+            batch_results = processor(batch)
+            results.extend(batch_results)
+            
+            # Add small delay to prevent overwhelming the system
+            time.sleep(0.01)
+        
+        return results
+    
+    def async_batch_process(self, items: List[Any], batch_size: int = 100, processor: Callable) -> List[Any]:
+        """Process items in batches asynchronously"""
+        async def process_batch(batch):
+            return processor(batch)
+        
+        async def process_all():
+            tasks = []
+            for i in range(0, len(items), batch_size):
+                batch = items[i:i + batch_size]
+                task = process_batch(batch)
+                tasks.append(task)
+            
+            results = await asyncio.gather(*tasks)
+            return [item for sublist in results for item in sublist]
+        
+        return asyncio.run(process_all())
+
+# Performance decorators
+def cache_dashboard(expire: int = 60):
+    """Cache dashboard data"""
+    return cache_result(expire=expire, prefix="dashboard")
+
+def cache_reports(expire: int = 300):
+    """Cache report data"""
+    return cache_result(expire=expire, prefix="reports")
+
+def cache_static_data(expire: int = 3600):
+    """Cache static data"""
+    return cache_result(expire=expire, prefix="static")
+
+def invalidate_cache_on_update(pattern: str):
+    """Invalidate cache when data is updated"""
+    return cache_invalidate(pattern=pattern, prefix="system")
 
 # Global performance service instance
 performance_service = PerformanceService()

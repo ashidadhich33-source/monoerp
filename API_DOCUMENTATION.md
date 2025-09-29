@@ -1,55 +1,78 @@
-# Staff Attendance & Payout System - API Documentation
-
-## Overview
-
-This document provides comprehensive API documentation for the Staff Attendance & Payout System. The API is built with FastAPI and provides RESTful endpoints for staff management, attendance tracking, sales management, and administrative functions.
+# API Documentation
 
 ## Base URL
-
 ```
-http://localhost:8000/api
+http://localhost:8000
 ```
 
 ## Authentication
 
-The API uses JWT (JSON Web Tokens) for authentication. Include the token in the Authorization header:
+All API endpoints (except setup and login) require authentication using JWT tokens.
 
+### Headers
 ```
 Authorization: Bearer <your-jwt-token>
+Content-Type: application/json
 ```
 
-## Response Format
+## Setup Endpoints
 
-All API responses follow a consistent format:
+### Check Setup Status
+```http
+GET /api/setup/status
+```
 
-### Success Response
+**Response:**
 ```json
 {
-  "success": true,
-  "data": { ... },
-  "message": "Operation completed successfully"
+  "is_setup_complete": false,
+  "message": "System setup not completed",
+  "company": null,
+  "admin": null
 }
 ```
 
-### Error Response
+### Complete Setup
+```http
+POST /api/setup/complete
+```
+
+**Request Body:**
 ```json
 {
-  "success": false,
-  "error": "Error message",
-  "details": { ... }
+  "company_data": {
+    "name": "Company Name",
+    "address": "Company Address",
+    "phone": "+1234567890",
+    "industry_type": "Technology",
+    "timezone": "UTC",
+    "currency": "USD",
+    "working_hours_start": "09:00",
+    "working_hours_end": "17:00"
+  },
+  "admin_data": {
+    "name": "Admin Name",
+    "email": "admin@company.com",
+    "password": "securepassword",
+    "phone": "+1234567890"
+  },
+  "system_config": {}
 }
 ```
 
 ## Authentication Endpoints
 
-### POST /auth/login
-Login with employee credentials.
+### Login
+```http
+POST /api/auth/login
+```
 
 **Request Body:**
 ```json
 {
-  "employee_code": "EMP001",
-  "password": "password123"
+  "name": "Staff Name",
+  "password": "password",
+  "mac_address": "AA:BB:CC:DD:EE:FF"
 }
 ```
 
@@ -58,345 +81,168 @@ Login with employee credentials.
 {
   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
   "token_type": "bearer",
-  "expires_in": 28800
+  "staff_id": 1,
+  "name": "Staff Name",
+  "employee_code": "EMP001",
+  "is_admin": false
 }
 ```
 
-### POST /auth/refresh-token
-Refresh JWT token.
-
-**Headers:**
+### Logout
+```http
+POST /api/auth/logout
 ```
-Authorization: Bearer <current-token>
+
+### Refresh Token
+```http
+POST /api/auth/refresh-token
 ```
 
 **Response:**
 ```json
 {
-  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "access_token": "new-jwt-token",
   "token_type": "bearer"
 }
 ```
 
-### GET /auth/verify-network
-Verify if request is from local network.
-
-**Response:**
-```json
-{
-  "is_local_network": true,
-  "client_ip": "192.168.1.100",
-  "message": "Local network access verified"
-}
-```
-
-## Staff Endpoints
-
-### GET /staff/dashboard
-Get staff dashboard data.
-
-**Headers:**
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-```json
-{
-  "today_attendance": {
-    "status": "present",
-    "check_in_time": "09:00:00",
-    "check_out_time": null
-  },
-  "personal_sales_today": 15000,
-  "personal_sales_month": 450000,
-  "target_achievement": 85.5,
-  "rank_position": 3,
-  "total_staff": 25
-}
-```
-
-### POST /staff/check-in
-Check in for attendance.
-
-**Headers:**
-```
-Authorization: Bearer <token>
-```
-
-**Request Body:**
-```json
-{
-  "wifi_mac_address": "AA:BB:CC:DD:EE:FF",
-  "location": "Office"
-}
-```
-
-**Response:**
-```json
-{
-  "message": "Successfully checked in",
-  "check_in_time": "2024-01-15T09:00:00",
-  "status": "present"
-}
-```
-
-### POST /staff/check-out
-Check out for attendance.
-
-**Headers:**
-```
-Authorization: Bearer <token>
-```
-
-**Response:**
-```json
-{
-  "message": "Successfully checked out",
-  "check_out_time": "2024-01-15T18:00:00",
-  "working_hours": 9.0
-}
-```
-
-### GET /staff/attendance
-Get attendance history.
-
-**Headers:**
-```
-Authorization: Bearer <token>
-```
-
-**Query Parameters:**
-- `start_date` (optional): Start date (YYYY-MM-DD)
-- `end_date` (optional): End date (YYYY-MM-DD)
-- `limit` (optional): Number of records (default: 50)
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "date": "2024-01-15",
-    "check_in_time": "09:00:00",
-    "check_out_time": "18:00:00",
-    "status": "present",
-    "working_hours": 9.0
-  }
-]
-```
-
-### GET /staff/sales
-Get personal sales data.
-
-**Headers:**
-```
-Authorization: Bearer <token>
-```
-
-**Query Parameters:**
-- `start_date` (optional): Start date (YYYY-MM-DD)
-- `end_date` (optional): End date (YYYY-MM-DD)
-- `brand_id` (optional): Filter by brand
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "brand_name": "Brand A",
-    "sale_amount": 15000,
-    "sale_date": "2024-01-15",
-    "units_sold": 3
-  }
-]
-```
-
-### GET /staff/rankings
-Get performance rankings.
-
-**Headers:**
-```
-Authorization: Bearer <token>
-```
-
-**Query Parameters:**
-- `period` (optional): monthly, quarterly, yearly (default: monthly)
-
-**Response:**
-```json
-{
-  "rankings": [
-    {
-      "rank": 1,
-      "staff_name": "John Doe",
-      "total_sales": 500000,
-      "target_achievement": 120.5
-    }
-  ],
-  "personal_rank": 3,
-  "personal_highlights": {
-    "best_month": "January 2024",
-    "best_sales": 75000
-  }
-}
-```
-
-### GET /staff/salary
-Get salary details.
-
-**Headers:**
-```
-Authorization: Bearer <token>
-```
-
-**Query Parameters:**
-- `month` (optional): Month in YYYY-MM format
-
-**Response:**
-```json
-{
-  "month_year": "2024-01",
-  "basic_salary": 50000,
-  "working_days": 22,
-  "present_days": 20,
-  "salary_for_days": 45454.55,
-  "target_incentive": 5000,
-  "basic_incentive": 2500,
-  "gross_salary": 52954.55,
-  "advance_deduction": 2000,
-  "net_salary": 50954.55,
-  "payment_status": "paid"
-}
-```
-
-## Admin Endpoints
-
-### GET /admin/dashboard
-Get admin dashboard data.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
-```
-
-**Response:**
-```json
-{
-  "total_staff": 25,
-  "total_sales": 1500000,
-  "total_attendance": 95.5,
-  "pending_salaries": 5,
-  "recent_activities": [
-    {
-      "action": "New staff added",
-      "timestamp": "2024-01-15T10:30:00"
-    }
-  ]
-}
-```
-
-### Staff Management
-
-#### GET /admin/staff
-Get all staff members.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
-```
-
-**Response:**
-```json
-[
-  {
-    "id": 1,
-    "employee_code": "EMP001",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "department": "Sales",
-    "basic_salary": 50000,
-    "is_active": true,
-    "created_at": "2024-01-01T00:00:00"
-  }
-]
-```
-
-#### POST /admin/staff
-Create new staff member.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+### Register Staff
+```http
+POST /api/auth/register
 ```
 
 **Request Body:**
 ```json
 {
   "employee_code": "EMP002",
-  "name": "Jane Smith",
-  "email": "jane@example.com",
-  "password": "password123",
-  "basic_salary": 45000,
-  "incentive_percentage": 5,
-  "department": "Sales"
+  "name": "New Staff",
+  "email": "staff@company.com",
+  "password": "password",
+  "phone": "+1234567890",
+  "basic_salary": 30000.0,
+  "incentive_percentage": 3.0,
+  "department": "Sales",
+  "joining_date": "2024-01-01"
 }
+```
+
+## Admin Endpoints
+
+### Dashboard
+```http
+GET /api/admin/dashboard
 ```
 
 **Response:**
 ```json
 {
-  "message": "Staff member created successfully",
-  "staff_id": 2
+  "total_staff": 25,
+  "total_sales_today": 15000.0,
+  "total_sales_month": 450000.0,
+  "pending_salaries": 5,
+  "active_advances": 3,
+  "attendance_rate": 95.5,
+  "system_health": "OK"
 }
 ```
 
-#### PUT /admin/staff/{staff_id}
-Update staff member.
+### Staff Management
 
-**Headers:**
+#### Get Staff List
+```http
+GET /api/admin/staff/list
 ```
-Authorization: Bearer <admin-token>
+
+**Query Parameters:**
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10)
+- `search` (optional): Search term
+- `department` (optional): Filter by department
+- `is_active` (optional): Filter by active status
+
+**Response:**
+```json
+{
+  "staff": [
+    {
+      "id": 1,
+      "employee_code": "EMP001",
+      "name": "John Doe",
+      "email": "john@company.com",
+      "phone": "+1234567890",
+      "basic_salary": 30000.0,
+      "incentive_percentage": 3.0,
+      "department": "Sales",
+      "joining_date": "2024-01-01",
+      "is_active": true,
+      "is_admin": false
+    }
+  ],
+  "total": 25,
+  "page": 1,
+  "limit": 10
+}
+```
+
+#### Create Staff
+```http
+POST /api/admin/staff/create
 ```
 
 **Request Body:**
 ```json
 {
-  "name": "Jane Smith Updated",
-  "email": "jane.updated@example.com",
-  "basic_salary": 50000
+  "employee_code": "EMP003",
+  "name": "Jane Smith",
+  "email": "jane@company.com",
+  "password": "password",
+  "phone": "+1234567891",
+  "basic_salary": 35000.0,
+  "incentive_percentage": 4.0,
+  "department": "Marketing",
+  "joining_date": "2024-02-01"
 }
 ```
 
-#### DELETE /admin/staff/{staff_id}
-Delete staff member.
-
-**Headers:**
+#### Update Staff
+```http
+PUT /api/admin/staff/update/{staff_id}
 ```
-Authorization: Bearer <admin-token>
+
+**Request Body:**
+```json
+{
+  "name": "Updated Name",
+  "email": "updated@company.com",
+  "phone": "+1234567892",
+  "basic_salary": 40000.0,
+  "incentive_percentage": 5.0,
+  "department": "Sales",
+  "is_active": true
+}
+```
+
+#### Deactivate Staff
+```http
+PUT /api/admin/staff/deactivate/{staff_id}
 ```
 
 ### Sales Management
 
-#### GET /admin/sales
-Get all sales records.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Get Sales List
+```http
+GET /api/admin/sales/list
 ```
 
 **Query Parameters:**
 - `start_date` (optional): Start date (YYYY-MM-DD)
 - `end_date` (optional): End date (YYYY-MM-DD)
-- `staff_id` (optional): Filter by staff
+- `staff_id` (optional): Filter by staff member
 - `brand_id` (optional): Filter by brand
 
-#### POST /admin/sales
-Create sales record.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Create Sales Record
+```http
+POST /api/admin/sales/create
 ```
 
 **Request Body:**
@@ -404,396 +250,528 @@ Authorization: Bearer <admin-token>
 {
   "staff_id": 1,
   "brand_id": 1,
-  "sale_amount": 15000,
+  "sale_amount": 1000.0,
   "sale_date": "2024-01-15",
-  "units_sold": 3
+  "units_sold": 5
 }
 ```
 
-#### POST /admin/sales/upload-excel
-Upload Excel file with sales data.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
-Content-Type: multipart/form-data
+#### Bulk Upload Sales
+```http
+POST /api/admin/sales/bulk-upload
 ```
 
-**Request Body:**
-```
-file: <excel-file>
+**Request:** Multipart form data with Excel file
+
+### Attendance Management
+
+#### Get Attendance List
+```http
+GET /api/admin/attendance/list
 ```
 
-**Response:**
-```json
-{
-  "message": "Excel file processed successfully",
-  "processed_count": 150,
-  "errors": []
-}
-```
+**Query Parameters:**
+- `start_date` (optional): Start date (YYYY-MM-DD)
+- `end_date` (optional): End date (YYYY-MM-DD)
+- `staff_id` (optional): Filter by staff member
+- `status` (optional): Filter by status (present, absent, late)
 
 ### Target Management
 
-#### GET /admin/targets
-Get all targets.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Get Targets List
+```http
+GET /api/admin/targets/list
 ```
 
-#### POST /admin/targets
-Create new target.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Create Target
+```http
+POST /api/admin/targets/create
 ```
 
 **Request Body:**
 ```json
 {
   "staff_id": 1,
-  "target_amount": 500000,
-  "target_period": "monthly",
-  "start_date": "2024-01-01",
-  "end_date": "2024-01-31",
-  "description": "January 2024 target"
+  "target_type": "MONTHLY",
+  "total_target_amount": 50000.0,
+  "brand_wise_targets": {
+    "Brand A": 25000.0,
+    "Brand B": 25000.0
+  },
+  "period_start": "2024-01-01",
+  "period_end": "2024-01-31",
+  "incentive_percentage": 5.0
+}
+```
+
+### Advance Management
+
+#### Get Advances List
+```http
+GET /api/admin/advance/list
+```
+
+#### Create Advance
+```http
+POST /api/admin/advance/create
+```
+
+**Request Body:**
+```json
+{
+  "staff_id": 1,
+  "advance_amount": 5000.0,
+  "reason": "Medical emergency",
+  "issue_date": "2024-01-15",
+  "deduction_plan": "MONTHLY",
+  "monthly_deduction_amount": 1000.0
 }
 ```
 
 ### Salary Management
 
-#### GET /admin/salary
-Get salary records.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Get Salary List
+```http
+GET /api/admin/salary/list
 ```
 
 **Query Parameters:**
-- `month` (optional): Month in YYYY-MM format
-- `status` (optional): pending, approved, paid
+- `month_year` (optional): Filter by month (YYYY-MM)
+- `staff_id` (optional): Filter by staff member
+- `payment_status` (optional): Filter by payment status
 
-#### POST /admin/salary/calculate
-Calculate salaries for a month.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Calculate Salary
+```http
+POST /api/admin/salary/calculate
 ```
 
 **Request Body:**
 ```json
 {
-  "month_year": "2024-01"
+  "month_year": "2024-01",
+  "staff_ids": [1, 2, 3]
 }
 ```
 
-#### POST /admin/salary/approve
-Approve salary payment.
+### Brand Management
 
-**Headers:**
+#### Get Brands List
+```http
+GET /api/admin/brands/list
 ```
-Authorization: Bearer <admin-token>
+
+#### Create Brand
+```http
+POST /api/admin/brands/create
 ```
 
 **Request Body:**
 ```json
 {
-  "salary_id": 1
+  "brand_name": "Brand Name",
+  "brand_code": "BN001",
+  "description": "Brand description",
+  "category": "Electronics"
 }
 ```
 
-### Backup Management
+### Reports and Exports
 
-#### GET /admin/backup/status
-Get backup status.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
-```
-
-**Response:**
-```json
-{
-  "last_backup": "2024-01-15T02:00:00",
-  "backup_size": "15.2 MB",
-  "next_backup": "2024-01-16T02:00:00",
-  "backup_count": 30
-}
-```
-
-#### POST /admin/backup/create
-Create manual backup.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
-```
-
-**Response:**
-```json
-{
-  "message": "Backup created successfully",
-  "backup_file": "backup_20240115_140000.sql.gz"
-}
-```
-
-#### POST /admin/backup/restore
-Restore from backup.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
-```
-
-**Request Body:**
-```json
-{
-  "backup_file": "backup_20240115_140000.sql.gz"
-}
-```
-
-### Reports & Analytics
-
-#### GET /admin/reports/sales
-Get sales report.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Export Sales CSV
+```http
+GET /api/admin/reports/sales/export/csv
 ```
 
 **Query Parameters:**
-- `start_date`: Start date (YYYY-MM-DD)
-- `end_date`: End date (YYYY-MM-DD)
-- `format` (optional): json, excel, pdf
+- `start_date` (optional): Start date (YYYY-MM-DD)
+- `end_date` (optional): End date (YYYY-MM-DD)
 
-#### GET /admin/reports/attendance
-Get attendance report.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Export Sales PDF
+```http
+GET /api/admin/reports/sales/export/pdf
 ```
 
-#### GET /admin/reports/performance
-Get performance report.
-
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Export Attendance CSV
+```http
+GET /api/admin/reports/attendance/export/csv
 ```
 
-### System Settings
-
-#### GET /admin/settings
-Get system settings.
-
-**Headers:**
+#### Export Attendance PDF
+```http
+GET /api/admin/reports/attendance/export/pdf
 ```
-Authorization: Bearer <admin-token>
+
+#### Generate Salary Slip PDF
+```http
+GET /api/admin/salary/slip/{staff_id}/{month_year}/pdf
+```
+
+### Notifications
+
+#### Get Notifications
+```http
+GET /api/admin/notifications
+```
+
+**Query Parameters:**
+- `limit` (optional): Number of notifications (default: 50)
+- `offset` (optional): Offset for pagination (default: 0)
+- `unread_only` (optional): Filter unread notifications (true/false)
+
+#### Mark Notification as Read
+```http
+PUT /api/admin/notifications/{notification_id}/read
+```
+
+#### Mark All Notifications as Read
+```http
+PUT /api/admin/notifications/read-all
+```
+
+#### Get Notification Statistics
+```http
+GET /api/admin/notifications/statistics
+```
+
+#### Send Attendance Reminder
+```http
+POST /api/admin/notifications/send-attendance-reminder/{staff_id}
+```
+
+#### Send System Alert
+```http
+POST /api/admin/notifications/send-system-alert
+```
+
+**Request Body:**
+```json
+{
+  "message": "System maintenance scheduled",
+  "alert_type": "system"
+}
+```
+
+### Templates
+
+#### Download Sales Template
+```http
+GET /api/admin/sales/template
+```
+
+#### Download Attendance Template
+```http
+GET /api/admin/attendance/template
+```
+
+## Staff Endpoints
+
+### Dashboard
+```http
+GET /api/staff/dashboard/{staff_id}
 ```
 
 **Response:**
 ```json
 {
-  "wifi_mac_addresses": ["AA:BB:CC:DD:EE:FF"],
-  "local_network_subnet": "192.168.1.0/24",
-  "backup_settings": {
-    "enabled": true,
-    "frequency": "daily",
-    "retention_days": 30
+  "today_attendance": {
+    "id": 1,
+    "check_in_time": "2024-01-15T09:00:00",
+    "check_out_time": "2024-01-15T17:00:00",
+    "date": "2024-01-15",
+    "status": "present",
+    "created_at": "2024-01-15T09:00:00"
+  },
+  "personal_sales_today": 1500.0,
+  "personal_sales_month": 45000.0,
+  "current_target": {
+    "id": 1,
+    "target_type": "MONTHLY",
+    "total_target_amount": 50000.0,
+    "period_start": "2024-01-01",
+    "period_end": "2024-01-31",
+    "incentive_percentage": 5.0
+  },
+  "achievement_percentage": 90.0,
+  "quick_stats": {
+    "total_sales": 45000.0,
+    "target_achieved": 90.0,
+    "incentive_earned": 2250.0
   }
 }
 ```
 
-#### PUT /admin/settings
-Update system settings.
+### Attendance
 
-**Headers:**
-```
-Authorization: Bearer <admin-token>
+#### Check In
+```http
+POST /api/staff/attendance/check-in
 ```
 
 **Request Body:**
 ```json
 {
-  "wifi_mac_addresses": ["AA:BB:CC:DD:EE:FF", "11:22:33:44:55:66"],
-  "local_network_subnet": "192.168.1.0/24",
-  "backup_settings": {
-    "enabled": true,
-    "frequency": "daily",
-    "retention_days": 30
-  }
+  "mac_address": "AA:BB:CC:DD:EE:FF"
 }
 ```
 
-## Error Codes
+#### Check Out
+```http
+POST /api/staff/attendance/check-out
+```
 
-| Code | Description |
-|------|-------------|
-| 400 | Bad Request - Invalid input data |
-| 401 | Unauthorized - Invalid or missing token |
-| 403 | Forbidden - Insufficient permissions |
-| 404 | Not Found - Resource not found |
-| 422 | Unprocessable Entity - Validation error |
-| 429 | Too Many Requests - Rate limit exceeded |
-| 500 | Internal Server Error - Server error |
+#### Get Attendance History
+```http
+GET /api/staff/attendance/history
+```
+
+**Query Parameters:**
+- `start_date` (optional): Start date (YYYY-MM-DD)
+- `end_date` (optional): End date (YYYY-MM-DD)
+
+### Sales
+
+#### Get Personal Sales
+```http
+GET /api/staff/sales/list
+```
+
+**Query Parameters:**
+- `start_date` (optional): Start date (YYYY-MM-DD)
+- `end_date` (optional): End date (YYYY-MM-DD)
+
+#### Create Sales Record
+```http
+POST /api/staff/sales/create
+```
+
+**Request Body:**
+```json
+{
+  "brand_id": 1,
+  "sale_amount": 1000.0,
+  "sale_date": "2024-01-15",
+  "units_sold": 5
+}
+```
+
+### Rankings
+
+#### Get Rankings
+```http
+GET /api/staff/rankings/{period_type}
+```
+
+**Path Parameters:**
+- `period_type`: DAILY, WEEKLY, MONTHLY, YEARLY
+
+### Salary
+
+#### Get Salary Details
+```http
+GET /api/staff/salary/details/{month_year}
+```
+
+**Response:**
+```json
+{
+  "month_year": "2024-01",
+  "basic_salary": 30000.0,
+  "working_days": 22,
+  "present_days": 20,
+  "sunday_count": 4,
+  "salary_for_days": 27272.73,
+  "target_incentive": 0.0,
+  "basic_incentive": 0.0,
+  "gross_salary": 27272.73,
+  "advance_deduction": 1000.0,
+  "net_salary": 26272.73,
+  "payment_status": "pending",
+  "payment_date": null
+}
+```
+
+### Targets
+
+#### Get Current Targets
+```http
+GET /api/staff/targets/current
+```
+
+### Achievements
+
+#### Get Achievements
+```http
+GET /api/staff/achievements
+```
+
+## Error Responses
+
+### Standard Error Format
+```json
+{
+  "detail": "Error message description"
+}
+```
+
+### Common HTTP Status Codes
+
+- `200 OK`: Request successful
+- `201 Created`: Resource created successfully
+- `400 Bad Request`: Invalid request data
+- `401 Unauthorized`: Authentication required
+- `403 Forbidden`: Access denied
+- `404 Not Found`: Resource not found
+- `422 Unprocessable Entity`: Validation error
+- `500 Internal Server Error`: Server error
+
+### Error Examples
+
+#### Validation Error
+```json
+{
+  "detail": [
+    {
+      "loc": ["body", "email"],
+      "msg": "field required",
+      "type": "value_error.missing"
+    }
+  ]
+}
+```
+
+#### Authentication Error
+```json
+{
+  "detail": "Could not validate credentials"
+}
+```
+
+#### Access Denied Error
+```json
+{
+  "detail": "Admin access required"
+}
+```
 
 ## Rate Limiting
 
-The API implements rate limiting to prevent abuse:
+API endpoints are rate-limited to prevent abuse:
+- **Authentication endpoints**: 5 requests per minute
+- **Data modification endpoints**: 10 requests per minute
+- **Data retrieval endpoints**: 30 requests per minute
 
-- **Staff endpoints**: 60 requests per minute
-- **Admin endpoints**: 100 requests per minute
-- **Authentication endpoints**: 10 requests per minute
+## Pagination
 
-Rate limit headers are included in responses:
-```
-X-RateLimit-Limit: 60
-X-RateLimit-Remaining: 59
-X-RateLimit-Reset: 1640995200
-```
+List endpoints support pagination:
 
-## Security Headers
+**Query Parameters:**
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 10, max: 100)
 
-All responses include security headers:
-
-```
-X-Content-Type-Options: nosniff
-X-Frame-Options: DENY
-X-XSS-Protection: 1; mode=block
-Strict-Transport-Security: max-age=31536000; includeSubDomains
-Referrer-Policy: strict-origin-when-cross-origin
-```
-
-## WebSocket Endpoints
-
-### /ws/notifications
-Real-time notifications WebSocket connection.
-
-**Connection:**
-```javascript
-const ws = new WebSocket('ws://localhost:8000/ws/notifications');
-ws.onopen = function() {
-    ws.send(JSON.stringify({
-        'type': 'auth',
-        'token': 'your-jwt-token'
-    }));
-};
-```
-
-**Message Types:**
-- `notification`: New notification
-- `attendance_update`: Attendance status update
-- `salary_update`: Salary status update
-
-## Testing
-
-### Health Check
-```
-GET /health
-```
-
-**Response:**
+**Response Format:**
 ```json
 {
-  "status": "healthy",
-  "timestamp": "2024-01-15T10:30:00",
-  "version": "1.0.0"
+  "data": [...],
+  "total": 100,
+  "page": 1,
+  "limit": 10,
+  "pages": 10
 }
 ```
 
-### Performance Metrics
-```
-GET /admin/performance
-```
+## Filtering and Sorting
 
-**Response:**
+Many list endpoints support filtering and sorting:
+
+**Query Parameters:**
+- `search`: Search term
+- `sort_by`: Field to sort by
+- `sort_order`: asc or desc
+- `filter_field`: Filter by specific field
+
+## File Uploads
+
+File upload endpoints accept multipart form data:
+
+**Content-Type:** `multipart/form-data`
+
+**Form Fields:**
+- `file`: The file to upload
+- Additional metadata fields as needed
+
+## WebSocket Support
+
+Real-time notifications are available via WebSocket:
+
+**Connection URL:** `ws://localhost:8000/ws`
+
+**Message Format:**
 ```json
 {
-  "performance_score": 85,
-  "system": {
-    "cpu_usage": 45.2,
-    "memory_usage": 67.8,
-    "disk_usage": 23.4
-  },
-  "api": {
-    "average_response_time": 0.245,
-    "total_requests": 1250
+  "type": "notification",
+  "data": {
+    "id": 1,
+    "title": "New Notification",
+    "message": "Notification message",
+    "timestamp": "2024-01-15T10:00:00Z"
   }
 }
 ```
 
-## SDK Examples
-
-### JavaScript/Node.js
-```javascript
-const axios = require('axios');
-
-const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
-  headers: {
-    'Authorization': `Bearer ${token}`
-  }
-});
-
-// Login
-const login = async (employeeCode, password) => {
-  const response = await api.post('/auth/login', {
-    employee_code: employeeCode,
-    password: password
-  });
-  return response.data;
-};
-
-// Check in
-const checkIn = async () => {
-  const response = await api.post('/staff/check-in', {
-    wifi_mac_address: 'AA:BB:CC:DD:EE:FF'
-  });
-  return response.data;
-};
-```
+## SDK and Libraries
 
 ### Python
 ```python
 import requests
 
-class StaffAttendanceAPI:
-    def __init__(self, base_url, token=None):
-        self.base_url = base_url
-        self.token = token
-        self.headers = {'Authorization': f'Bearer {token}'} if token else {}
-    
-    def login(self, employee_code, password):
-        response = requests.post(
-            f'{self.base_url}/auth/login',
-            json={'employee_code': employee_code, 'password': password}
-        )
-        return response.json()
-    
-    def check_in(self, wifi_mac_address):
-        response = requests.post(
-            f'{self.base_url}/staff/check-in',
-            json={'wifi_mac_address': wifi_mac_address},
-            headers=self.headers
-        )
-        return response.json()
+# Set up authentication
+headers = {
+    'Authorization': 'Bearer your-jwt-token',
+    'Content-Type': 'application/json'
+}
+
+# Make API request
+response = requests.get('http://localhost:8000/api/admin/dashboard', headers=headers)
+data = response.json()
 ```
 
-## Changelog
+### JavaScript
+```javascript
+const axios = require('axios');
 
-### v1.0.0
-- Initial API release
-- Complete authentication system
-- Staff and admin endpoints
-- Mobile-responsive design
-- Security features
-- Performance monitoring
-- Comprehensive documentation
+// Set up authentication
+const api = axios.create({
+  baseURL: 'http://localhost:8000',
+  headers: {
+    'Authorization': 'Bearer your-jwt-token',
+    'Content-Type': 'application/json'
+  }
+});
+
+// Make API request
+const response = await api.get('/api/admin/dashboard');
+const data = response.data;
+```
+
+## Testing
+
+### Test Data
+Use the following test credentials for development:
+
+**Admin User:**
+- Name: `admin`
+- Password: `admin123`
+
+**Staff User:**
+- Name: `staff`
+- Password: `staff123`
+
+### Postman Collection
+A Postman collection is available for testing all endpoints. Import the collection and set up environment variables for easy testing.
+
+## Support
+
+For API support and questions:
+- Check the error messages for detailed information
+- Review the request/response examples
+- Contact the development team for assistance
