@@ -17,7 +17,7 @@ import {
   Edit,
   Trash2
 } from 'lucide-react';
-import apiService from '../services/api';
+import { apiService } from '../services/api';
 import { showErrorToast, showSuccessToast } from '../utils/errorHandler';
 
 const IntegrationsManager = () => {

@@ -17,7 +17,7 @@ import {
   HardDrive,
   Activity
 } from 'lucide-react';
-import apiService from '../services/api';
+import { apiService } from '../services/api';
 import { showErrorToast, showSuccessToast } from '../utils/errorHandler';
 
 const DisasterRecoveryManager = () => {

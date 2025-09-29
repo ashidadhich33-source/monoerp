@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from app.models.base import get_db
 from app.models.staff import Staff
 from app.services.alerting_service import alerting_service
-from app.auth import get_current_user
+from app.routers.auth import get_current_staff
 
 router = APIRouter(prefix="/alerting", tags=["alerting"])
 
@@ -40,7 +40,7 @@ async def get_alert_rules():
 async def create_alert_rule(
     rule_name: str,
     rule_config: Dict[str, Any],
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Create a new alert rule"""
     try:
@@ -86,7 +86,7 @@ async def get_alert_history(
 @router.post("/alerts/{alert_id}/acknowledge")
 async def acknowledge_alert(
     alert_id: int,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Acknowledge an alert"""
     try:
@@ -104,7 +104,7 @@ async def acknowledge_alert(
 @router.post("/alerts/{alert_id}/resolve")
 async def resolve_alert(
     alert_id: int,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Resolve an alert"""
     try:
@@ -134,7 +134,7 @@ async def get_alert_statistics():
 @router.put("/thresholds")
 async def update_alert_thresholds(
     thresholds: Dict[str, Any],
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Update alert thresholds"""
     try:
@@ -151,7 +151,7 @@ async def update_alert_thresholds(
 
 @router.post("/start")
 async def start_alerting(
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Start alerting service"""
     try:
@@ -168,7 +168,7 @@ async def start_alerting(
 
 @router.post("/stop")
 async def stop_alerting(
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Stop alerting service"""
     try:
@@ -186,7 +186,7 @@ async def stop_alerting(
 @router.post("/test")
 async def test_alerting(
     test_metrics: Dict[str, Any],
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Test alerting with sample metrics"""
     try:
@@ -207,7 +207,7 @@ async def test_alerting(
 @router.get("/rules/{rule_name}")
 async def get_alert_rule_details(
     rule_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Get details of a specific alert rule"""
     try:
@@ -228,7 +228,7 @@ async def get_alert_rule_details(
 @router.put("/rules/{rule_name}/enable")
 async def enable_alert_rule(
     rule_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Enable an alert rule"""
     try:
@@ -250,7 +250,7 @@ async def enable_alert_rule(
 @router.put("/rules/{rule_name}/disable")
 async def disable_alert_rule(
     rule_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Disable an alert rule"""
     try:
@@ -272,7 +272,7 @@ async def disable_alert_rule(
 @router.delete("/rules/{rule_name}")
 async def delete_alert_rule(
     rule_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Delete an alert rule"""
     try:

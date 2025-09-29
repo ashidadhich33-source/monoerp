@@ -18,7 +18,7 @@ import {
   Square,
   Clock
 } from 'lucide-react';
-import apiService from '../services/api';
+import { apiService } from '../services/api';
 import { showErrorToast, showSuccessToast } from '../utils/errorHandler';
 
 const MonitoringDashboard = () => {
@@ -45,8 +45,8 @@ const MonitoringDashboard = () => {
         apiService.getSystemMetrics(),
         apiService.getAlerts(),
         apiService.getAutomationStatus(),
-        apiService.getBackupStatus(),
-        apiService.listBackups()
+        apiService.getMonitoringBackupStatus(),
+        apiService.listMonitoringBackups()
       ]);
 
       setSystemHealth(healthRes.data);
@@ -66,7 +66,7 @@ const MonitoringDashboard = () => {
 
   const handleAcknowledgeAlert = async (alertId) => {
     try {
-      await apiService.acknowledgeAlert(alertId);
+      await apiService.acknowledgeMonitoringAlert(alertId);
       setAlerts(alerts.map(alert => 
         alert.id === alertId ? { ...alert, acknowledged: true } : alert
       ));
@@ -118,7 +118,7 @@ const MonitoringDashboard = () => {
 
   const handleCreateBackup = async () => {
     try {
-      await apiService.createBackup();
+      await apiService.createMonitoringBackup();
       showSuccessToast('Backup created successfully');
       loadMonitoringData();
     } catch (error) {
@@ -128,7 +128,7 @@ const MonitoringDashboard = () => {
 
   const handleRestoreBackup = async (backupFilename) => {
     try {
-      await apiService.restoreBackup(backupFilename);
+      await apiService.restoreMonitoringBackup(backupFilename);
       showSuccessToast('Backup restored successfully');
       loadMonitoringData();
     } catch (error) {
@@ -138,7 +138,7 @@ const MonitoringDashboard = () => {
 
   const handleDeleteBackup = async (backupFilename) => {
     try {
-      await apiService.deleteBackup(backupFilename);
+      await apiService.deleteMonitoringBackup(backupFilename);
       showSuccessToast('Backup deleted successfully');
       loadMonitoringData();
     } catch (error) {

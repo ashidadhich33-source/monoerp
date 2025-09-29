@@ -23,7 +23,7 @@ const AdminBackup = () => {
         apiService.getBackupHistory()
       ]);
       setBackupStatus(status);
-      setBackupHistory(history);
+      setBackupHistory(history.backups || history);
     } catch (error) {
       console.error('Failed to fetch backup data:', error);
     } finally {

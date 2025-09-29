@@ -18,7 +18,7 @@ import {
   Filter,
   Search
 } from 'lucide-react';
-import apiService from '../services/api';
+import { apiService } from '../services/api';
 import { showErrorToast, showSuccessToast } from '../utils/errorHandler';
 
 const AlertingDashboard = () => {
@@ -104,7 +104,7 @@ const AlertingDashboard = () => {
 
   const handleAcknowledgeAlert = async (alertId) => {
     try {
-      const response = await apiService.acknowledgeAlert(alertId);
+      const response = await apiService.acknowledgeAlertingAlert(alertId);
       
       if (response.success) {
         showSuccessToast('Alert acknowledged');

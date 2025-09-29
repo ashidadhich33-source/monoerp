@@ -77,10 +77,44 @@ class Settings(BaseSettings):
     metrics_enabled: bool = True
     
     # CORS Configuration
-    cors_origins: List[str] = ["*"]
+    cors_origins: List[str] = [
+        "http://localhost:3000",
+        "http://localhost:3007",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3007"
+    ]
     cors_credentials: bool = True
     cors_methods: List[str] = ["*"]
     cors_headers: List[str] = ["*"]
+    
+    # Integration Settings
+    sms_provider: str = "twilio"
+    sms_api_key: Optional[str] = None
+    sms_api_url: Optional[str] = None
+    sms_enabled: bool = False
+    
+    email_provider: str = "smtp"
+    email_api_key: Optional[str] = None
+    email_api_url: Optional[str] = None
+    email_enabled: bool = False
+    
+    payment_provider: str = "stripe"
+    payment_api_key: Optional[str] = None
+    payment_api_url: Optional[str] = None
+    payment_enabled: bool = False
+    
+    analytics_provider: str = "google"
+    analytics_api_key: Optional[str] = None
+    analytics_api_url: Optional[str] = None
+    analytics_enabled: bool = False
+    
+    backup_provider: str = "local"
+    backup_api_key: Optional[str] = None
+    backup_api_url: Optional[str] = None
+    backup_enabled: bool = True
+    
+    # Disaster Recovery
+    recovery_directory: str = "./recovery"
     
     class Config:
         env_file = ".env"

@@ -7,7 +7,7 @@ from typing import Dict, List, Any, Optional
 from app.models.base import get_db
 from app.models.staff import Staff
 from app.services.integration_service import integration_service
-from app.auth import get_current_user
+from app.routers.auth import get_current_staff
 
 router = APIRouter(prefix="/integrations", tags=["integrations"])
 
@@ -26,7 +26,7 @@ async def get_integration_status():
 @router.post("/test/{integration_name}")
 async def test_integration(
     integration_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Test a specific integration"""
     try:
@@ -45,7 +45,7 @@ async def test_integration(
 async def send_sms(
     phone_number: str,
     message: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Send SMS via external provider"""
     try:
@@ -66,7 +66,7 @@ async def send_email(
     subject: str,
     body: str,
     html_body: Optional[str] = None,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Send email via external provider"""
     try:
@@ -87,7 +87,7 @@ async def process_payment(
     currency: str,
     payment_method: str,
     customer_info: Dict[str, Any],
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Process payment via external provider"""
     try:
@@ -108,7 +108,7 @@ async def process_payment(
 async def send_analytics_event(
     event_name: str,
     event_data: Dict[str, Any],
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Send analytics event to external provider"""
     try:
@@ -127,7 +127,7 @@ async def send_analytics_event(
 async def upload_backup(
     file_path: str,
     backup_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Upload backup to cloud storage"""
     try:
@@ -163,7 +163,7 @@ async def get_available_providers():
 
 @router.get("/config")
 async def get_integration_config(
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Get integration configuration (admin only)"""
     try:
@@ -190,7 +190,7 @@ async def get_integration_config(
 async def send_bulk_sms(
     phone_numbers: List[str],
     message: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Send bulk SMS to multiple numbers"""
     try:
@@ -224,7 +224,7 @@ async def send_bulk_email(
     subject: str,
     body: str,
     html_body: Optional[str] = None,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Send bulk email to multiple addresses"""
     try:
@@ -256,7 +256,7 @@ async def send_bulk_email(
 async def get_integration_logs(
     integration_name: Optional[str] = None,
     limit: int = 100,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Get integration logs"""
     try:

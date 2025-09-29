@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class BackupService:
     def __init__(self):
         self.settings = get_settings()
-        self.backup_dir = Path(self.settings.backup_directory)
+        self.backup_dir = Path(self.settings.backup_path)
         self.backup_dir.mkdir(exist_ok=True)
     
     def create_backup(self, backup_type: str = "manual") -> Dict[str, Any]:

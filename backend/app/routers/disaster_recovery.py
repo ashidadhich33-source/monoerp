@@ -8,7 +8,7 @@ from datetime import datetime
 from app.models.base import get_db
 from app.models.staff import Staff
 from app.services.disaster_recovery_service import disaster_recovery_service
-from app.auth import get_current_user
+from app.routers.auth import get_current_staff
 
 router = APIRouter(prefix="/disaster-recovery", tags=["disaster-recovery"])
 
@@ -40,7 +40,7 @@ async def get_recovery_plans():
 async def create_recovery_plan(
     plan_name: str,
     plan_config: Dict[str, Any],
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Create a new recovery plan"""
     try:
@@ -59,7 +59,7 @@ async def create_recovery_plan(
 async def execute_recovery_plan(
     plan_name: str,
     target_date: Optional[datetime] = None,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Execute a recovery plan"""
     try:
@@ -77,7 +77,7 @@ async def execute_recovery_plan(
 @router.post("/plans/{plan_name}/test")
 async def test_recovery_plan(
     plan_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Test a recovery plan"""
     try:
@@ -95,7 +95,7 @@ async def test_recovery_plan(
 @router.put("/status/update")
 async def update_recovery_status(
     status_updates: Dict[str, Any],
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Update recovery status"""
     try:
@@ -114,7 +114,7 @@ async def update_recovery_status(
 async def schedule_recovery_test(
     plan_name: str,
     test_schedule: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Schedule automated recovery testing"""
     try:
@@ -132,7 +132,7 @@ async def schedule_recovery_test(
 @router.get("/plans/{plan_name}")
 async def get_recovery_plan_details(
     plan_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Get details of a specific recovery plan"""
     try:
@@ -157,7 +157,7 @@ async def get_recovery_plan_details(
 @router.delete("/plans/{plan_name}")
 async def delete_recovery_plan(
     plan_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Delete a recovery plan"""
     try:
@@ -198,7 +198,7 @@ async def get_recovery_metrics():
 @router.post("/emergency-recovery")
 async def emergency_recovery(
     plan_name: str,
-    current_user: Staff = Depends(get_current_user)
+    current_user: Staff = Depends(get_current_staff)
 ):
     """Execute emergency recovery (admin only)"""
     try:

@@ -20,6 +20,15 @@ import AdminReports from './pages/admin/Reports';
 import AdminSettings from './pages/admin/Settings';
 import AdminBrands from './pages/admin/Brands';
 import AdminAdvances from './pages/admin/Advances';
+import MonitoringDashboard from './components/MonitoringDashboard';
+import DisasterRecoveryManager from './components/DisasterRecoveryManager';
+import AlertingDashboard from './components/AlertingDashboard';
+import IntegrationsManager from './components/IntegrationsManager';
+import Notifications from './pages/admin/Notifications';
+import Achievements from './pages/admin/Achievements';
+import Rankings from './pages/admin/Rankings';
+import AuditLogs from './pages/admin/AuditLogs';
+import PerformanceMetrics from './pages/admin/PerformanceMetrics';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -142,6 +151,69 @@ function App() {
             <ProtectedRoute adminOnly>
               <Layout>
                 <AdminAdvances />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/monitoring" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <MonitoringDashboard />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/disaster-recovery" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <DisasterRecoveryManager />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/alerting" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <AlertingDashboard />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/integrations" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <IntegrationsManager />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/notifications" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <Notifications />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/achievements" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <Achievements />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/rankings" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <Rankings />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/audit-logs" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <AuditLogs />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/performance-metrics" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <PerformanceMetrics />
               </Layout>
             </ProtectedRoute>
           } />

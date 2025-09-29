@@ -26,28 +26,31 @@ const AdminReports = () => {
   const fetchReportData = async () => {
     setLoading(true);
     try {
-      let data, summaryData;
+      let response, data, summaryData;
       
       if (activeReport === 'sales') {
-        data = await apiService.getSalesReport(dateRange.startDate, dateRange.endDate);
-        summaryData = {
-          totalSales: data.reduce((sum, item) => sum + (item.sale_amount || 0), 0),
+        response = await apiService.getSalesReport(dateRange.startDate, dateRange.endDate);
+        data = response.data || response;
+        summaryData = response.summary || {
+          totalSales: data.reduce((sum, item) => sum + (item.amount || 0), 0),
           totalRecords: data.length,
-          averageSale: data.length > 0 ? data.reduce((sum, item) => sum + (item.sale_amount || 0), 0) / data.length : 0
+          averageSale: data.length > 0 ? data.reduce((sum, item) => sum + (item.amount || 0), 0) / data.length : 0
         };
       } else if (activeReport === 'attendance') {
-        data = await apiService.getAttendanceReport(dateRange.startDate, dateRange.endDate);
+        response = await apiService.getAttendanceReport(dateRange.startDate, dateRange.endDate);
+        data = response.data || response;
         summaryData = {
           totalRecords: data.length,
           presentCount: data.filter(item => item.status === 'present').length,
           absentCount: data.filter(item => item.status === 'absent').length
         };
       } else if (activeReport === 'performance') {
-        data = await apiService.getPerformanceReport(dateRange.startDate, dateRange.endDate);
-        summaryData = {
+        response = await apiService.getPerformanceReport(dateRange.startDate, dateRange.endDate);
+        data = response.data || response;
+        summaryData = response.summary || {
           totalStaff: data.length,
-          totalAchieved: data.reduce((sum, item) => sum + (item.total_sales || 0), 0),
-          averagePerformance: data.length > 0 ? data.reduce((sum, item) => sum + (item.target_achieved || 0), 0) / data.length : 0
+          totalSales: data.reduce((sum, item) => sum + (item.total_sales || 0), 0),
+          averagePerformance: data.length > 0 ? data.reduce((sum, item) => sum + (item.target_achievement || 0), 0) / data.length : 0
         };
       }
       
