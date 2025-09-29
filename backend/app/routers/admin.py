@@ -28,6 +28,41 @@ router = APIRouter()
 settings = get_settings()
 logger = logging.getLogger(__name__)
 
+@router.get("/company-info")
+async def get_company_info(
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get company information for salary slips and reports"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    # For now, return default company info
+    # In a real application, this would come from a company settings table
+    company_info = {
+        "name": "Your Company Name",
+        "address": "Company Address, City, State, ZIP",
+        "phone": "+1 (555) 123-4567",
+        "email": "hr@company.com",
+        "website": "www.company.com",
+        "logo_url": None
+    }
+    
+    return company_info
+
 @router.get("/dashboard")
 async def get_admin_dashboard(
     request: Request,

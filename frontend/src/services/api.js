@@ -283,6 +283,12 @@ class ApiService {
     return response.data;
   }
 
+  // Company info for salary slips
+  async getCompanyInfo() {
+    const response = await this.api.get('/api/admin/company-info');
+    return response.data;
+  }
+
   async createCompany(companyData) {
     const response = await this.api.post('/api/setup/company', companyData);
     return response.data;
