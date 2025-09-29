@@ -185,7 +185,7 @@ class ApiService {
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
     
-    const response = await this.api.get(`/api/admin/sales/report?${params}`);
+    const response = await this.api.get(`/api/admin/reports/sales?${params}`);
     return response.data;
   }
 
@@ -399,21 +399,12 @@ class ApiService {
   }
 
   // Reports endpoints
-  async getSalesReport(startDate, endDate) {
-    const params = new URLSearchParams();
-    if (startDate) params.append('start_date', startDate);
-    if (endDate) params.append('end_date', endDate);
-    
-    const response = await this.api.get(`/api/admin/reports/sales?${params}`);
-    return response.data;
-  }
-
   async getAttendanceReport(startDate, endDate) {
     const params = new URLSearchParams();
     if (startDate) params.append('start_date', startDate);
     if (endDate) params.append('end_date', endDate);
     
-    const response = await this.api.get(`/api/admin/reports/attendance?${params}`);
+    const response = await this.api.get(`/api/admin/attendance/report?${params}`);
     return response.data;
   }
 
