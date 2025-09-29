@@ -77,7 +77,12 @@ class Settings(BaseSettings):
     metrics_enabled: bool = True
     
     # CORS Configuration
-    cors_origins: List[str] = ["*"]
+    cors_origins: List[str] = [
+        "http://localhost:3000",
+        "http://localhost:3007",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3007"
+    ]
     cors_credentials: bool = True
     cors_methods: List[str] = ["*"]
     cors_headers: List[str] = ["*"]
