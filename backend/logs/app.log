@@ -1645,3 +1645,144 @@ WHERE attendance.staff_id = ? AND attendance.status = ? AND attendance.date >= ?
 2025-09-29 03:50:55,290 - app.services.scheduler_service - INFO - Scheduler stopped
 2025-09-29 03:50:55,291 - app.services.scheduler_service - INFO - All background tasks stopped
 2025-09-29 03:50:55,291 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-29 04:00:40,784 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:00:40,785 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("staff")
+2025-09-29 04:00:40,785 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,786 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("attendance")
+2025-09-29 04:00:40,786 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,787 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("sales")
+2025-09-29 04:00:40,787 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,789 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("brands")
+2025-09-29 04:00:40,789 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,789 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("targets")
+2025-09-29 04:00:40,789 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,790 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("achievements")
+2025-09-29 04:00:40,790 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,790 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("salary")
+2025-09-29 04:00:40,790 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,790 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("advances")
+2025-09-29 04:00:40,790 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,790 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("rankings")
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("notifications")
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("audit_logs")
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("performance_metrics")
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,791 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("companies")
+2025-09-29 04:00:40,792 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,792 - sqlalchemy.engine.Engine - INFO - PRAGMA main.table_info("setup_states")
+2025-09-29 04:00:40,792 - sqlalchemy.engine.Engine - INFO - [raw sql] ()
+2025-09-29 04:00:40,792 - sqlalchemy.engine.Engine - INFO - COMMIT
+2025-09-29 04:00:40,793 - __main__ - INFO - Database tables created successfully
+2025-09-29 04:00:41,061 - app.services.scheduler_service - INFO - Daily backup scheduled for 23:00
+2025-09-29 04:00:41,061 - app.services.scheduler_service - INFO - Backup cleanup scheduled for 02:00
+2025-09-29 04:00:41,065 - app.services.scheduler_service - INFO - Scheduler started
+2025-09-29 04:00:41,065 - app.services.scheduler_service - INFO - All background tasks started
+2025-09-29 04:00:41,065 - __main__ - INFO - Application started with background tasks
+2025-09-29 04:00:41,489 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:00:41,490 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:00:41,490 - sqlalchemy.engine.Engine - INFO - [generated in 0.00028s] ()
+2025-09-29 04:00:41,568 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-29 04:00:41,568 - sqlalchemy.engine.Engine - INFO - [generated in 0.00057s] (1, 0)
+2025-09-29 04:00:41,577 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:00:41,577 - sqlalchemy.engine.Engine - INFO - [generated in 0.00038s] (1, 0)
+2025-09-29 04:00:41,584 - sqlalchemy.engine.Engine - INFO - SELECT setup_states.id AS setup_states_id, setup_states.company_created AS setup_states_company_created, setup_states.admin_created AS setup_states_admin_created, setup_states.database_initialized AS setup_states_database_initialized, setup_states.system_configured AS setup_states_system_configured, setup_states.setup_data AS setup_states_setup_data, setup_states.last_error AS setup_states_last_error, setup_states.error_count AS setup_states_error_count, setup_states.started_at AS setup_states_started_at, setup_states.completed_at AS setup_states_completed_at, setup_states.updated_at AS setup_states_updated_at 
+FROM setup_states
+ LIMIT ? OFFSET ?
+2025-09-29 04:00:41,584 - sqlalchemy.engine.Engine - INFO - [generated in 0.00039s] (1, 0)
+2025-09-29 04:00:41,586 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:00:47,233 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:00:47,233 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:00:47,233 - sqlalchemy.engine.Engine - INFO - [cached since 5.743s ago] ()
+2025-09-29 04:00:47,234 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:00:54,134 - app.services.scheduler_service - INFO - Scheduler stopped
+2025-09-29 04:00:54,135 - app.services.scheduler_service - INFO - All background tasks stopped
+2025-09-29 04:00:54,135 - __main__ - INFO - Application shutdown with background tasks stopped
+2025-09-29 04:00:55,843 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:00:55,844 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:00:55,844 - sqlalchemy.engine.Engine - INFO - [cached since 14.35s ago] ()
+2025-09-29 04:00:55,846 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.name = ? AND staff.is_active = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:00:55,848 - sqlalchemy.engine.Engine - INFO - [generated in 0.00208s] ('Admin User', 1, 0)
+2025-09-29 04:00:55,849 - app.models.base - ERROR - Unexpected database error: 401: Incorrect name or password
+2025-09-29 04:00:55,849 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:00:58,284 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:00:58,284 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:00:58,284 - sqlalchemy.engine.Engine - INFO - [cached since 16.79s ago] ()
+2025-09-29 04:00:58,285 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.name = ? AND staff.is_active = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:00:58,285 - sqlalchemy.engine.Engine - INFO - [cached since 2.44s ago] ('Admin User', 1, 0)
+2025-09-29 04:00:58,286 - app.models.base - ERROR - Unexpected database error: 401: Incorrect name or password
+2025-09-29 04:00:58,286 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:01:01,992 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:01:01,992 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:01:01,992 - sqlalchemy.engine.Engine - INFO - [cached since 20.5s ago] ()
+2025-09-29 04:01:01,993 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:01,993 - sqlalchemy.engine.Engine - INFO - [cached since 20.43s ago] (1, 0)
+2025-09-29 04:01:01,994 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:01,994 - sqlalchemy.engine.Engine - INFO - [cached since 20.42s ago] (1, 0)
+2025-09-29 04:01:01,995 - sqlalchemy.engine.Engine - INFO - SELECT setup_states.id AS setup_states_id, setup_states.company_created AS setup_states_company_created, setup_states.admin_created AS setup_states_admin_created, setup_states.database_initialized AS setup_states_database_initialized, setup_states.system_configured AS setup_states_system_configured, setup_states.setup_data AS setup_states_setup_data, setup_states.last_error AS setup_states_last_error, setup_states.error_count AS setup_states_error_count, setup_states.started_at AS setup_states_started_at, setup_states.completed_at AS setup_states_completed_at, setup_states.updated_at AS setup_states_updated_at 
+FROM setup_states
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:01,995 - sqlalchemy.engine.Engine - INFO - [cached since 20.41s ago] (1, 0)
+2025-09-29 04:01:01,999 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:01:05,499 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:01:05,499 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:01:05,500 - sqlalchemy.engine.Engine - INFO - [cached since 24.01s ago] ()
+2025-09-29 04:01:05,502 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:05,503 - sqlalchemy.engine.Engine - INFO - [cached since 23.93s ago] (1, 0)
+2025-09-29 04:01:05,504 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:05,504 - sqlalchemy.engine.Engine - INFO - [cached since 23.93s ago] (1, 0)
+2025-09-29 04:01:05,504 - sqlalchemy.engine.Engine - INFO - SELECT setup_states.id AS setup_states_id, setup_states.company_created AS setup_states_company_created, setup_states.admin_created AS setup_states_admin_created, setup_states.database_initialized AS setup_states_database_initialized, setup_states.system_configured AS setup_states_system_configured, setup_states.setup_data AS setup_states_setup_data, setup_states.last_error AS setup_states_last_error, setup_states.error_count AS setup_states_error_count, setup_states.started_at AS setup_states_started_at, setup_states.completed_at AS setup_states_completed_at, setup_states.updated_at AS setup_states_updated_at 
+FROM setup_states
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:05,504 - sqlalchemy.engine.Engine - INFO - [cached since 23.92s ago] (1, 0)
+2025-09-29 04:01:05,505 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:01:17,663 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:01:17,663 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:01:17,664 - sqlalchemy.engine.Engine - INFO - [cached since 36.17s ago] ()
+2025-09-29 04:01:17,665 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.name = ? AND staff.is_active = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:17,665 - sqlalchemy.engine.Engine - INFO - [cached since 21.82s ago] ('Admin User', 1, 0)
+2025-09-29 04:01:17,666 - app.models.base - ERROR - Unexpected database error: 401: Incorrect name or password
+2025-09-29 04:01:17,666 - sqlalchemy.engine.Engine - INFO - ROLLBACK
+2025-09-29 04:01:19,825 - sqlalchemy.engine.Engine - INFO - BEGIN (implicit)
+2025-09-29 04:01:19,825 - sqlalchemy.engine.Engine - INFO - SELECT 1
+2025-09-29 04:01:19,825 - sqlalchemy.engine.Engine - INFO - [cached since 38.34s ago] ()
+2025-09-29 04:01:19,829 - sqlalchemy.engine.Engine - INFO - SELECT companies.id AS companies_id, companies.name AS companies_name, companies.address AS companies_address, companies.phone AS companies_phone, companies.industry_type AS companies_industry_type, companies.timezone AS companies_timezone, companies.currency AS companies_currency, companies.working_hours_start AS companies_working_hours_start, companies.working_hours_end AS companies_working_hours_end, companies.is_setup_complete AS companies_is_setup_complete, companies.setup_completed_at AS companies_setup_completed_at, companies.created_at AS companies_created_at, companies.updated_at AS companies_updated_at 
+FROM companies
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:19,829 - sqlalchemy.engine.Engine - INFO - [cached since 38.26s ago] (1, 0)
+2025-09-29 04:01:19,830 - sqlalchemy.engine.Engine - INFO - SELECT staff.id AS staff_id, staff.employee_code AS staff_employee_code, staff.name AS staff_name, staff.email AS staff_email, staff.password_hash AS staff_password_hash, staff.phone AS staff_phone, staff.basic_salary AS staff_basic_salary, staff.incentive_percentage AS staff_incentive_percentage, staff.department AS staff_department, staff.joining_date AS staff_joining_date, staff.is_active AS staff_is_active, staff.is_admin AS staff_is_admin, staff.created_at AS staff_created_at, staff.updated_at AS staff_updated_at 
+FROM staff 
+WHERE staff.is_admin = 1
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:19,830 - sqlalchemy.engine.Engine - INFO - [cached since 38.25s ago] (1, 0)
+2025-09-29 04:01:19,830 - sqlalchemy.engine.Engine - INFO - SELECT setup_states.id AS setup_states_id, setup_states.company_created AS setup_states_company_created, setup_states.admin_created AS setup_states_admin_created, setup_states.database_initialized AS setup_states_database_initialized, setup_states.system_configured AS setup_states_system_configured, setup_states.setup_data AS setup_states_setup_data, setup_states.last_error AS setup_states_last_error, setup_states.error_count AS setup_states_error_count, setup_states.started_at AS setup_states_started_at, setup_states.completed_at AS setup_states_completed_at, setup_states.updated_at AS setup_states_updated_at 
+FROM setup_states
+ LIMIT ? OFFSET ?
+2025-09-29 04:01:19,830 - sqlalchemy.engine.Engine - INFO - [cached since 38.25s ago] (1, 0)
+2025-09-29 04:01:19,831 - sqlalchemy.engine.Engine - INFO - ROLLBACK

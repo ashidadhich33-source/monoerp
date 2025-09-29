@@ -1026,6 +1026,36 @@ async def update_sales(
     
     return {"message": "Sales record updated successfully"}
 
+@router.delete("/sales/delete/{sales_id}")
+async def delete_sales(
+    sales_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Delete sales record"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find sales record
+    sales = db.query(Sales).filter(Sales.id == sales_id).first()
+    if not sales:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Sales record not found"
+        )
+    
+    # Delete the record
+    db.delete(sales)
+    db.commit()
+    
+    return {"message": "Sales record deleted successfully"}
+
 @router.put("/targets/update/{target_id}")
 async def update_target(
     target_id: int,
@@ -1063,6 +1093,36 @@ async def update_target(
     db.commit()
     
     return {"message": "Target updated successfully"}
+
+@router.delete("/targets/delete/{target_id}")
+async def delete_target(
+    target_id: int,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Delete target"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Find target
+    target = db.query(Targets).filter(Targets.id == target_id).first()
+    if not target:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Target not found"
+        )
+    
+    # Delete the record
+    db.delete(target)
+    db.commit()
+    
+    return {"message": "Target deleted successfully"}
 
 @router.put("/advance/update-deduction/{advance_id}")
 async def update_advance_deduction(
@@ -1233,6 +1293,63 @@ async def delete_advance(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete advance"
+        )
+
+@router.put("/advance/update/{advance_id}")
+async def update_advance(
+    advance_id: int,
+    advance_data: AdvanceCreate,
+    request: Request,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update advance record"""
+    
+    # Verify local network access
+    if not verify_local_network(request):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Access denied: Not on local network"
+        )
+    
+    # Verify admin access
+    if not current_staff.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Admin access required"
+        )
+    
+    try:
+        # Get advance
+        advance = db.query(Advances).filter(Advances.id == advance_id).first()
+        if not advance:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Advance not found"
+            )
+        
+        # Check if advance is already completed
+        if advance.status == AdvanceStatus.COMPLETED:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot update completed advance"
+            )
+        
+        # Update advance fields
+        advance.staff_id = advance_data.staff_id
+        advance.amount = advance_data.amount
+        advance.reason = advance_data.reason
+        advance.updated_at = datetime.now()
+        
+        db.commit()
+        
+        return {"message": "Advance updated successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to update advance {advance_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update advance"
         )
 
 # Notification endpoints
