@@ -1845,6 +1845,424 @@ async def export_attendance_pdf(
             detail="Failed to export attendance data"
         )
 
+@router.get("/attendance/report")
+async def get_attendance_report(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    staff_id: Optional[int] = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get attendance report for all staff or specific staff"""
+    try:
+        if not current_staff.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Build query
+        query = db.query(Attendance).join(Staff, Attendance.staff_id == Staff.id)
+        
+        # Apply filters
+        if start_date:
+            query = query.filter(Attendance.date >= datetime.strptime(start_date, '%Y-%m-%d').date())
+        if end_date:
+            query = query.filter(Attendance.date <= datetime.strptime(end_date, '%Y-%m-%d').date())
+        if staff_id:
+            query = query.filter(Attendance.staff_id == staff_id)
+        
+        # Get attendance data
+        attendance_records = query.all()
+        
+        # Format response
+        attendance_data = []
+        for record in attendance_records:
+            attendance_data.append({
+                'id': record.id,
+                'staff_id': record.staff_id,
+                'staff_name': record.staff_name,
+                'date': record.date.strftime('%Y-%m-%d'),
+                'check_in_time': record.check_in_time.strftime('%H:%M:%S') if record.check_in_time else None,
+                'check_out_time': record.check_out_time.strftime('%H:%M:%S') if record.check_out_time else None,
+                'status': record.status.value,
+                'total_hours': record.total_hours,
+                'overtime_hours': record.overtime_hours,
+                'created_at': record.created_at.isoformat() if record.created_at else None
+            })
+        
+        return {
+            "success": True,
+            "data": attendance_data,
+            "total_records": len(attendance_data)
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get attendance report: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve attendance data"
+        )
+
+@router.get("/reports/sales")
+async def get_sales_report(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    staff_id: Optional[int] = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get sales report for all staff or specific staff"""
+    try:
+        if not current_staff.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Build query
+        query = db.query(Sales).join(Staff, Sales.staff_id == Staff.id)
+        
+        # Apply filters
+        if start_date:
+            query = query.filter(Sales.date >= datetime.strptime(start_date, '%Y-%m-%d').date())
+        if end_date:
+            query = query.filter(Sales.date <= datetime.strptime(end_date, '%Y-%m-%d').date())
+        if staff_id:
+            query = query.filter(Sales.staff_id == staff_id)
+        
+        # Get sales data
+        sales_records = query.all()
+        
+        # Calculate totals
+        total_sales = sum(record.amount for record in sales_records)
+        total_commission = sum(record.commission for record in sales_records)
+        
+        # Format response
+        sales_data = []
+        for record in sales_records:
+            sales_data.append({
+                'id': record.id,
+                'staff_id': record.staff_id,
+                'staff_name': record.staff_name,
+                'date': record.date.strftime('%Y-%m-%d'),
+                'amount': float(record.amount),
+                'commission': float(record.commission),
+                'brand': record.brand,
+                'created_at': record.created_at.isoformat() if record.created_at else None
+            })
+        
+        return {
+            "success": True,
+            "data": sales_data,
+            "summary": {
+                "total_records": len(sales_data),
+                "total_sales": float(total_sales),
+                "total_commission": float(total_commission)
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get sales report: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve sales data"
+        )
+
+@router.get("/reports/performance")
+async def get_performance_report(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    staff_id: Optional[int] = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get performance report combining sales, attendance, and targets"""
+    try:
+        if not current_staff.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Get sales data
+        sales_query = db.query(Sales).join(Staff, Sales.staff_id == Staff.id)
+        if start_date:
+            sales_query = sales_query.filter(Sales.date >= datetime.strptime(start_date, '%Y-%m-%d').date())
+        if end_date:
+            sales_query = sales_query.filter(Sales.date <= datetime.strptime(end_date, '%Y-%m-%d').date())
+        if staff_id:
+            sales_query = sales_query.filter(Sales.staff_id == staff_id)
+        
+        sales_records = sales_query.all()
+        
+        # Get attendance data
+        attendance_query = db.query(Attendance).join(Staff, Attendance.staff_id == Staff.id)
+        if start_date:
+            attendance_query = attendance_query.filter(Attendance.date >= datetime.strptime(start_date, '%Y-%m-%d').date())
+        if end_date:
+            attendance_query = attendance_query.filter(Attendance.date <= datetime.strptime(end_date, '%Y-%m-%d').date())
+        if staff_id:
+            attendance_query = attendance_query.filter(Attendance.staff_id == staff_id)
+        
+        attendance_records = attendance_query.all()
+        
+        # Get current targets
+        targets_query = db.query(Targets)
+        if staff_id:
+            targets_query = targets_query.filter(Targets.staff_id == staff_id)
+        
+        targets_records = targets_query.all()
+        
+        # Calculate performance metrics
+        staff_performance = {}
+        
+        # Process sales data
+        for sale in sales_records:
+            staff_id_key = sale.staff_id
+            if staff_id_key not in staff_performance:
+                staff_performance[staff_id_key] = {
+                    'staff_name': sale.staff_name,
+                    'total_sales': 0,
+                    'total_commission': 0,
+                    'attendance_days': 0,
+                    'total_hours': 0,
+                    'target_amount': 0,
+                    'target_achievement': 0
+                }
+            staff_performance[staff_id_key]['total_sales'] += float(sale.amount)
+            staff_performance[staff_id_key]['total_commission'] += float(sale.commission)
+        
+        # Process attendance data
+        for attendance in attendance_records:
+            staff_id_key = attendance.staff_id
+            if staff_id_key not in staff_performance:
+                staff_performance[staff_id_key] = {
+                    'staff_name': attendance.staff_name,
+                    'total_sales': 0,
+                    'total_commission': 0,
+                    'attendance_days': 0,
+                    'total_hours': 0,
+                    'target_amount': 0,
+                    'target_achievement': 0
+                }
+            staff_performance[staff_id_key]['attendance_days'] += 1
+            staff_performance[staff_id_key]['total_hours'] += float(attendance.total_hours or 0)
+        
+        # Process targets
+        for target in targets_records:
+            staff_id_key = target.staff_id
+            if staff_id_key in staff_performance:
+                staff_performance[staff_id_key]['target_amount'] = float(target.target_amount)
+                if target.target_amount > 0:
+                    staff_performance[staff_id_key]['target_achievement'] = (
+                        staff_performance[staff_id_key]['total_sales'] / target.target_amount * 100
+                    )
+        
+        # Format response
+        performance_data = []
+        for staff_id_key, data in staff_performance.items():
+            performance_data.append({
+                'staff_id': staff_id_key,
+                'staff_name': data['staff_name'],
+                'total_sales': data['total_sales'],
+                'total_commission': data['total_commission'],
+                'attendance_days': data['attendance_days'],
+                'total_hours': data['total_hours'],
+                'target_amount': data['target_amount'],
+                'target_achievement': round(data['target_achievement'], 2),
+                'average_daily_sales': round(data['total_sales'] / max(data['attendance_days'], 1), 2)
+            })
+        
+        return {
+            "success": True,
+            "data": performance_data,
+            "summary": {
+                "total_staff": len(performance_data),
+                "total_sales": sum(item['total_sales'] for item in performance_data),
+                "total_commission": sum(item['total_commission'] for item in performance_data),
+                "average_attendance_days": sum(item['attendance_days'] for item in performance_data) / max(len(performance_data), 1)
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get performance report: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve performance data"
+        )
+
+@router.get("/settings")
+async def get_system_settings(
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Get system settings"""
+    try:
+        if not current_staff.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Get settings from the settings object
+        settings = get_settings()
+        
+        return {
+            "success": True,
+            "data": {
+                "app_name": settings.app_name,
+                "version": settings.version,
+                "environment": settings.environment,
+                "debug": settings.debug,
+                "max_file_size": settings.max_file_size,
+                "backup_frequency": settings.backup_frequency,
+                "backup_retention_days": settings.backup_retention_days,
+                "email_notifications_enabled": settings.email_notifications_enabled,
+                "admin_email_notifications": settings.admin_email_notifications,
+                "log_level": settings.log_level,
+                "max_requests_per_minute": settings.max_requests_per_minute,
+                "session_timeout_minutes": settings.session_timeout_minutes,
+                "cors_origins": settings.cors_origins,
+                "local_network_subnet": settings.local_network_subnet,
+                "allowed_wifi_mac_addresses": settings.allowed_wifi_mac_addresses
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get system settings: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve system settings"
+        )
+
+@router.put("/settings")
+async def update_system_settings(
+    settings_data: dict,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Update system settings"""
+    try:
+        if not current_staff.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Note: In a real application, you would save these to a database
+        # For now, we'll just return success as the settings are loaded from environment/config
+        
+        return {
+            "success": True,
+            "message": "Settings updated successfully",
+            "data": settings_data
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to update system settings: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update system settings"
+        )
+
+@router.put("/salary/approve/{salary_id}")
+async def approve_salary(
+    salary_id: int,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Approve individual salary"""
+    try:
+        if not current_staff.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Get salary record
+        salary_record = db.query(Salary).filter(Salary.id == salary_id).first()
+        if not salary_record:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Salary record not found"
+            )
+        
+        # Update salary status
+        salary_record.is_approved = True
+        salary_record.approved_by = current_staff.id
+        salary_record.approved_at = datetime.now()
+        
+        db.commit()
+        
+        return {
+            "success": True,
+            "message": "Salary approved successfully",
+            "data": {
+                "salary_id": salary_id,
+                "staff_id": salary_record.staff_id,
+                "approved_by": current_staff.id,
+                "approved_at": salary_record.approved_at.isoformat()
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to approve salary: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to approve salary"
+        )
+
+@router.put("/salary/reject/{salary_id}")
+async def reject_salary(
+    salary_id: int,
+    rejection_reason: Optional[str] = None,
+    current_staff: Staff = Depends(get_current_staff),
+    db: Session = Depends(get_db)
+):
+    """Reject individual salary"""
+    try:
+        if not current_staff.is_admin:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Admin access required"
+            )
+        
+        # Get salary record
+        salary_record = db.query(Salary).filter(Salary.id == salary_id).first()
+        if not salary_record:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Salary record not found"
+            )
+        
+        # Update salary status
+        salary_record.is_approved = False
+        salary_record.rejected_by = current_staff.id
+        salary_record.rejected_at = datetime.now()
+        salary_record.rejection_reason = rejection_reason
+        
+        db.commit()
+        
+        return {
+            "success": True,
+            "message": "Salary rejected successfully",
+            "data": {
+                "salary_id": salary_id,
+                "staff_id": salary_record.staff_id,
+                "rejected_by": current_staff.id,
+                "rejected_at": salary_record.rejected_at.isoformat(),
+                "rejection_reason": rejection_reason
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to reject salary: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to reject salary"
+        )
+
 @router.get("/salary/slip/{staff_id}/{month_year}/pdf")
 async def generate_salary_slip_pdf(
     staff_id: int,

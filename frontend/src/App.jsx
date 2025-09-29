@@ -20,6 +20,10 @@ import AdminReports from './pages/admin/Reports';
 import AdminSettings from './pages/admin/Settings';
 import AdminBrands from './pages/admin/Brands';
 import AdminAdvances from './pages/admin/Advances';
+import MonitoringDashboard from './components/MonitoringDashboard';
+import DisasterRecoveryManager from './components/DisasterRecoveryManager';
+import AlertingDashboard from './components/AlertingDashboard';
+import IntegrationsManager from './components/IntegrationsManager';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -142,6 +146,34 @@ function App() {
             <ProtectedRoute adminOnly>
               <Layout>
                 <AdminAdvances />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/monitoring" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <MonitoringDashboard />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/disaster-recovery" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <DisasterRecoveryManager />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/alerting" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <AlertingDashboard />
+              </Layout>
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/integrations" element={
+            <ProtectedRoute adminOnly>
+              <Layout>
+                <IntegrationsManager />
               </Layout>
             </ProtectedRoute>
           } />
